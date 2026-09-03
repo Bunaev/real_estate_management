@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление недвижимостью</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body { background: #f0f2f5; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { background: linear-gradient(135deg, #1a1a2e, #0f3460); color: white; padding: 20px; border-radius: 10px; margin-bottom: 25px; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .search-bar { background: white; padding: 15px 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); margin-bottom: 20px; }
+        .search-bar input { border: 1px solid #ddd; border-radius: 25px; padding: 12px 20px; width: 100%; font-size: 16px; }
+        .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .actions button { padding: 10px 20px; border: none; border-radius: 8px; font-weight: 500; cursor: pointer; transition: 0.3s; }
+        .btn-primary { background: #0f3460; color: white; }
+        .btn-primary:hover { background: #1a1a2e; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #1e7e34; }
+        .btn-warning { background: #ffc107; color: #333; }
+        .btn-warning:hover { background: #e0a800; }
+        .btn-info { background: #17a2b8; color: white; }
+        .btn-info:hover { background: #138496; }
+        .btn-secondary { background: #6c757d; color: white; }
+        .btn-secondary:hover { background: #5a6268; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-danger:hover { background: #c82333; }
+        .btn-outline-secondary { background: white; border: 1px solid #ddd; }
+        .btn-outline-secondary:hover { background: #f8f9fa; }
+        .card { background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 20px; margin-bottom: 20px; }
+        .complex-item { border-bottom: 1px solid #eee; padding: 12px 0; display: flex; justify-content: space-between; align-items: center; }
+        .complex-item:last-child { border-bottom: none; }
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
+        .toast { background: white; padding: 12px 24px; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); margin-bottom: 10px; border-left: 4px solid; }
+        .toast.success { border-color: #28a745; }
+        .toast.error { border-color: #dc3545; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; max-width: 750px; width: 95%; max-height: 90vh; overflow-y: auto; }
+        .modal-content h4 { margin-top: 0; }
+        .form-control { border-radius: 8px; margin-bottom: 10px; }
+        .badge-count { background: #e9ecef; padding: 2px 10px; border-radius: 20px; font-size: 12px; }
+        .inline-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .inline-group .form-control { flex: 1; min-width: 100px; }
+        .sub-block { border: 1px solid #dee2e6; border-radius: 8px; padding: 15px; margin-top: 10px; background: #f8f9fa; }
+        .sub-block .sub-header { font-weight: 600; color: #0f3460; margin-bottom: 10px; }
+        .delete-btn { color: #dc3545; cursor: pointer; font-size: 18px; margin-left: 5px; }
+        .delete-btn:hover { color: #c82333; }
+        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; border-top: 1px solid #dee2e6; padding-top: 15px; }
+        .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 9998; justify-content: center; align-items: center; }
+        .loading-spinner { background: white; padding: 20px 40px; border-radius: 12px; box-shadow: 0 5px 30px rgba(0,0,0,0.2); }
+        .btn-sm-file { font-size: 12px; padding: 2px 8px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-sm-file:hover { background: #1e7e34; }
+        .file-input-hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header d-flex justify-content-between align-items-center">
+        <h1><i class="bi bi-building"></i> Управление недвижимостью</h1>
+        <span id="time" class="text-light opacity-75 small"></span>
+    </div>
+
+    <div class="search-bar">
+        <input type="text" id="searchInput" class="form-control" placeholder="🔍 Поиск по каталогу (скоро Elasticsearch)..."
+               onkeyup="if(event.key==='Enter') showToast('🔍 Поиск: ' + this.value + ' (функция в разработке)', 'success')">
+    </div>
+
+    <div class="actions">
+        <button class="btn-primary" onclick="showModal('complex')"><i class="bi bi-plus-lg"></i> Создать ЖК (мастер)</button>
+        <button class="btn-warning" onclick="showModal('building')"><i class="bi bi-plus-lg"></i> Добавить корпус</button>
+        <button class="btn-info" onclick="showModal('entrance')"><i class="bi bi-plus-lg"></i> Добавить секцию</button>
+        <button class="btn-success" onclick="showModal('import')"><i class="bi bi-upload"></i> Загрузить квартиры</button>
+        <button class="btn-primary" onclick="showModal('export')" style="background:#17a2b8;">
+            <i class="bi bi-download"></i> Скачать квартиры (Excel)
+        </button>
+        <button class="btn-secondary" onclick="showModal('developer')"><i class="bi bi-person-plus"></i> Застройщик</button>
+        <button class="btn-secondary" onclick="showModal('location')"><i class="bi bi-plus-lg"></i> Локация</button>
+        <button class="btn-secondary" onclick="showModal('district')"><i class="bi bi-plus-lg"></i> Район</button>
+        <button class="btn-outline-secondary" onclick="refreshData()"><i class="bi bi-arrow-clockwise"></i> Обновить данные</button>
+    </div>
+
+    <div class="card">
+        <h5><i class="bi bi-building me-2"></i>Жилые комплексы <span id="countBadge" class="badge-count"></span></h5>
+        <div id="complexesList"><div class="text-center py-4 text-muted">Загрузка...</div></div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="createModal">
+    <div class="modal-content">
+        <h4 id="modalTitle">Создание</h4>
+        <form id="createForm">
+            <div id="modalFields"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Отмена</button>
+                <button type="button" class="btn btn-primary" onclick="submitCreate()">Создать</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Загрузка...</span>
+        </div>
+        <span class="ms-2">Загрузка данных...</span>
+    </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+    // =============================================================
+    // 1. КОНСТАНТЫ
+    // =============================================================
+    const API = '/api';
+
+    // =============================================================
+    // 2. КЕШИ
+    // =============================================================
+    let cachedDevelopers = [];
+    let cachedLocations = [];
+    let cachedMetro = [];
+    let cachedComplexes = [];
+    let cachedBuildings = {};
+
+    // =============================================================
+    // 3. ЗАГРУЗКА ДАННЫХ
+    // =============================================================
+    async function loadAllData() {
+        showLoading(true);
+        console.log('🔄 Загрузка данных...');
+        try {
+            const [developers, locations, metro, complexes] = await Promise.all([
+                fetch(`${API}/developers`).then(r => { if (!r.ok) throw new Error('developers'); return r.json(); }),
+                fetch(`${API}/locations`).then(r => { if (!r.ok) throw new Error('locations'); return r.json(); }),
+                fetch(`${API}/metro-stations`).then(r => { if (!r.ok) throw new Error('metro'); return r.json(); }),
+                fetch(`${API}/complexes`).then(r => { if (!r.ok) throw new Error('complexes'); return r.json(); })
+            ]);
+            cachedDevelopers = Array.isArray(developers) ? developers : [];
+            cachedLocations = Array.isArray(locations) ? locations : [];
+            cachedMetro = Array.isArray(metro) ? metro : [];
+            cachedComplexes = Array.isArray(complexes) ? complexes : [];
+            console.log('✅ Данные загружены:', {
+                застройщики: cachedDevelopers.length,
+                локации: cachedLocations.length,
+                метро: cachedMetro.length,
+                жк: cachedComplexes.length
+            });
+            renderComplexes();
+        } catch (e) {
+            console.error('❌ Ошибка загрузки данных:', e);
+            showToast('❌ Ошибка загрузки данных. Проверьте консоль.', 'error');
+        } finally {
+            showLoading(false);
+        }
+    }
+
+    async function refreshData() {
+        await loadAllData();
+        showToast('✅ Данные обновлены', 'success');
+    }
+
+    function renderComplexes() {
+        const container = document.getElementById('complexesList');
+        const badge = document.getElementById('countBadge');
+        if (!cachedComplexes || cachedComplexes.length === 0) {
+            container.innerHTML = '<div class="text-center py-4 text-muted">Нет ЖК. Создайте первый!</div>';
+            badge.textContent = '0 ЖК';
+            return;
+        }
+        badge.textContent = cachedComplexes.length + ' ЖК';
+        let html = '';
+        cachedComplexes.forEach(item => {
+            html += `
+                <div class="complex-item">
+                    <div>
+                        <strong>${item.name || 'Без названия'}</strong>
+                        <span class="text-muted ms-2">${item.address || ''}</span><br>
+                        <small class="text-muted">🏗️ ${item.developer?.name || '—'} • 🏘️ ${item.district?.name || '—'}</small>
+                        <span class="badge-count ms-2">${item.buildings?.length || 0} корпусов</span>
+                    </div>
+                    <button class="btn btn-sm btn-danger" onclick="deleteComplex(${item.id})"><i class="bi bi-trash"></i></button>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    async function deleteComplex(id) {
+        if (!confirm('Удалить ЖК и все связанные данные?')) return;
+        try {
+            const res = await fetch(`${API}/complex/${id}`, { method: 'DELETE' });
+            if (!res.ok) throw new Error('Ошибка удаления');
+            showToast('✅ ЖК удалён');
+            await refreshData();
+        } catch (err) {
+            showToast('❌ ' + err.message, 'error');
+        }
+    }
+
+    // =============================================================
+    // 4. КАСКАДНЫЕ ФУНКЦИИ
+    // =============================================================
+    function onLocationChange(locationId) {
+        const districtSelect = document.getElementById('complexDistrict');
+        if (!locationId) {
+            districtSelect.innerHTML = '<option value="">Сначала выберите локацию</option>';
+            return;
+        }
+        districtSelect.innerHTML = '<option value="">Загрузка районов...</option>';
+        fetch(`${API}/districts/by-location/${locationId}`)
+            .then(r => r.json())
+            .then(data => {
+                const districts = Array.isArray(data) ? data : [];
+                districtSelect.innerHTML = '<option value="">Выберите район</option>';
+                districts.forEach(d => {
+                    districtSelect.innerHTML += `<option value="${d.id}">${d.name}</option>`;
+                });
+            })
+            .catch(() => {
+                districtSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
+            });
+    }
+
+    function onEntranceComplexChange(complexId) {
+        const buildingSelect = document.getElementById('entranceBuildingSelect');
+        if (!complexId) {
+            buildingSelect.innerHTML = '<option value="">Сначала выберите ЖК</option>';
+            return;
+        }
+        buildingSelect.innerHTML = '<option value="">Загрузка корпусов...</option>';
+        if (cachedBuildings[complexId]) {
+            fillBuildingSelect(buildingSelect, cachedBuildings[complexId]);
+            return;
+        }
+        fetch(`${API}/buildings/by-complex/${complexId}`)
+            .then(r => r.json())
+            .then(data => {
+                cachedBuildings[complexId] = Array.isArray(data) ? data : [];
+                fillBuildingSelect(buildingSelect, cachedBuildings[complexId]);
+            })
+            .catch(() => {
+                buildingSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
+            });
+    }
+
+    function fillBuildingSelect(select, buildings) {
+        select.innerHTML = '<option value="">Выберите корпус</option>';
+        buildings.forEach(b => {
+            select.innerHTML += `<option value="${b.id}">${b.name}</option>`;
+        });
+    }
+
+    function onImportComplexChange(complexId) {
+        const buildingSelect = document.getElementById('importBuildingSelect');
+        if (!complexId) {
+            buildingSelect.innerHTML = '<option value="">Сначала выберите ЖК</option>';
+            document.getElementById('importEntranceSelect').innerHTML = '<option value="">Сначала выберите корпус</option>';
+            return;
+        }
+        buildingSelect.innerHTML = '<option value="">Загрузка корпусов...</option>';
+        if (cachedBuildings[complexId]) {
+            fillBuildingSelect(buildingSelect, cachedBuildings[complexId]);
+            document.getElementById('importEntranceSelect').innerHTML = '<option value="">Сначала выберите корпус</option>';
+            return;
+        }
+        fetch(`${API}/buildings/by-complex/${complexId}`)
+            .then(r => r.json())
+            .then(data => {
+                cachedBuildings[complexId] = Array.isArray(data) ? data : [];
+                fillBuildingSelect(buildingSelect, cachedBuildings[complexId]);
+                document.getElementById('importEntranceSelect').innerHTML = '<option value="">Сначала выберите корпус</option>';
+            })
+            .catch(() => {
+                buildingSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
+            });
+    }
+
+    // =============================================================
+    // КАСКАДНЫЕ ФУНКЦИИ ДЛЯ ЭКСПОРТА
+    // =============================================================
+
+    // При выборе ЖК в модалке экспорта — загружаем корпуса
+    function onExportComplexChange(complexId) {
+        const buildingSelect = document.getElementById('exportBuildingSelect');
+        const entranceSelect = document.getElementById('exportEntranceSelect');
+
+        if (!complexId) {
+            buildingSelect.innerHTML = '<option value="">Сначала выберите ЖК</option>';
+            entranceSelect.innerHTML = '<option value="">Сначала выберите корпус</option>';
+            return;
+        }
+
+        buildingSelect.innerHTML = '<option value="">Загрузка корпусов...</option>';
+        entranceSelect.innerHTML = '<option value="">Сначала выберите корпус</option>';
+
+        fetch(`${API}/buildings/by-complex/${complexId}`)
+            .then(r => r.json())
+            .then(data => {
+                const buildings = Array.isArray(data) ? data : [];
+                buildingSelect.innerHTML = '<option value="">Выберите корпус</option>';
+                buildings.forEach(b => {
+                    buildingSelect.innerHTML += `<option value="${b.id}">${b.name}</option>`;
+                });
+            })
+            .catch(() => {
+                buildingSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
+            });
+    }
+
+    // При выборе корпуса в модалке экспорта — загружаем секции
+    function onExportBuildingChange(buildingId) {
+        const entranceSelect = document.getElementById('exportEntranceSelect');
+
+        if (!buildingId) {
+            entranceSelect.innerHTML = '<option value="">Сначала выберите корпус</option>';
+            return;
+        }
+
+        entranceSelect.innerHTML = '<option value="">Загрузка секций...</option>';
+
+        fetch(`${API}/entrances/by-building/${buildingId}`)
+            .then(r => r.json())
+            .then(data => {
+                const entrances = Array.isArray(data) ? data : [];
+                entranceSelect.innerHTML = '<option value="">Выберите секцию</option>';
+                entrances.forEach(e => {
+                    entranceSelect.innerHTML += `<option value="${e.id}">${e.name}</option>`;
+                });
+            })
+            .catch(() => {
+                entranceSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
+            });
+    }
+
+    function onImportBuildingChange(buildingId) {
+        const entranceSelect = document.getElementById('importEntranceSelect');
+        if (!buildingId) {
+            entranceSelect.innerHTML = '<option value="">Сначала выберите корпус</option>';
+            return;
+        }
+        entranceSelect.innerHTML = '<option value="">Загрузка секций...</option>';
+        fetch(`${API}/entrances/by-building/${buildingId}`)
+            .then(r => r.json())
+            .then(data => {
+                const entrances = Array.isArray(data) ? data : [];
+                entranceSelect.innerHTML = '<option value="">Выберите секцию</option>';
+                entrances.forEach(e => {
+                    entranceSelect.innerHTML += `<option value="${e.id}">${e.name}</option>`;
+                });
+                console.log('✅ Загружено секций:', entrances.length);
+            })
+            .catch(err => {
+                console.error('Ошибка загрузки секций:', err);
+                entranceSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
+            });
+    }
+
+    // =============================================================
+    // 5. ЧАСЫ И TOAST
+    // =============================================================
+    function updateTime() {
+        document.getElementById('time').textContent = new Date().toLocaleString('ru-RU');
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 5000);
+    }
+
+    function showLoading(show) {
+        document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+    }
+
+    // =============================================================
+    // 6. МОДАЛКИ
+    // =============================================================
+    function showModal(type) {
+        const config = modalConfigs[type];
+        if (!config) {
+            showToast('Ошибка: неизвестный тип модалки', 'error');
+            return;
+        }
+        document.getElementById('modalTitle').textContent = config.title;
+        document.getElementById('createForm').dataset.type = type;
+        document.getElementById('modalFields').innerHTML = config.render();
+        document.getElementById('createModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('createModal').style.display = 'none';
+    }
+
+    function submitCreate() {
+        const type = document.getElementById('createForm').dataset.type;
+        modalConfigs[type].submit();
+    }
+
+    // =============================================================
+    // 7. КОНФИГИ МОДАЛОК
+    // =============================================================
+    const modalConfigs = {
+
+        // =============================================================
+        // 7.1. ЖК (МАСТЕР) — С ДАТАМИ И ЗАГРУЗКОЙ КВАРТИР
+        // =============================================================
+        complex: {
+            title: '🏘️ Создать ЖК (мастер)',
+            render: function() {
+                return `
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Название ЖК</label>
+                        <input type="text" class="form-control" id="complexName" placeholder="Например: Невский парк">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Адрес</label>
+                        <input type="text" class="form-control" id="complexAddress" placeholder="ул. Невская, 1">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Локация</label>
+                            <select class="form-control" id="complexLocation" onchange="onLocationChange(this.value)">
+                                <option value="">Выберите локацию</option>
+                                ${cachedLocations && cachedLocations.length > 0
+                    ? cachedLocations.map(d => `<option value="${d.id}">${d.name}</option>`).join('')
+                    : '<option value="">Нет данных</option>'}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Район</label>
+                            <select class="form-control" id="complexDistrict">
+                                <option value="">Сначала выберите локацию</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Застройщик</label>
+                        <select class="form-control" id="complexDeveloper">
+                            <option value="">Выберите застройщика</option>
+                            ${cachedDevelopers && cachedDevelopers.length > 0
+                    ? cachedDevelopers.map(d => `<option value="${d.id}">${d.name}</option>`).join('')
+                    : '<option value="">Нет данных</option>'}
+                        </select>
+                    </div>
+                    <hr>
+                    <div class="fw-bold">🚇 Станции метро</div>
+                    <div id="metroContainer">
+                        <div class="inline-group metro-row">
+                            <select class="form-control metro-station-select">
+                                <option value="">Станция</option>
+                                ${cachedMetro && cachedMetro.length > 0
+                    ? cachedMetro.map(m => `<option value="${m.id}">${m.name}</option>`).join('')
+                    : '<option value="">Нет данных</option>'}
+                            </select>
+                            <input type="number" class="form-control metro-distance-input" placeholder="Расстояние (м)" style="width:120px">
+                            <span class="delete-btn" onclick="this.parentElement.remove()">✖</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary mt-1" onclick="addMetroRow()"><i class="bi bi-plus-lg"></i> Добавить метро</button>
+                    <hr>
+                    <div class="fw-bold">🏢 Корпуса</div>
+                    <div id="buildingsContainer"></div>
+                    <button type="button" class="btn btn-sm btn-outline-primary mt-1" onclick="addBuildingRow()"><i class="bi bi-plus-lg"></i> Добавить корпус</button>
+                `;
+            },
+            submit: function() {
+                const name = document.getElementById('complexName').value.trim();
+                const address = document.getElementById('complexAddress').value.trim();
+                const districtId = document.getElementById('complexDistrict').value;
+                const developerId = document.getElementById('complexDeveloper').value;
+                if (!name || !address || !districtId || !developerId) {
+                    showToast('Заполните все основные поля', 'error');
+                    return;
+                }
+
+                const metroIds = [], metroDists = [];
+                document.querySelectorAll('.metro-row').forEach(row => {
+                    const sel = row.querySelector('.metro-station-select');
+                    const dist = row.querySelector('.metro-distance-input');
+                    if (sel.value) {
+                        metroIds.push(sel.value);
+                        metroDists.push(dist.value || 0);
+                    }
+                });
+
+                const buildingNames = [], entranceNamesPerBuilding = [], entranceFloorsPerBuilding = [];
+                const completionDates = [], keyHandoverDates = [];
+                const apartmentFiles = []; // Для хранения файлов по секциям
+
+                document.querySelectorAll('.building-block').forEach(block => {
+                    const bName = block.querySelector('.building-name-input').value.trim();
+                    const completion = block.querySelector('.building-completion-input').value;
+                    const handover = block.querySelector('.building-handover-input').value;
+                    if (!bName || !completion || !handover) {
+                        showToast('Заполните даты сдачи и выдачи ключей для всех корпусов', 'error');
+                        return;
+                    }
+                    buildingNames.push(bName);
+                    completionDates.push(completion);
+                    keyHandoverDates.push(handover);
+
+                    const entrances = [], floors = [];
+                    const files = [];
+                    block.querySelectorAll('.entrance-block').forEach(eb => {
+                        const eName = eb.querySelector('.entrance-name-input').value.trim();
+                        const eFloor = eb.querySelector('.entrance-floor-input').value;
+                        const fileInput = eb.querySelector('.entrance-file-input');
+                        if (eName && eFloor) {
+                            entrances.push(eName);
+                            floors.push(parseInt(eFloor));
+                            if (fileInput && fileInput.files[0]) {
+                                files.push(fileInput.files[0]);
+                            } else {
+                                files.push(null);
+                            }
+                        }
+                    });
+                    entranceNamesPerBuilding.push(entrances);
+                    entranceFloorsPerBuilding.push(floors);
+                    apartmentFiles.push(files);
+                });
+
+                // Сначала создаём ЖК с метро и корпусами (без файлов)
+                const params = new URLSearchParams();
+                params.append('name', name);
+                params.append('address', address);
+                params.append('districtId', districtId);
+                params.append('developerId', developerId);
+                metroIds.forEach(id => params.append('metroStationIds', id));
+                metroDists.forEach(d => params.append('metroDistances', d));
+                buildingNames.forEach(n => params.append('buildingNames', n));
+                entranceNamesPerBuilding.forEach(list => list.forEach(e => params.append('entranceNamesPerBuilding', e)));
+                entranceFloorsPerBuilding.forEach(list => list.forEach(e => params.append('entranceMaxFloorsPerBuilding', e)));
+                completionDates.forEach(d => params.append('completionDates', d));
+                keyHandoverDates.forEach(d => params.append('keyHandoverDates', d));
+
+                showLoading(true);
+                fetch(`${API}/complex?${params.toString()}`, { method: 'POST' })
+                    .then(res => {
+                        if (!res.ok) throw new Error('Ошибка создания');
+                        return res.json();
+                    })
+                    .then(createdRc => {
+                        // После создания ЖК загружаем файлы для каждой секции
+                        const uploadPromises = [];
+                        let entranceIndex = 0;
+                        document.querySelectorAll('.building-block').forEach(block => {
+                            block.querySelectorAll('.entrance-block').forEach(eb => {
+                                const fileInput = eb.querySelector('.entrance-file-input');
+                                if (fileInput && fileInput.files[0]) {
+                                    const formData = new FormData();
+                                    formData.append('entranceId', entranceIndex + 1); // Временный ID, после создания секций нужно будет получить реальный
+                                    formData.append('file', fileInput.files[0]);
+                                    // В реальности нужно сначала создать секции, получить их ID, потом загружать файлы
+                                    // Это упрощённая версия — показываем сообщение
+                                }
+                                entranceIndex++;
+                            });
+                        });
+                        showToast('✅ ЖК создан! Файлы квартир нужно загрузить отдельно через кнопку "Загрузить квартиры"');
+                        closeModal();
+                        refreshData();
+                    })
+                    .catch(err => {
+                        showToast('❌ ' + err.message, 'error');
+                    })
+                    .finally(() => showLoading(false));
+            }
+        },
+
+        // =============================================================
+        // 7.2. КОРПУС
+        // =============================================================
+        building: {
+            title: '🏢 Добавить корпус в ЖК',
+            render: function() {
+                return `
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Выберите ЖК</label>
+                        <select class="form-control" id="buildingComplexSelect">
+                            <option value="">Выберите ЖК</option>
+                            ${cachedComplexes && cachedComplexes.length > 0
+                    ? cachedComplexes.map(c => `<option value="${c.id}">${c.name}</option>`).join('')
+                    : '<option value="">Нет данных</option>'}
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Название корпуса</label>
+                        <input type="text" class="form-control" id="buildingName" placeholder="Корпус 1">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Дата сдачи</label>
+                        <input type="date" class="form-control" id="buildingCompletion" required>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Дата выдачи ключей</label>
+                        <input type="date" class="form-control" id="buildingKeyHandover" required>
+                    </div>
+                    <hr>
+                    <div class="fw-bold">🚪 Секции в этом корпусе</div>
+                    <div id="buildingEntrancesContainer">
+                        <div class="inline-group entrance-row">
+                            <input type="text" class="form-control entrance-name-input" placeholder="Название секции" style="flex:2">
+                            <input type="number" class="form-control entrance-floor-input" placeholder="Макс. этажей" style="width:120px">
+                            <span class="delete-btn" onclick="this.parentElement.remove()">✖</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-info mt-1" onclick="addBuildingEntranceRow()"><i class="bi bi-plus-lg"></i> Добавить секцию</button>
+                `;
+            },
+            submit: function() {
+                const complexId = document.getElementById('buildingComplexSelect').value;
+                const name = document.getElementById('buildingName').value.trim();
+                const completion = document.getElementById('buildingCompletion').value;
+                const handover = document.getElementById('buildingKeyHandover').value;
+                if (!complexId || !name || !completion || !handover) {
+                    showToast('Заполните все поля', 'error');
+                    return;
+                }
+
+                const entranceNames = [], entranceFloors = [];
+                document.querySelectorAll('#buildingEntrancesContainer .entrance-row').forEach(row => {
+                    const eName = row.querySelector('.entrance-name-input').value.trim();
+                    const eFloor = row.querySelector('.entrance-floor-input').value;
+                    if (eName && eFloor) {
+                        entranceNames.push(eName);
+                        entranceFloors.push(parseInt(eFloor));
+                    }
+                });
+
+                const params = new URLSearchParams();
+                params.append('name', name);
+                params.append('residentialComplexId', complexId);
+                params.append('completionDate', completion);
+                params.append('keyHandoverDate', handover);
+                entranceNames.forEach(n => params.append('entranceNames', n));
+                entranceFloors.forEach(f => params.append('entranceMaxFloors', f));
+
+                showLoading(true);
+                fetch(`${API}/building?${params.toString()}`, { method: 'POST' })
+                    .then(res => {
+                        if (!res.ok) throw new Error('Ошибка создания');
+                        return res.json();
+                    })
+                    .then(() => {
+                        showToast('✅ Корпус создан!');
+                        closeModal();
+                        refreshData();
+                    })
+                    .catch(err => {
+                        showToast('❌ ' + err.message, 'error');
+                    })
+                    .finally(() => showLoading(false));
+            }
+        },
+
+        // =============================================================
+        // 7.3. СЕКЦИЯ
+        // =============================================================
+        entrance: {
+            title: '🚪 Добавить секцию в корпус',
+            render: function() {
+                return `
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Выберите ЖК</label>
+                        <select class="form-control" id="entranceComplexSelect" onchange="onEntranceComplexChange(this.value)">
+                            <option value="">Выберите ЖК</option>
+                            ${cachedComplexes && cachedComplexes.length > 0
+                    ? cachedComplexes.map(c => `<option value="${c.id}">${c.name}</option>`).join('')
+                    : '<option value="">Нет данных</option>'}
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Выберите корпус</label>
+                        <select class="form-control" id="entranceBuildingSelect">
+                            <option value="">Сначала выберите ЖК</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Название секции</label>
+                        <input type="text" class="form-control" id="entranceName" placeholder="Секция 1">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Максимальное количество этажей</label>
+                        <input type="number" class="form-control" id="entranceMaxFloors" placeholder="25">
+                    </div>
+                `;
+            },
+            submit: function() {
+                const buildingId = document.getElementById('entranceBuildingSelect').value;
+                const name = document.getElementById('entranceName').value.trim();
+                const maxFloors = document.getElementById('entranceMaxFloors').value;
+                if (!buildingId || !name || !maxFloors) {
+                    showToast('Заполните все поля', 'error');
+                    return;
+                }
+                const params = new URLSearchParams({ name, buildingId, maxFloors });
+
+                showLoading(true);
+                fetch(`${API}/entrance?${params.toString()}`, { method: 'POST' })
+                    .then(res => {
+                        if (!res.ok) throw new Error('Ошибка создания');
+                        return res.json();
+                    })
+                    .then(() => {
+                        showToast('✅ Секция создана!');
+                        closeModal();
+                        refreshData();
+                    })
+                    .catch(err => {
+                        showToast('❌ ' + err.message, 'error');
+                    })
+                    .finally(() => showLoading(false));
+            }
+        },
+
+        // =============================================================
+        // 7.4. ИМПОРТ КВАРТИР
+        // =============================================================
+        import: {
+            title: '📊 Загрузить квартиры из Excel',
+            render: function() {
+                return `
+            <div class="mb-2">
+                <label class="form-label fw-bold">Выберите ЖК</label>
+                <select class="form-control" id="importComplexSelect" onchange="onImportComplexChange(this.value)">
+                    <option value="">Выберите ЖК</option>
+                    ${cachedComplexes && cachedComplexes.length > 0
+                    ? cachedComplexes.map(c => `<option value="${c.id}">${c.name}</option>`).join('')
+                    : '<option value="">Нет данных</option>'}
+                </select>
+            </div>
+            <div class="mb-2">
+                <label class="form-label fw-bold">Выберите корпус</label>
+                <select class="form-control" id="importBuildingSelect" onchange="onImportBuildingChange(this.value)">
+                    <option value="">Сначала выберите ЖК</option>
+                </select>
+            </div>
+            <div class="mb-2">
+                <label class="form-label fw-bold">Выберите секцию</label>
+                <select class="form-control" id="importEntranceSelect">
+                    <option value="">Сначала выберите корпус</option>
+                </select>
+            </div>
+            <div class="mb-2">
+                <label class="form-label fw-bold">Excel файл (.xlsx)</label>
+                <input type="file" class="form-control" id="importFile" accept=".xlsx">
+            </div>
+        `;
+            },
+            submit: function() {
+                const entranceId = document.getElementById('importEntranceSelect').value;
+                const fileInput = document.getElementById('importFile');
+
+                console.log('entranceId:', entranceId);
+                console.log('file:', fileInput.files[0]);
+
+                if (!entranceId || isNaN(parseInt(entranceId))) {
+                    showToast('Выберите секцию', 'error');
+                    return;
+                }
+
+                if (!fileInput.files[0]) {
+                    showToast('Выберите файл', 'error');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('entranceId', entranceId);
+                formData.append('file', fileInput.files[0]);
+
+                showLoading(true);
+                fetch(`${API}/import-apartments`, {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(res => {
+                        if (!res.ok) {
+                            return res.text().then(text => { throw new Error(text); });
+                        }
+                        return res.text();
+                    })
+                    .then(msg => {
+                        showToast('✅ ' + msg);
+                        closeModal();
+                        refreshData();
+                    })
+                    .catch(err => {
+                        console.error('❌ Ошибка:', err);
+                        showToast('❌ ' + err.message, 'error');
+                    })
+                    .finally(() => showLoading(false));
+            }
+        },
+
+        // =============================================================
+        // 7.5. ЗАСТРОЙЩИК
+        // =============================================================
+        developer: {
+            title: '🏗️ Создать застройщика',
+            render: function() { return `<input type="text" class="form-control" id="devName" placeholder="Название компании">`; },
+            submit: function() {
+                const name = document.getElementById('devName').value.trim();
+                if (!name) { showToast('Введите название', 'error'); return; }
+                showLoading(true);
+                fetch(`${API}/developer?name=${encodeURIComponent(name)}`, { method: 'POST' })
+                    .then(res => res.json())
+                    .then(() => { showToast('✅ Застройщик создан'); closeModal(); refreshData(); })
+                    .catch(err => showToast('❌ ' + err.message, 'error'))
+                    .finally(() => showLoading(false));
+            }
+        },
+
+        // =============================================================
+        // 7.6. ЛОКАЦИЯ
+        // =============================================================
+        location: {
+            title: '🌍 Создать локацию (город/регион)',
+            render: function() { return `<input type="text" class="form-control" id="locName" placeholder="Санкт-Петербург">`; },
+            submit: function() {
+                const name = document.getElementById('locName').value.trim();
+                if (!name) { showToast('Введите название', 'error'); return; }
+                showLoading(true);
+                fetch(`${API}/location?name=${encodeURIComponent(name)}`, { method: 'POST' })
+                    .then(res => res.json())
+                    .then(() => { showToast('✅ Локация создана'); closeModal(); refreshData(); })
+                    .catch(err => showToast('❌ ' + err.message, 'error'))
+                    .finally(() => showLoading(false));
+            }
+        },
+
+        // =============================================================
+        // 7.7. РАЙОН
+        // =============================================================
+        district: {
+            title: '🗺️ Создать район',
+            render: function() {
+                return `
+                    <input type="text" class="form-control" id="distName" placeholder="Название района (например, Приморский)">
+                    <select class="form-control mt-2" id="distLocation">
+                        <option value="">Выберите локацию</option>
+                        ${cachedLocations && cachedLocations.length > 0
+                    ? cachedLocations.map(l => `<option value="${l.id}">${l.name}</option>`).join('')
+                    : '<option value="">Нет данных</option>'}
+                    </select>
+                `;
+            },
+            submit: function() {
+                const name = document.getElementById('distName').value.trim();
+                const locationId = document.getElementById('distLocation').value;
+                if (!name || !locationId) { showToast('Заполните все поля', 'error'); return; }
+                const params = new URLSearchParams({ name, locationId });
+                showLoading(true);
+                fetch(`${API}/district?${params.toString()}`, { method: 'POST' })
+                    .then(res => res.json())
+                    .then(() => { showToast('✅ Район создан'); closeModal(); refreshData(); })
+                    .catch(err => showToast('❌ ' + err.message, 'error'))
+                    .finally(() => showLoading(false));
+            }
+        },
+        // =============================================================
+// 7.8. ЭКСПОРТ КВАРТИР
+// =============================================================
+        export: {
+            title: '📥 Скачать квартиры (Excel)',
+            render: function() {
+                return `
+            <div class="mb-2">
+                <label class="form-label fw-bold">Выберите ЖК</label>
+                <select class="form-control" id="exportComplexSelect" onchange="onExportComplexChange(this.value)">
+                    <option value="">Выберите ЖК</option>
+                    ${cachedComplexes && cachedComplexes.length > 0
+                    ? cachedComplexes.map(c => `<option value="${c.id}">${c.name}</option>`).join('')
+                    : '<option value="">Нет данных</option>'}
+                </select>
+            </div>
+            <div class="mb-2">
+                <label class="form-label fw-bold">Выберите корпус</label>
+                <select class="form-control" id="exportBuildingSelect" onchange="onExportBuildingChange(this.value)">
+                    <option value="">Сначала выберите ЖК</option>
+                </select>
+            </div>
+            <div class="mb-2">
+                <label class="form-label fw-bold">Выберите секцию</label>
+                <select class="form-control" id="exportEntranceSelect">
+                    <option value="">Сначала выберите корпус</option>
+                </select>
+            </div>
+        `;
+            },
+            submit: function() {
+                const entranceId = document.getElementById('exportEntranceSelect').value;
+
+                if (!entranceId) {
+                    showToast('Выберите секцию', 'error');
+                    return;
+                }
+
+                // Открываем ссылку для скачивания
+                window.location.href = `${API}/apartments/${entranceId}`;
+                closeModal();
+                showToast('✅ Начинается скачивание...', 'success');
+            }
+        }
+    };
+
+    // =============================================================
+    // 8. ДИНАМИЧЕСКИЕ БЛОКИ
+    // =============================================================
+
+    function addMetroRow() {
+        const container = document.getElementById('metroContainer');
+        const options = cachedMetro && cachedMetro.length > 0
+            ? cachedMetro.map(m => `<option value="${m.id}">${m.name}</option>`).join('')
+            : '<option value="">Нет данных</option>';
+        const html = `
+            <div class="inline-group metro-row mt-1">
+                <select class="form-control metro-station-select"><option value="">Станция</option>${options}</select>
+                <input type="number" class="form-control metro-distance-input" placeholder="Расстояние (м)" style="width:120px">
+                <span class="delete-btn" onclick="this.parentElement.remove()">✖</span>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+    }
+
+    function addBuildingRow() {
+        const container = document.getElementById('buildingsContainer');
+        const html = `
+            <div class="sub-block building-block">
+                <div class="d-flex justify-content-between">
+                    <span class="sub-header">🏢 Корпус</span>
+                    <span class="delete-btn" onclick="this.closest('.building-block').remove()">✖</span>
+                </div>
+                <input type="text" class="form-control building-name-input" placeholder="Название корпуса">
+                <div class="row">
+                    <div class="col-6">
+                        <label class="form-label small">Дата сдачи</label>
+                        <input type="date" class="form-control building-completion-input" required>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small">Дата выдачи ключей</label>
+                        <input type="date" class="form-control building-handover-input" required>
+                    </div>
+                </div>
+                <div class="entrances-container mt-2">
+                    <div class="fw-bold small">🚪 Секции</div>
+                    <div id="entranceTemplate" class="entrance-block inline-group">
+                        <input type="text" class="form-control entrance-name-input" placeholder="Название секции" style="flex:2">
+                        <input type="number" class="form-control entrance-floor-input" placeholder="Макс. этажей" style="width:120px">
+                        <input type="file" class="form-control entrance-file-input" accept=".xlsx" style="width:150px">
+                        <span class="delete-btn" onclick="this.parentElement.remove()">✖</span>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-info mt-1" onclick="addEntranceRow(this)"><i class="bi bi-plus-lg"></i> Добавить секцию</button>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+    }
+
+    function addBuildingEntranceRow() {
+        const container = document.getElementById('buildingEntrancesContainer');
+        const html = `
+            <div class="inline-group entrance-row mt-1">
+                <input type="text" class="form-control entrance-name-input" placeholder="Название секции" style="flex:2">
+                <input type="number" class="form-control entrance-floor-input" placeholder="Макс. этажей" style="width:120px">
+                <span class="delete-btn" onclick="this.parentElement.remove()">✖</span>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+    }
+
+    function addEntranceRow(btn) {
+        const container = btn.closest('.building-block').querySelector('.entrances-container');
+        const html = `
+            <div class="entrance-block inline-group mt-1">
+                <input type="text" class="form-control entrance-name-input" placeholder="Название секции" style="flex:2">
+                <input type="number" class="form-control entrance-floor-input" placeholder="Макс. этажей" style="width:120px">
+                <input type="file" class="form-control entrance-file-input" accept=".xlsx" style="width:150px">
+                <span class="delete-btn" onclick="this.parentElement.remove()">✖</span>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+    }
+
+    // =============================================================
+    // 9. ЗАКРЫТИЕ МОДАЛКИ ПО ESC
+    // =============================================================
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeModal();
+    });
+
+    // =============================================================
+    // 10. ЗАПУСК
+    // =============================================================
+    loadAllData();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <!-- ========================================================= -->
+    <!-- СВЯЗЬ 1: District → Location                              -->
+    <!-- ========================================================= -->
+    <!-- Район ссылается на локацию. Один Location может          -->
+    <!-- содержать много District.                                 -->
+    <changeSet id="07-add-fk-district-location" author="bunaev">
+        <addForeignKeyConstraint
+                constraintName="fk_district_location"
+                baseTableName="district"
+                baseColumnNames="location_id"
+                referencedTableName="location"
+                referencedColumnNames="id"/>
+        <rollback>
+            <dropForeignKeyConstraint
+                    baseTableName="district"
+                    constraintName="fk_district_location"/>
+        </rollback>
+    </changeSet>
+
+    <!-- ========================================================= -->
+    <!-- СВЯЗЬ 2: ResidentialComplex → District                    -->
+    <!-- ========================================================= -->
+    <!-- ЖК ссылается на район. Один District может содержать     -->
+    <!-- много ЖК.                                                 -->
+    <changeSet id="08-add-fk-rc-district" author="bunaev">
+        <addForeignKeyConstraint
+                constraintName="fk_rc_district"
+                baseTableName="residential_complex"
+                baseColumnNames="district_id"
+                referencedTableName="district"
+                referencedColumnNames="id"/>
+        <rollback>
+            <dropForeignKeyConstraint
+                    baseTableName="residential_complex"
+                    constraintName="fk_rc_district"/>
+        </rollback>
+    </changeSet>
+
+    <!-- ========================================================= -->
+    <!-- СВЯЗЬ 3: ResidentialComplex → Developer                   -->
+    <!-- ========================================================= -->
+    <!-- ЖК ссылается на застройщика. Один Developer может        -->
+    <!-- построить много ЖК.                                       -->
+    <changeSet id="09-add-fk-rc-developer" author="bunaev">
+        <addForeignKeyConstraint
+                constraintName="fk_rc_developer"
+                baseTableName="residential_complex"
+                baseColumnNames="developer_id"
+                referencedTableName="developer"
+                referencedColumnNames="id"/>
+        <rollback>
+            <dropForeignKeyConstraint
+                    baseTableName="residential_complex"
+                    constraintName="fk_rc_developer"/>
+        </rollback>
+    </changeSet>
+
+    <!-- ========================================================= -->
+    <!-- СВЯЗЬ 4: ComplexMetroDistance → ResidentialComplex       -->
+    <!-- ========================================================= -->
+    <!-- Связка ссылается на ЖК. Один ЖК может иметь много        -->
+    <!-- записей в этой таблице (разные станции метро).           -->
+    <changeSet id="10-add-fk-cmd-rc" author="bunaev">
+        <addForeignKeyConstraint
+                constraintName="fk_cmd_residential_complex"
+                baseTableName="complex_metro_distance"
+                baseColumnNames="residential_complex_id"
+                referencedTableName="residential_complex"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/> <!-- Если ЖК удален, его связи с метро тоже удаляются -->
+        <rollback>
+            <dropForeignKeyConstraint
+                    baseTableName="complex_metro_distance"
+                    constraintName="fk_cmd_residential_complex"/>
+        </rollback>
+    </changeSet>
+
+    <!-- ========================================================= -->
+    <!-- СВЯЗЬ 5: ComplexMetroDistance → MetroStation             -->
+    <!-- ========================================================= -->
+    <!-- Связка ссылается на станцию метро. Одна станция может    -->
+    <!-- быть связана с разными ЖК.                               -->
+    <changeSet id="11-add-fk-cmd-ms" author="bunaev">
+        <addForeignKeyConstraint
+                constraintName="fk_cmd_metro_station"
+                baseTableName="complex_metro_distance"
+                baseColumnNames="metro_station_id"
+                referencedTableName="metro_station"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+        <rollback>
+            <dropForeignKeyConstraint
+                    baseTableName="complex_metro_distance"
+                    constraintName="fk_cmd_metro_station"/>
+        </rollback>
+    </changeSet>
+    <!-- ========================================================= -->
+    <!-- СВЯЗЬ 6: Building → ResidentialComplex                   -->
+    <!-- ========================================================= -->
+    <changeSet id="12-add-fk-building-rc" author="bunaev">
+        <addForeignKeyConstraint
+                constraintName="fk_building_rc"
+                baseTableName="building"
+                baseColumnNames="residential_complex_id"
+                referencedTableName="residential_complex"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+        <rollback>
+            <dropForeignKeyConstraint
+                    baseTableName="building"
+                    constraintName="fk_building_rc"/>
+        </rollback>
+    </changeSet>
+
+    <!-- ========================================================= -->
+    <!-- СВЯЗЬ 7: Entrance → Building                             -->
+    <!-- ========================================================= -->
+    <changeSet id="13-add-fk-entrance-building" author="bunaev">
+        <addForeignKeyConstraint
+                constraintName="fk_entrance_building"
+                baseTableName="entrance"
+                baseColumnNames="building_id"
+                referencedTableName="building"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+        <rollback>
+            <dropForeignKeyConstraint
+                    baseTableName="entrance"
+                    constraintName="fk_entrance_building"/>
+        </rollback>
+    </changeSet>
+
+    <!-- ========================================================= -->
+    <!-- СВЯЗЬ 8: Apartment → Entrance                            -->
+    <!-- ========================================================= -->
+    <changeSet id="14-add-fk-apartment-entrance" author="bunaev">
+        <addForeignKeyConstraint
+                constraintName="fk_apartment_entrance"
+                baseTableName="apartment"
+                baseColumnNames="entrance_id"
+                referencedTableName="entrance"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+        <rollback>
+            <dropForeignKeyConstraint
+                    baseTableName="apartment"
+                    constraintName="fk_apartment_entrance"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
