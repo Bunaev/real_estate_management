@@ -1,46 +1,99 @@
 package com.search_service.model.services;
 
 import com.search_service.model.entityes.*;
-import com.search_service.model.entityes.dto.MetroDistanceDto;
-import com.search_service.model.repo.DeveloperRepo;
-import com.search_service.model.repo.DistrictRepo;
-import com.search_service.model.repo.MetroStationRepo;
-import com.search_service.model.repo.ResidentialComplexRepo;
+import com.search_service.model.entityes.dto.ResidentialComplexMapper;
+import com.search_service.model.entityes.dto.ResidentialComplexOutMapper;
+import com.search_service.model.entityes.dto.in.ResidentialComplexDTO;
+import com.search_service.model.entityes.dto.out.ResidentialComplexOutDTO;
+import com.search_service.model.entityes.dto.out.ResidentialComplexShortDTO;
+import com.search_service.model.repo.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ResidentialComplexService {
     private final ResidentialComplexRepo complexRepo;
+    private final BuildingRepo buildingRepo;
+    private final EntranceRepo entranceRepo;
+    private final MetroDistanceRepo metroDistanceRepo;
     private final DistrictRepo districtRepo;
     private final DeveloperRepo developerRepo;
     private final MetroStationRepo metroRepo;
+    private final ResidentialComplexMapper mapper;
+    private final ResidentialComplexOutMapper outMapper;
 
     @Transactional
-    public ResidentialComplex create(String name, String address, Long districtId, Long developerId, List<MetroDistanceDto> metroDistances) {
-        District district = districtRepo.findById(districtId).orElseThrow(() -> new RuntimeException("Района с id: " + districtId + " в базе не существует."));
-        Developer developer = developerRepo.findById(developerId).orElseThrow(() -> new RuntimeException("Застройщика с id: " + developerId + " в базе не существует."));
-        ResidentialComplex residentialComplex = ResidentialComplex.builder().name(name).address(address).district(district).developer(developer).build();
-        if (residentialComplex.getMetroDistances() == null) {
-            residentialComplex.setMetroDistances(new ArrayList());
+    public ResidentialComplexShortDTO create(ResidentialComplexDTO dto) {
+        ResidentialComplex complex = mapper.toEntity(dto);
+
+        District district = districtRepo.findById(dto.getDistrictId())
+                .orElseThrow(() -> new RuntimeException("Район не найден"));
+        Developer developer = developerRepo.findById(dto.getDeveloperId())
+                .orElseThrow(() -> new RuntimeException("Застройщик не найден"));
+
+        complex.setDistrict(district);
+        complex.setDeveloper(developer);
+
+        complex = complexRepo.save(complex);
+
+        if (dto.getMetroStations() != null) {
+            List<ComplexMetroDistance> metroDistances = new ArrayList<>();
+            for (var metroDto : dto.getMetroStations()) {
+                MetroStation station = metroRepo.findById(metroDto.getMetroStationId())
+                        .orElseThrow(() -> new RuntimeException("Станция метро не найдена"));
+
+                ComplexMetroDistance metroDistance = ComplexMetroDistance.builder()
+                        .residentialComplex(complex)
+                        .metroStation(station)
+                        .distance(metroDto.getDistance())
+                        .build();
+                metroDistances.add(metroDistance);
+            }
+            metroDistanceRepo.saveAll(metroDistances);
         }
 
-        for (MetroDistanceDto dto : metroDistances) {
-            MetroStation metroStation = metroRepo.findById(dto.getMetroStationId()).orElseThrow(() -> new RuntimeException("Станции метро c id: " + dto.getMetroStationId() + " в базе не существует."));
-            ComplexMetroDistance complexMetroDistance = ComplexMetroDistance.builder().metroStation(metroStation).residentialComplex(residentialComplex).distance(dto.getDistance()).build();
-            residentialComplex.getMetroDistances().add(complexMetroDistance);
-        }
+        if (dto.getBuildings() != null) {
+            for (var buildingDto : dto.getBuildings()) {
+                Building building = Building.builder()
+                        .name(buildingDto.getName())
+                        .residentialComplex(complex)
+                        .completionDate(buildingDto.getCompletionDate())
+                        .keyHandoverDate(buildingDto.getKeyHandoverDate())
+                        .build();
+                building = buildingRepo.save(building);
 
-        return complexRepo.save(residentialComplex);
+                if (buildingDto.getEntrances() != null) {
+                    List<Entrance> entrances = new ArrayList<>();
+                    for (var entranceDto : buildingDto.getEntrances()) {
+                        Entrance entrance = Entrance.builder()
+                                .name(entranceDto.getName())
+                                .building(building)
+                                .maxFloors(entranceDto.getMaxFloor())
+                                .build();
+                        entrances.add(entrance);
+                    }
+                    entranceRepo.saveAll(entrances);
+                }
+            }
+        }
+        return outMapper.toShortDto(complexRepo.findById(complex.getId()).orElseThrow());
     }
 
-    public List<ResidentialComplex> findAll() {
-        return complexRepo.findAll();
+    /*
+     * ToDo:
+     * Переписать логику получения Entity, для оптимизации запросов БД
+     */
+
+    public List<ResidentialComplexOutDTO> findAll() {
+        return complexRepo.findAll().stream()
+                .map(outMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     public void delete(Long id) {

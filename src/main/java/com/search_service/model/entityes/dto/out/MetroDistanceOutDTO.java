@@ -1,4 +1,4 @@
-package com.search_service.model.entityes.dto;
+package com.search_service.model.entityes.dto.out;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,12 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class MetroDistanceDto {
-    private Long metroStationId;
+@AllArgsConstructor
+public class MetroDistanceOutDTO {
+    private String stationName;
     private Integer distance;
-
 }
-

@@ -53,6 +53,69 @@
         .btn-sm-file { font-size: 12px; padding: 2px 8px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
         .btn-sm-file:hover { background: #1e7e34; }
         .file-input-hidden { display: none; }
+        .complex-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .complex-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            border-color: #0f3460;
+            transform: translateY(-2px);
+        }
+        .complex-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        .complex-title h5 {
+            color: #1a1a2e;
+            font-weight: 600;
+        }
+        .complex-title small {
+            display: block;
+            font-size: 13px;
+        }
+        .complex-stats {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 12px;
+        }
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+        .stat-item i {
+            color: #0f3460;
+            font-size: 18px;
+        }
+        .stat-item span {
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        .stat-item small {
+            color: #6c757d;
+            font-size: 12px;
+        }
+        .complex-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .complex-meta .badge {
+            font-weight: 400;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
@@ -95,7 +158,7 @@
             <div id="modalFields"></div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" onclick="closeModal()">Отмена</button>
-                <button type="button" class="btn btn-primary" onclick="submitCreate()">Создать</button>
+                <button type="button" class="btn btn-primary" id="modalSubmitBtn" onclick="submitCreate()">Создать</button>
             </div>
         </form>
     </div>
@@ -127,6 +190,47 @@
     let cachedComplexes = [];
     let cachedBuildings = {};
 
+    // =============================================================
+    // 3. ФУНКЦИИ МОДАЛОК (ДОЛЖНЫ БЫТЬ ОПРЕДЕЛЕНЫ РАНЬШЕ)
+    // =============================================================
+    function closeModal() {
+        document.getElementById('createModal').style.display = 'none';
+    }
+
+    function submitCreate() {
+        const type = document.getElementById('createForm').dataset.type;
+        if (modalConfigs[type] && typeof modalConfigs[type].submit === 'function') {
+            modalConfigs[type].submit();
+        } else {
+            showToast('Ошибка: не найден обработчик для ' + type, 'error');
+        }
+    }
+
+    function showModal(type) {
+        const config = modalConfigs[type];
+        if (!config) {
+            showToast('Ошибка: неизвестный тип модалки', 'error');
+            return;
+        }
+        document.getElementById('modalTitle').textContent = config.title;
+        document.getElementById('createForm').dataset.type = type;
+        document.getElementById('modalFields').innerHTML = config.render();
+        document.getElementById('createModal').style.display = 'flex';
+
+        // Меняем текст кнопки
+        const submitBtn = document.getElementById('modalSubmitBtn');
+        const buttonTexts = {
+            'complex': 'Создать',
+            'building': 'Создать',
+            'entrance': 'Создать',
+            'import': 'Загрузить',
+            'export': 'Скачать',
+            'developer': 'Создать',
+            'location': 'Создать',
+            'district': 'Создать'
+        };
+        submitBtn.textContent = buttonTexts[type] || 'Создать';
+    }
     // =============================================================
     // 3. ЗАГРУЗКА ДАННЫХ
     // =============================================================
@@ -167,33 +271,74 @@
     function renderComplexes() {
         const container = document.getElementById('complexesList');
         const badge = document.getElementById('countBadge');
+
         if (!cachedComplexes || cachedComplexes.length === 0) {
-            container.innerHTML = '<div class="text-center py-4 text-muted">Нет ЖК. Создайте первый!</div>';
+            container.innerHTML = `
+            <div class="text-center py-5">
+                <i class="bi bi-building" style="font-size: 48px; color: #dee2e6;"></i>
+                <p class="text-muted mt-3">Нет ЖК. Создайте первый!</p>
+                <button class="btn btn-primary btn-sm" onclick="showModal('complex')">
+                    <i class="bi bi-plus-lg"></i> Создать ЖК
+                </button>
+            </div>
+        `;
             badge.textContent = '0 ЖК';
             return;
         }
+
         badge.textContent = cachedComplexes.length + ' ЖК';
         let html = '';
+
         cachedComplexes.forEach(item => {
             html += `
-                <div class="complex-item">
-                    <div>
-                        <strong>${item.name || 'Без названия'}</strong>
-                        <span class="text-muted ms-2">${item.address || ''}</span><br>
-                        <small class="text-muted">🏗️ ${item.developer?.name || '—'} • 🏘️ ${item.district?.name || '—'}</small>
-                        <span class="badge-count ms-2">${item.buildings?.length || 0} корпусов</span>
+            <div class="complex-card" onclick="navigateToComplex(${item.id})">
+                <div class="complex-header">
+                    <div class="complex-title">
+                        <h5 class="mb-0">${item.name || 'Без названия'}</h5>
+                        <small class="text-muted">${item.address || ''}</small>
                     </div>
-                    <button class="btn btn-sm btn-danger" onclick="deleteComplex(${item.id})"><i class="bi bi-trash"></i></button>
+                    <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); deleteComplex(${item.id})">
+                        <i class="bi bi-trash"></i>
+                    </button>
                 </div>
-            `;
+                <div class="complex-stats">
+                    <div class="stat-item">
+                        <i class="bi bi-building"></i>
+                        <span>${item.countBuildings || 0}</span>
+                        <small>корпусов</small>
+                    </div>
+                    <div class="stat-item">
+                        <i class="bi bi-door-open"></i>
+                        <span>${item.countEntrance || 0}</span>
+                        <small>секций</small>
+                    </div>
+                    <div class="stat-item">
+                        <i class="bi bi-house"></i>
+                        <span>${item.countApartment || 0}</span>
+                        <small>квартир</small>
+                    </div>
+                </div>
+                <div class="complex-meta">
+                    <span class="badge bg-light text-dark">🏗️ ${item.developer || '—'}</span>
+                    <span class="badge bg-light text-dark">📍 ${item.location || '—'}</span>
+                    <span class="badge bg-light text-dark">🏘️ ${item.district || '—'}</span>
+                </div>
+            </div>
+        `;
         });
+
         container.innerHTML = html;
+    }
+
+    function navigateToComplex(id) {
+        // Пока просто показываем toast, потом будет переход на детальную страницу
+        showToast(`📋 Переход к ЖК #${id} (скоро будет реализовано)`, 'success');
     }
 
     async function deleteComplex(id) {
         if (!confirm('Удалить ЖК и все связанные данные?')) return;
         try {
-            const res = await fetch(`${API}/complex/${id}`, { method: 'DELETE' });
+            const res = await fetch(`${API}/complexes/${id}`, { method: 'DELETE' });
             if (!res.ok) throw new Error('Ошибка удаления');
             showToast('✅ ЖК удалён');
             await refreshData();
@@ -395,15 +540,20 @@
         document.getElementById('createForm').dataset.type = type;
         document.getElementById('modalFields').innerHTML = config.render();
         document.getElementById('createModal').style.display = 'flex';
-    }
 
-    function closeModal() {
-        document.getElementById('createModal').style.display = 'none';
-    }
-
-    function submitCreate() {
-        const type = document.getElementById('createForm').dataset.type;
-        modalConfigs[type].submit();
+        // Меняем текст кнопки в зависимости от типа
+        const submitBtn = document.getElementById('modalSubmitBtn');
+        const buttonTexts = {
+            'complex': 'Создать',
+            'building': 'Создать',
+            'entrance': 'Создать',
+            'import': 'Загрузить',
+            'export': 'Скачать',
+            'developer': 'Создать',
+            'location': 'Создать',
+            'district': 'Создать'
+        };
+        submitBtn.textContent = buttonTexts[type] || 'Создать';
     }
 
     // =============================================================
@@ -474,104 +624,92 @@
                 `;
             },
             submit: function() {
-                const name = document.getElementById('complexName').value.trim();
-                const address = document.getElementById('complexAddress').value.trim();
-                const districtId = document.getElementById('complexDistrict').value;
-                const developerId = document.getElementById('complexDeveloper').value;
-                if (!name || !address || !districtId || !developerId) {
+                // Собираем данные в DTO
+                const dto = {
+                    name: document.getElementById('complexName').value.trim(),
+                    address: document.getElementById('complexAddress').value.trim(),
+                    districtId: parseInt(document.getElementById('complexDistrict').value),
+                    developerId: parseInt(document.getElementById('complexDeveloper').value),
+                    metroStations: [],
+                    buildings: []
+                };
+
+                // Валидация
+                if (!dto.name || !dto.address || !dto.districtId || !dto.developerId) {
                     showToast('Заполните все основные поля', 'error');
                     return;
                 }
 
-                const metroIds = [], metroDists = [];
+                // Собираем метро
                 document.querySelectorAll('.metro-row').forEach(row => {
                     const sel = row.querySelector('.metro-station-select');
                     const dist = row.querySelector('.metro-distance-input');
-                    if (sel.value) {
-                        metroIds.push(sel.value);
-                        metroDists.push(dist.value || 0);
+                    if (sel.value && dist.value) {
+                        dto.metroStations.push({
+                            metroStationId: parseInt(sel.value),
+                            distance: parseInt(dist.value)
+                        });
                     }
                 });
 
-                const buildingNames = [], entranceNamesPerBuilding = [], entranceFloorsPerBuilding = [];
-                const completionDates = [], keyHandoverDates = [];
-                const apartmentFiles = []; // Для хранения файлов по секциям
-
+                // Собираем корпуса
+                let hasError = false;
                 document.querySelectorAll('.building-block').forEach(block => {
                     const bName = block.querySelector('.building-name-input').value.trim();
                     const completion = block.querySelector('.building-completion-input').value;
                     const handover = block.querySelector('.building-handover-input').value;
+
                     if (!bName || !completion || !handover) {
-                        showToast('Заполните даты сдачи и выдачи ключей для всех корпусов', 'error');
+                        showToast('Заполните даты для всех корпусов', 'error');
+                        hasError = true;
                         return;
                     }
-                    buildingNames.push(bName);
-                    completionDates.push(completion);
-                    keyHandoverDates.push(handover);
 
-                    const entrances = [], floors = [];
-                    const files = [];
+                    const building = {
+                        name: bName,
+                        completionDate: completion,
+                        keyHandoverDate: handover,
+                        entrances: []
+                    };
+
                     block.querySelectorAll('.entrance-block').forEach(eb => {
                         const eName = eb.querySelector('.entrance-name-input').value.trim();
                         const eFloor = eb.querySelector('.entrance-floor-input').value;
-                        const fileInput = eb.querySelector('.entrance-file-input');
                         if (eName && eFloor) {
-                            entrances.push(eName);
-                            floors.push(parseInt(eFloor));
-                            if (fileInput && fileInput.files[0]) {
-                                files.push(fileInput.files[0]);
-                            } else {
-                                files.push(null);
-                            }
+                            building.entrances.push({
+                                name: eName,
+                                maxFloor: parseInt(eFloor)
+                            });
                         }
                     });
-                    entranceNamesPerBuilding.push(entrances);
-                    entranceFloorsPerBuilding.push(floors);
-                    apartmentFiles.push(files);
+
+                    dto.buildings.push(building);
                 });
 
-                // Сначала создаём ЖК с метро и корпусами (без файлов)
-                const params = new URLSearchParams();
-                params.append('name', name);
-                params.append('address', address);
-                params.append('districtId', districtId);
-                params.append('developerId', developerId);
-                metroIds.forEach(id => params.append('metroStationIds', id));
-                metroDists.forEach(d => params.append('metroDistances', d));
-                buildingNames.forEach(n => params.append('buildingNames', n));
-                entranceNamesPerBuilding.forEach(list => list.forEach(e => params.append('entranceNamesPerBuilding', e)));
-                entranceFloorsPerBuilding.forEach(list => list.forEach(e => params.append('entranceMaxFloorsPerBuilding', e)));
-                completionDates.forEach(d => params.append('completionDates', d));
-                keyHandoverDates.forEach(d => params.append('keyHandoverDates', d));
+                if (hasError) return;
 
+                // Отправляем JSON
                 showLoading(true);
-                fetch(`${API}/complex?${params.toString()}`, { method: 'POST' })
+                fetch('/api/complexes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dto)
+                })
                     .then(res => {
-                        if (!res.ok) throw new Error('Ошибка создания');
+                        if (!res.ok) {
+                            return res.text().then(text => { throw new Error(text); });
+                        }
                         return res.json();
                     })
-                    .then(createdRc => {
-                        // После создания ЖК загружаем файлы для каждой секции
-                        const uploadPromises = [];
-                        let entranceIndex = 0;
-                        document.querySelectorAll('.building-block').forEach(block => {
-                            block.querySelectorAll('.entrance-block').forEach(eb => {
-                                const fileInput = eb.querySelector('.entrance-file-input');
-                                if (fileInput && fileInput.files[0]) {
-                                    const formData = new FormData();
-                                    formData.append('entranceId', entranceIndex + 1); // Временный ID, после создания секций нужно будет получить реальный
-                                    formData.append('file', fileInput.files[0]);
-                                    // В реальности нужно сначала создать секции, получить их ID, потом загружать файлы
-                                    // Это упрощённая версия — показываем сообщение
-                                }
-                                entranceIndex++;
-                            });
-                        });
-                        showToast('✅ ЖК создан! Файлы квартир нужно загрузить отдельно через кнопку "Загрузить квартиры"');
+                    .then(() => {
+                        showToast('✅ ЖК создан!', 'success');
                         closeModal();
                         refreshData();
                     })
                     .catch(err => {
+                        console.error('❌ Ошибка:', err);
                         showToast('❌ ' + err.message, 'error');
                     })
                     .finally(() => showLoading(false));
@@ -647,7 +785,7 @@
                 entranceFloors.forEach(f => params.append('entranceMaxFloors', f));
 
                 showLoading(true);
-                fetch(`${API}/building?${params.toString()}`, { method: 'POST' })
+                fetch(`${API}/buildings?${params.toString()}`, { method: 'POST' })
                     .then(res => {
                         if (!res.ok) throw new Error('Ошибка создания');
                         return res.json();
@@ -707,7 +845,7 @@
                 const params = new URLSearchParams({ name, buildingId, maxFloors });
 
                 showLoading(true);
-                fetch(`${API}/entrance?${params.toString()}`, { method: 'POST' })
+                fetch(`${API}/entrances?${params.toString()}`, { method: 'POST' })
                     .then(res => {
                         if (!res.ok) throw new Error('Ошибка создания');
                         return res.json();
@@ -813,7 +951,7 @@
                 const name = document.getElementById('devName').value.trim();
                 if (!name) { showToast('Введите название', 'error'); return; }
                 showLoading(true);
-                fetch(`${API}/developer?name=${encodeURIComponent(name)}`, { method: 'POST' })
+                fetch(`${API}/developers?name=${encodeURIComponent(name)}`, { method: 'POST' })
                     .then(res => res.json())
                     .then(() => { showToast('✅ Застройщик создан'); closeModal(); refreshData(); })
                     .catch(err => showToast('❌ ' + err.message, 'error'))
@@ -831,7 +969,7 @@
                 const name = document.getElementById('locName').value.trim();
                 if (!name) { showToast('Введите название', 'error'); return; }
                 showLoading(true);
-                fetch(`${API}/location?name=${encodeURIComponent(name)}`, { method: 'POST' })
+                fetch(`${API}/locations?name=${encodeURIComponent(name)}`, { method: 'POST' })
                     .then(res => res.json())
                     .then(() => { showToast('✅ Локация создана'); closeModal(); refreshData(); })
                     .catch(err => showToast('❌ ' + err.message, 'error'))
@@ -861,7 +999,7 @@
                 if (!name || !locationId) { showToast('Заполните все поля', 'error'); return; }
                 const params = new URLSearchParams({ name, locationId });
                 showLoading(true);
-                fetch(`${API}/district?${params.toString()}`, { method: 'POST' })
+                fetch(`${API}/districts?${params.toString()}`, { method: 'POST' })
                     .then(res => res.json())
                     .then(() => { showToast('✅ Район создан'); closeModal(); refreshData(); })
                     .catch(err => showToast('❌ ' + err.message, 'error'))
@@ -907,7 +1045,7 @@
                 }
 
                 // Открываем ссылку для скачивания
-                window.location.href = `${API}/apartments/${entranceId}`;
+                window.location.href = `${API}/export-apartments/${entranceId}`;
                 closeModal();
                 showToast('✅ Начинается скачивание...', 'success');
             }

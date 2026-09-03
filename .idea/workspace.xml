@@ -4,7 +4,57 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4d945e20-6e3b-4171-9976-4cf9499ba28b" name="Changes" comment="" />
+    <list default="true" id="4d945e20-6e3b-4171-9976-4cf9499ba28b" name="Changes" comment="Initial commit">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/controllers/ApartmentController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/controllers/BuildingController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/controllers/ComplexController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/controllers/DevelopersController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/controllers/DistrictController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/controllers/EntranceController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/controllers/LocationController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/controllers/MetroStationController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/controllers/TransferController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/entityes/dto/BuildingMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/entityes/dto/EntranceMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/entityes/dto/ResidentialComplexMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/entityes/dto/ResidentialComplexOutMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/entityes/dto/in/BuildingDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/entityes/dto/in/EntranceDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/entityes/dto/in/MetroDistanceDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/entityes/dto/in/ResidentialComplexDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/entityes/dto/out/MetroDistanceOutDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/entityes/dto/out/ResidentialComplexOutDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/entityes/dto/out/ResidentialComplexShortDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/repo/MetroDistanceRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/search_service/model/controllers/ApiController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/search_service/model/entityes/dto/ApartmentImportDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/search_service/model/entityes/dto/MetroDistanceDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/search_service/model/services/BuildingService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/services/BuildingService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/search_service/model/services/EntranceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/services/EntranceService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/search_service/model/services/ResidentialComplexService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/search_service/model/services/ResidentialComplexService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/search_service/model/controllers/ApiController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/search_service/model/entityes/dto/ApartmentImportDto$ApartmentImportDtoBuilder.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/search_service/model/entityes/dto/ApartmentImportDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/search_service/model/entityes/dto/MetroDistanceDto$MetroDistanceDtoBuilder.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/search_service/model/entityes/dto/MetroDistanceDto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/search_service/model/exceptions/CreateCellForExcelFileException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/search_service/model/exceptions/ExcelCreateException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/search_service/model/exceptions/FileIsEmptyException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/search_service/model/exceptions/FileReadException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/search_service/model/exceptions/InvalidCellFormat.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/search_service/model/exceptions/InvalidFileFormatException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/search_service/model/exceptions/MethodSearchException.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/search_service/model/services/BuildingService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/search_service/model/services/BuildingService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/search_service/model/services/EntranceService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/search_service/model/services/EntranceService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/search_service/model/services/ResidentialComplexService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/search_service/model/services/ResidentialComplexService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/search_service/model/utils/ExcelUtils$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/search_service/model/utils/ExcelUtils$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/search_service/model/utils/ExcelUtils.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/search_service/model/utils/ExcelUtils.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/search_service/model/utils/cache/LocalCacheContext.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/search_service/model/utils/cache/LocalCacheContext.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/templates/index.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -22,6 +72,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -30,12 +85,12 @@
     &quot;assignee&quot;: &quot;Bunaev&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Bunaev/real_estate_management_demo&quot;,
-    &quot;accountId&quot;: &quot;ea13e3d8-870c-41f1-8837-5c9d3f5c73d6&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Bunaev/real_estate_management",
+    "accountId": "ea13e3d8-870c-41f1-8837-5c9d3f5c73d6"
   }
-}</component>
+}]]></component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -72,7 +127,10 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
     "Spring Boot.SearchServiceApplication.executor": "Run",
+    "git-widget-placeholder": "feature/refactor__controllers",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/bunae/OneDrive/Projects/search_service_demo",
     "nodejs_package_manager_path": "npm",
@@ -135,7 +193,17 @@
       <workItem from="1787690038499" duration="54000" />
       <workItem from="1787690212010" duration="8502000" />
       <workItem from="1787937045490" duration="71000" />
+      <workItem from="1788451396610" duration="10894000" />
     </task>
+    <task id="LOCAL-00001" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1788451555033</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1788451555035</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -157,6 +225,10 @@
     <option featureType="dependencySupport" implementationName="java:org.thymeleaf:thymeleaf" />
     <option featureType="dependencySupport" implementationName="java:org.springframework:spring-messaging" />
     <option featureType="dependencySupport" implementationName="java:org.springframework.boot:spring-boot" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Initial commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial commit" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
