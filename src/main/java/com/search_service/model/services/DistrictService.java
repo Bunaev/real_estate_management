@@ -6,6 +6,7 @@ import com.search_service.model.repo.DistrictRepo;
 import com.search_service.model.repo.LocationRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,15 +16,18 @@ public class DistrictService {
     private final DistrictRepo districtRepo;
     private final LocationRepo locationRepo;
 
+    @Transactional(readOnly = true)
     public List<District> findAll() {
         return districtRepo.findAll();
     }
 
+    @Transactional
     public District create(String name, Long locationId) {
         Location location = this.locationRepo.findById(locationId).orElseThrow(() -> new RuntimeException("Такой локации не существует."));
         return districtRepo.save(District.builder().name(name).location(location).build());
     }
 
+    @Transactional(readOnly = true)
     public List<District> findByLocationId(Long locationId) {
         return districtRepo.findByLocation_Id(locationId);
     }

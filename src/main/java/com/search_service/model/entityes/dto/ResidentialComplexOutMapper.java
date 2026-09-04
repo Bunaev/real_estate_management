@@ -4,6 +4,7 @@ import com.search_service.model.entityes.Building;
 import com.search_service.model.entityes.Entrance;
 import com.search_service.model.entityes.ResidentialComplex;
 import com.search_service.model.entityes.dto.out.MetroDistanceOutDTO;
+import com.search_service.model.entityes.dto.out.ResidentialComplexDetailDTO;
 import com.search_service.model.entityes.dto.out.ResidentialComplexOutDTO;
 import com.search_service.model.entityes.dto.out.ResidentialComplexShortDTO;
 import org.mapstruct.Mapper;
@@ -68,5 +69,20 @@ public interface ResidentialComplexOutMapper {
                 .name(complex.getName())
                 .developer(complex.getDeveloper().getName())
                 .fullAddress(fullAddress).build();
+    }
+
+    default ResidentialComplexDetailDTO toDetailDto(ResidentialComplex complex) {
+        if (complex == null) return null;
+
+        return ResidentialComplexDetailDTO.builder()
+                .id(complex.getId())
+                .name(complex.getName())
+                .address(complex.getAddress())
+                .developer(complex.getDeveloper() != null ? complex.getDeveloper().getName() : null)
+                .district(complex.getDistrict() != null ? complex.getDistrict().getName() : null)
+                .location(complex.getDistrict() != null && complex.getDistrict().getLocation() != null
+                        ? complex.getDistrict().getLocation().getName() : null)
+                .buildings(complex.getBuildings())
+                .build();
     }
 }

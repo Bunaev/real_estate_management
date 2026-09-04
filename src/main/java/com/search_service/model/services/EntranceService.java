@@ -8,6 +8,7 @@ import com.search_service.model.repo.BuildingRepo;
 import com.search_service.model.repo.EntranceRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class EntranceService {
     private final BuildingRepo buildingRepo;
     private final EntranceMapper entranceMapper;
 
+    @Transactional
     public Entrance create(Long buildingId, EntranceDTO entranceDTO) {
         Building building = buildingRepo.findById(buildingId).orElseThrow(() -> new RuntimeException("Такого корпуса не существует."));
         Entrance entrance = entranceMapper.toEntity(entranceDTO);
@@ -25,6 +27,7 @@ public class EntranceService {
         return entranceRepo.save(entrance);
     }
 
+    @Transactional(readOnly = true)
     public List<Entrance> findByBuildingId(Long buildingId) {
         return entranceRepo.findByBuilding_Id(buildingId);
     }

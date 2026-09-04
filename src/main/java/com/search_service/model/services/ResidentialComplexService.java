@@ -4,19 +4,24 @@ import com.search_service.model.entityes.*;
 import com.search_service.model.entityes.dto.ResidentialComplexMapper;
 import com.search_service.model.entityes.dto.ResidentialComplexOutMapper;
 import com.search_service.model.entityes.dto.in.ResidentialComplexDTO;
+import com.search_service.model.entityes.dto.out.MetroDistanceOutDTO;
+import com.search_service.model.entityes.dto.out.ResidentialComplexDetailDTO;
 import com.search_service.model.entityes.dto.out.ResidentialComplexOutDTO;
 import com.search_service.model.entityes.dto.out.ResidentialComplexShortDTO;
 import com.search_service.model.repo.*;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ResidentialComplexService {
     private final ResidentialComplexRepo complexRepo;
     private final BuildingRepo buildingRepo;
@@ -85,18 +90,44 @@ public class ResidentialComplexService {
         return outMapper.toShortDto(complexRepo.findById(complex.getId()).orElseThrow());
     }
 
-    /*
-     * ToDo:
-     * Переписать логику получения Entity, для оптимизации запросов БД
-     */
 
-    public List<ResidentialComplexOutDTO> findAll() {
-        return complexRepo.findAll().stream()
-                .map(outMapper::toDto)
-                .collect(Collectors.toList());
+    @Transactional(readOnly = true)
+    public List<ResidentialComplexOutDTO> findAllLightweight() {
+        List<ResidentialComplexOutDTO> dtoList = complexRepo.findAllLightweight();
+        List<Long> ids = dtoList.stream()
+                .map(ResidentialComplexOutDTO::getId)
+                .toList();
+        List<Object[]> metroData = complexRepo.findMetroDistancesByComplexIds(ids);
+
+        Map<Long, List<MetroDistanceOutDTO>> metroMap = metroData.stream()
+                .collect(Collectors.groupingBy(
+                        row -> (Long) row[0],
+                        Collectors.mapping(
+                                row -> MetroDistanceOutDTO.builder()
+                                        .stationName((String) row[1])
+                                        .distance((Integer) row[2])
+                                        .build(),
+                                Collectors.toList()
+                        )
+                ));
+
+        dtoList.forEach(dto ->
+                dto.setMetroDistances(metroMap.getOrDefault(dto.getId(), List.of()))
+        );
+        return dtoList;
     }
 
+    @Transactional
     public void delete(Long id) {
         complexRepo.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public ResidentialComplexDetailDTO findById(Long id) {
+        log.info("Поиск ЖК с ID: {}", id);
+        ResidentialComplex complex = complexRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("ЖК не найден с ID: " + id));
+        log.info("ЖК найден: {}", complex.getName());
+        return outMapper.toDetailDto(complex);
     }
 }

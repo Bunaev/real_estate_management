@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детали ЖК</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            background: #f0f2f5;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+        .container-fluid {
+            max-width: 1600px;
+            margin: 0 auto;
+            transition: padding-right 0.3s ease;
+            padding-right: 0;
+        }
+        .container-fluid.shifted {
+            padding-right: 380px;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #1a1a2e, #0f3460);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .header .back-link {
+            color: #aaa;
+            text-decoration: none;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+        .header .back-link:hover { color: white; }
+        .header .complex-title h1 { margin: 0; font-size: 28px; font-weight: 600; }
+        .header .complex-title small { display: block; font-size: 14px; opacity: 0.7; }
+
+        /* ===== КНОПКА ФИЛЬТРОВ ===== */
+        .filter-toggle-btn {
+            position: fixed;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1050;
+            background: #0f3460;
+            color: white;
+            border: none;
+            border-radius: 8px 0 0 8px;
+            padding: 12px 8px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            transition: right 0.3s ease;
+        }
+        .filter-toggle-btn:hover {
+            background: #1a1a2e;
+            padding-left: 14px;
+        }
+        .filter-toggle-btn.shifted {
+            right: 380px;
+        }
+
+        /* ===== OFF-CANVAS ФИЛЬТРЫ ===== */
+        .offcanvas {
+            width: 380px !important;
+        }
+        .offcanvas-body { padding: 20px; }
+        .filter-group { margin-bottom: 20px; }
+        .filter-group label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1a1a2e;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .filter-group .range-inputs {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .filter-group .range-inputs input { width: 100%; }
+        .filter-group select, .filter-group input[type="number"] {
+            width: 100%;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        .filter-group .form-check { margin-top: 5px; }
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            border-top: 1px solid #dee2e6;
+            padding-top: 20px;
+        }
+        .filter-actions button { flex: 1; }
+
+        /* ===== ТАБЛИЦА КВАРТИР ===== */
+        .table-wrapper {
+            overflow-x: auto;
+            transition: all 0.3s ease;
+        }
+        .apartment-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            table-layout: auto;
+            min-width: 900px;
+        }
+        .apartment-table th {
+            background: #f8f9fa;
+            color: #1a1a2e;
+            font-weight: 600;
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 2px solid #dee2e6;
+            white-space: nowrap;
+        }
+        .apartment-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        .apartment-table tbody tr {
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .apartment-table tbody tr:hover {
+            background: #f8f9fa !important;
+        }
+
+        /* ===== ШИРИНА КОЛОНОК (ОПТИМИЗИРОВАННАЯ) ===== */
+        .apartment-table .col-number { width: 60px; text-align: center; }
+        .apartment-table .col-building { width: 90px; }
+        .apartment-table .col-entrance { width: 90px; }
+        .apartment-table .col-floor { width: 60px; text-align: center; }
+        .apartment-table .col-area { width: 80px; text-align: center; }
+        .apartment-table .col-type { width: 85px; text-align: center; }
+        .apartment-table .col-bathroom { width: 95px; text-align: center; }
+        .apartment-table .col-balcony { width: 60px; text-align: center; }
+        .apartment-table .col-price { width: 110px; text-align: right; }
+        .apartment-table .col-status { width: 100px; text-align: center; }
+        .apartment-table .col-actions { width: 80px; text-align: center; }
+
+        /* ===== СТАТУСЫ (ЦВЕТА СТРОК) ===== */
+        .status-available { background: #e8f5e9; }
+        .status-reserved { background: #f5f5f5; }
+        .status-sold { background: #e0e0e0; }
+
+        /* ===== ДЕЙСТВИЯ ===== */
+        .apartment-actions {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+        }
+        .apartment-actions button {
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            padding: 4px 6px;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+        .apartment-actions .edit-btn { color: #0f3460; }
+        .apartment-actions .edit-btn:hover { background: #e9ecef; }
+        .apartment-actions .delete-btn { color: #dc3545; }
+        .apartment-actions .delete-btn:hover { background: #f8d7da; }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+        .empty-state i {
+            font-size: 48px;
+            color: #dee2e6;
+        }
+        .apartment-number {
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+        .badge-status {
+            font-size: 12px;
+            padding: 3px 12px;
+            border-radius: 20px;
+        }
+        .badge-available { background: #c8e6c9; color: #1e7e34; }
+        .badge-reserved { background: #fff3cd; color: #856404; }
+        .badge-sold { background: #d6d8db; color: #383d41; }
+
+        /* ===== АДАПТИВ ===== */
+        @media (max-width: 1200px) {
+            .container-fluid.shifted {
+                padding-right: 0;
+            }
+            .offcanvas {
+                width: 100% !important;
+                max-width: 380px !important;
+            }
+            .filter-toggle-btn.shifted {
+                right: 100%;
+            }
+            .apartment-table {
+                font-size: 13px;
+                min-width: 800px;
+            }
+            .apartment-table th,
+            .apartment-table td {
+                padding: 8px 6px;
+            }
+        }
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header .complex-title h1 { font-size: 22px; }
+            .apartment-table { font-size: 12px; min-width: 700px; }
+            .apartment-table th,
+            .apartment-table td {
+                padding: 6px 4px;
+            }
+            .filter-toggle-btn { padding: 10px 6px; font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- КНОПКА-ПОЛЗУНОК ДЛЯ ФИЛЬТРОВ -->
+<button class="filter-toggle-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterPanel" aria-controls="filterPanel">
+    <i class="bi bi-funnel"></i>
+</button>
+
+<!-- ОСНОВНОЙ КОНТЕЙНЕР -->
+<div class="container-fluid" id="mainContainer">
+    <!-- ХЕДЕР -->
+    <div class="header">
+        <div class="d-flex align-items-center gap-3">
+            <a href="/" class="back-link"><i class="bi bi-arrow-left"></i> На главную</a>
+            <div class="complex-title">
+                <h1 id="complexName">Загрузка...</h1>
+                <small id="complexAddress"></small>
+            </div>
+        </div>
+        <div>
+            <span class="badge bg-light text-dark" id="complexDeveloper">Застройщик</span>
+            <span class="badge bg-light text-dark ms-2" id="complexDistrict">Район</span>
+        </div>
+    </div>
+
+    <!-- ПАНЕЛЬ ФИЛЬТРОВ (OFFCANVAS) -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="filterPanel" aria-labelledby="filterPanelLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="filterPanelLabel"><i class="bi bi-funnel"></i> Фильтры</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <form id="filterForm">
+                <div class="filter-group">
+                    <label>Тип квартиры</label>
+                    <select class="form-select" id="filterApartmentType">
+                        <option value="">Все</option>
+                        <option value="STUDIO">Студия</option>
+                        <option value="ONE_ROOM">1к-квартира</option>
+                        <option value="TWO_ROOM_EURO">2Е</option>
+                        <option value="TWO_ROOM">2к-квартира</option>
+                        <option value="THREE_ROOM_EURO">3Е</option>
+                        <option value="THREE_ROOM">3к-квартира</option>
+                        <option value="FOUR_ROOM_EURO">4Е</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Тип санузла</label>
+                    <select class="form-select" id="filterBathroomType">
+                        <option value="">Все</option>
+                        <option value="COMBINED">Совмещённый</option>
+                        <option value="SEPARATE">Раздельный</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Корпус</label>
+                    <select class="form-select" id="filterBuilding"><option value="">Все</option></select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Секция</label>
+                    <select class="form-select" id="filterEntrance"><option value="">Все</option></select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Этаж</label>
+                    <div class="range-inputs">
+                        <input type="number" class="form-control" id="filterFloorFrom" placeholder="От" min="1">
+                        <span>—</span>
+                        <input type="number" class="form-control" id="filterFloorTo" placeholder="До" min="1">
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label>Площадь, м²</label>
+                    <div class="range-inputs">
+                        <input type="number" class="form-control" id="filterAreaFrom" placeholder="От" step="0.1" min="0">
+                        <span>—</span>
+                        <input type="number" class="form-control" id="filterAreaTo" placeholder="До" step="0.1" min="0">
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label>Цена, ₽</label>
+                    <div class="range-inputs">
+                        <input type="number" class="form-control" id="filterPriceFrom" placeholder="От" step="1000" min="0">
+                        <span>—</span>
+                        <input type="number" class="form-control" id="filterPriceTo" placeholder="До" step="1000" min="0">
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label>Балкон</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="filterBalcony">
+                        <label class="form-check-label" for="filterBalcony">Только с балконом</label>
+                    </div>
+                </div>
+
+                <div class="filter-actions">
+                    <button type="button" class="btn btn-primary" id="applyFiltersBtn">Применить</button>
+                    <button type="button" class="btn btn-outline-secondary" id="resetFiltersBtn">Сбросить все</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ТАБЛИЦА КВАРТИР -->
+    <div id="apartmentList">
+        <div class="text-center py-5 text-muted">Загрузка квартир...</div>
+    </div>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const pathParts = window.location.pathname.split('/');
+    const complexId = pathParts[pathParts.length - 1];
+    const API = '/api';
+
+    let allApartments = [];
+    let complexData = null;
+    let buildingsMap = {};
+    let entrancesMap = {};
+
+    // =============================================================
+    // ФУНКЦИИ ДЛЯ КРАСИВОГО ОТОБРАЖЕНИЯ ENUM
+    // =============================================================
+    function formatApartmentType(type) {
+        const map = {
+            'STUDIO': 'Студия',
+            'ONE_ROOM': '1к-ком.',
+            'TWO_ROOM_EURO': '2Е',
+            'TWO_ROOM': '2к-ком.',
+            'THREE_ROOM_EURO': '3Е',
+            'THREE_ROOM': '3к-ком.',
+            'FOUR_ROOM_EURO': '4Е'
+        };
+        return map[type] || type || '—';
+    }
+
+    function formatBathroomType(type) {
+        const map = {
+            'COMBINED': 'Совмещённый',
+            'SEPARATE': 'Раздельный'
+        };
+        return map[type] || type || '—';
+    }
+
+    function formatStatus(status) {
+        const map = {
+            'AVAILABLE': 'Свободна',
+            'RESERVED': 'Забронирована',
+            'SOLD': 'Продана'
+        };
+        return map[status] || status || '—';
+    }
+
+    function getStatusClass(status) {
+        const map = {
+            'AVAILABLE': 'status-available',
+            'RESERVED': 'status-reserved',
+            'SOLD': 'status-sold'
+        };
+        return map[status] || '';
+    }
+
+    function getStatusBadgeClass(status) {
+        const map = {
+            'AVAILABLE': 'badge-available',
+            'RESERVED': 'badge-reserved',
+            'SOLD': 'badge-sold'
+        };
+        return map[status] || 'badge-secondary';
+    }
+
+    // =============================================================
+    // ЗАГРУЗКА ДАННЫХ
+    // =============================================================
+    async function loadData() {
+        try {
+            const complexRes = await fetch(`${API}/complexes/${complexId}`);
+            if (!complexRes.ok) throw new Error('Ошибка загрузки ЖК');
+            complexData = await complexRes.json();
+            renderComplexHeader(complexData);
+
+            const apartmentsRes = await fetch(`${API}/apartments?complexId=${complexId}`);
+            if (!apartmentsRes.ok) throw new Error('Ошибка загрузки квартир');
+            allApartments = await apartmentsRes.json();
+            renderApartments(allApartments);
+
+            populateFilters(complexData);
+        } catch (error) {
+            console.error(error);
+            document.getElementById('apartmentList').innerHTML = `
+                <div class="empty-state">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <p class="mt-2">Ошибка загрузки данных</p>
+                </div>
+            `;
+        }
+    }
+
+    // =============================================================
+    // ХЕДЕР
+    // =============================================================
+    function renderComplexHeader(data) {
+        document.getElementById('complexName').textContent = data.name || 'Без названия';
+        document.getElementById('complexAddress').textContent = data.address || '';
+        document.getElementById('complexDeveloper').textContent = '🏗️ ' + (data.developer || '—');
+        document.getElementById('complexDistrict').textContent = '🏘️ ' + (data.district || '—');
+
+        if (data.buildings) {
+            data.buildings.forEach(b => {
+                buildingsMap[b.id] = b.name;
+                if (b.entrances) {
+                    b.entrances.forEach(e => { entrancesMap[e.id] = e.name; });
+                }
+            });
+        }
+    }
+
+    // =============================================================
+    // ТАБЛИЦА КВАРТИР
+    // =============================================================
+    function renderApartments(apartments) {
+        const container = document.getElementById('apartmentList');
+        if (!apartments || apartments.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bi bi-house"></i>
+                    <p class="mt-2">В этом ЖК пока нет квартир</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = `
+            <div class="table-wrapper">
+                <table class="apartment-table">
+                    <thead>
+                        <tr>
+                            <th class="col-number">№</th>
+                            <th class="col-building">Корпус</th>
+                            <th class="col-entrance">Секция</th>
+                            <th class="col-floor">Этаж</th>
+                            <th class="col-area">Площадь</th>
+                            <th class="col-type">Формат</th>
+                            <th class="col-bathroom">Санузел</th>
+                            <th class="col-balcony">Балкон</th>
+                            <th class="col-price">Цена</th>
+                            <th class="col-status">Статус</th>
+                            <th class="col-actions">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+
+        apartments.forEach(ap => {
+            const statusClass = getStatusClass(ap.status);
+            const badgeClass = getStatusBadgeClass(ap.status);
+            const buildingName = ap.entrance?.building?.name || '—';
+            const entranceName = ap.entrance?.name || '—';
+            const typeDisplay = formatApartmentType(ap.type);
+            const bathroomDisplay = formatBathroomType(ap.bathroomType);
+            const statusDisplay = formatStatus(ap.status);
+            const balconyIcon = ap.hasBalcony ? '✅' : '❌';
+
+            html += `
+                <tr class="${statusClass}" onclick="navigateToApartment(${ap.id})">
+                    <td class="col-number apartment-number">${ap.number}</td>
+                    <td class="col-building">${buildingName}</td>
+                    <td class="col-entrance">${entranceName}</td>
+                    <td class="col-floor">${ap.floor}</td>
+                    <td class="col-area">${ap.area} м²</td>
+                    <td class="col-type">${typeDisplay}</td>
+                    <td class="col-bathroom">${bathroomDisplay}</td>
+                    <td class="col-balcony">${balconyIcon}</td>
+                    <td class="col-price">${ap.price ? ap.price.toLocaleString() + ' ₽' : '—'}</td>
+                    <td class="col-status"><span class="badge-status ${badgeClass}">${statusDisplay}</span></td>
+                    <td class="col-actions">
+                        <div class="apartment-actions">
+                            <button class="edit-btn" onclick="event.stopPropagation(); editApartment(${ap.id})" title="Редактировать">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            <button class="delete-btn" onclick="event.stopPropagation(); deleteApartment(${ap.id})" title="Удалить">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+
+        html += `</tbody></table></div>`;
+        container.innerHTML = html;
+    }
+
+    // =============================================================
+    // ФИЛЬТРАЦИЯ
+    // =============================================================
+    function applyFilters() {
+        const type = document.getElementById('filterApartmentType').value;
+        const bathroom = document.getElementById('filterBathroomType').value;
+        const buildingId = document.getElementById('filterBuilding').value;
+        const entranceId = document.getElementById('filterEntrance').value;
+        const floorFrom = parseInt(document.getElementById('filterFloorFrom').value) || 0;
+        const floorTo = parseInt(document.getElementById('filterFloorTo').value) || Infinity;
+        const areaFrom = parseFloat(document.getElementById('filterAreaFrom').value) || 0;
+        const areaTo = parseFloat(document.getElementById('filterAreaTo').value) || Infinity;
+        const priceFrom = parseFloat(document.getElementById('filterPriceFrom').value) || 0;
+        const priceTo = parseFloat(document.getElementById('filterPriceTo').value) || Infinity;
+        const hasBalcony = document.getElementById('filterBalcony').checked;
+
+        const filtered = allApartments.filter(ap => {
+            if (type && ap.type !== type) return false;
+            if (bathroom && ap.bathroomType !== bathroom) return false;
+            if (buildingId && ap.entrance?.building?.id != buildingId) return false;
+            if (entranceId && ap.entrance?.id != entranceId) return false;
+            if (ap.floor < floorFrom || ap.floor > floorTo) return false;
+            if (ap.area < areaFrom || ap.area > areaTo) return false;
+            if (ap.price < priceFrom || ap.price > priceTo) return false;
+            if (hasBalcony && !ap.hasBalcony) return false;
+            return true;
+        });
+
+        renderApartments(filtered);
+    }
+
+    function resetFilters() {
+        document.getElementById('filterApartmentType').value = '';
+        document.getElementById('filterBathroomType').value = '';
+        document.getElementById('filterBuilding').value = '';
+        document.getElementById('filterEntrance').value = '';
+        document.getElementById('filterFloorFrom').value = '';
+        document.getElementById('filterFloorTo').value = '';
+        document.getElementById('filterAreaFrom').value = '';
+        document.getElementById('filterAreaTo').value = '';
+        document.getElementById('filterPriceFrom').value = '';
+        document.getElementById('filterPriceTo').value = '';
+        document.getElementById('filterBalcony').checked = false;
+        renderApartments(allApartments);
+    }
+
+    // =============================================================
+    // СДВИГ КОНТЕЙНЕРА И КНОПКИ ПРИ ОТКРЫТИИ ФИЛЬТРОВ
+    // =============================================================
+    const filterPanel = document.getElementById('filterPanel');
+    const toggleBtn = document.querySelector('.filter-toggle-btn');
+    const mainContainer = document.getElementById('mainContainer');
+
+    filterPanel.addEventListener('show.bs.offcanvas', function () {
+        toggleBtn.classList.add('shifted');
+        mainContainer.classList.add('shifted');
+    });
+    filterPanel.addEventListener('hide.bs.offcanvas', function () {
+        toggleBtn.classList.remove('shifted');
+        mainContainer.classList.remove('shifted');
+    });
+
+    // =============================================================
+    // ЗАПОЛНЕНИЕ ФИЛЬТРОВ
+    // =============================================================
+    function populateFilters(complex) {
+        const buildingSelect = document.getElementById('filterBuilding');
+        const entranceSelect = document.getElementById('filterEntrance');
+
+        if (complex.buildings && complex.buildings.length > 0) {
+            buildingSelect.innerHTML = '<option value="">Все</option>';
+            complex.buildings.forEach(b => {
+                buildingSelect.innerHTML += `<option value="${b.id}">${b.name}</option>`;
+            });
+        }
+
+        buildingSelect.addEventListener('change', function() {
+            const selectedBuildingId = this.value;
+            entranceSelect.innerHTML = '<option value="">Все</option>';
+            if (selectedBuildingId) {
+                const building = complex.buildings.find(b => b.id == selectedBuildingId);
+                if (building && building.entrances) {
+                    building.entrances.forEach(e => {
+                        entranceSelect.innerHTML += `<option value="${e.id}">${e.name}</option>`;
+                    });
+                }
+            } else {
+                const allEntrances = [];
+                complex.buildings.forEach(b => {
+                    if (b.entrances) {
+                        b.entrances.forEach(e => { allEntrances.push(e); });
+                    }
+                });
+                allEntrances.forEach(e => {
+                    entranceSelect.innerHTML += `<option value="${e.id}">${e.name}</option>`;
+                });
+            }
+        });
+        buildingSelect.dispatchEvent(new Event('change'));
+    }
+
+    // =============================================================
+    // ДЕЙСТВИЯ
+    // =============================================================
+    function navigateToApartment(id) {
+        alert(`Переход к квартире #${id} (скоро будет реализовано)`);
+    }
+
+    async function deleteApartment(id) {
+        if (!confirm('Удалить квартиру #' + id + '?')) return;
+        try {
+            const res = await fetch(`${API}/apartments/${id}`, { method: 'DELETE' });
+            if (!res.ok) throw new Error('Ошибка удаления');
+            alert('Квартира удалена');
+            loadData();
+        } catch (error) {
+            alert('Ошибка: ' + error.message);
+        }
+    }
+
+    // =============================================================
+    // ПОДПИСКА
+    // =============================================================
+    document.getElementById('applyFiltersBtn').addEventListener('click', applyFilters);
+    document.getElementById('resetFiltersBtn').addEventListener('click', resetFilters);
+
+    // =============================================================
+    // ЗАПУСК
+    // =============================================================
+    // =============================================================
+    // ФУНКЦИЯ ПАРСИНГА ЧИСЕЛ (ТОЧКА / ЗАПЯТАЯ)
+    // =============================================================
+    function parseNumberInput(value) {
+        if (!value) return null;
+        // Заменяем запятую на точку, удаляем пробелы
+        const cleaned = value.trim().replace(',', '.');
+        const parsed = parseFloat(cleaned);
+        return isNaN(parsed) ? null : parsed;
+    }
+
+    // =============================================================
+    // ОТКРЫТИЕ МОДАЛКИ
+    // =============================================================
+    function editApartment(id) {
+        const apartment = allApartments.find(a => a.id === id);
+        if (!apartment) {
+            alert('Квартира не найдена');
+            return;
+        }
+
+        // Заполняем форму
+        document.getElementById('editApartmentId').value = apartment.id;
+        document.getElementById('editApartmentNumber').value = apartment.number || '';
+        document.getElementById('editApartmentFloor').value = apartment.floor || '';
+        document.getElementById('editApartmentArea').value = apartment.area || '';
+        document.getElementById('editApartmentPrice').value = apartment.price || '';
+        document.getElementById('editApartmentType').value = apartment.type || '';
+        document.getElementById('editApartmentBathroom').value = apartment.bathroomType || '';
+        document.getElementById('editApartmentBalcony').value = apartment.hasBalcony !== undefined ? String(apartment.hasBalcony) : 'true';
+        document.getElementById('editApartmentStatus').value = apartment.status || 'AVAILABLE';
+
+        // Показываем модалку
+        const modal = new bootstrap.Modal(document.getElementById('editApartmentModal'));
+        modal.show();
+    }
+
+    // =============================================================
+    // СОХРАНЕНИЕ КВАРТИРЫ
+    // =============================================================
+    async function saveApartment() {
+        const form = document.getElementById('editApartmentForm');
+        const id = document.getElementById('editApartmentId').value;
+
+        // Собираем данные с парсингом чисел
+        const numberRaw = document.getElementById('editApartmentNumber').value.trim();
+        const floorRaw = document.getElementById('editApartmentFloor').value.trim();
+        const areaRaw = document.getElementById('editApartmentArea').value.trim();
+        const priceRaw = document.getElementById('editApartmentPrice').value.trim();
+        const type = document.getElementById('editApartmentType').value;
+        const bathroom = document.getElementById('editApartmentBathroom').value;
+        const balcony = document.getElementById('editApartmentBalcony').value === 'true';
+        const status = document.getElementById('editApartmentStatus').value;
+
+        // Валидация
+        let isValid = true;
+        form.querySelectorAll('.form-control, .form-select').forEach(el => {
+            el.classList.remove('is-invalid');
+        });
+
+        if (!numberRaw) {
+            document.getElementById('editApartmentNumber').classList.add('is-invalid');
+            isValid = false;
+        }
+        if (!floorRaw) {
+            document.getElementById('editApartmentFloor').classList.add('is-invalid');
+            isValid = false;
+        }
+        if (!areaRaw) {
+            document.getElementById('editApartmentArea').classList.add('is-invalid');
+            isValid = false;
+        }
+        if (!priceRaw) {
+            document.getElementById('editApartmentPrice').classList.add('is-invalid');
+            isValid = false;
+        }
+        if (!type) {
+            document.getElementById('editApartmentType').classList.add('is-invalid');
+            isValid = false;
+        }
+        if (!bathroom) {
+            document.getElementById('editApartmentBathroom').classList.add('is-invalid');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            // Прокручиваем к первому invalid
+            const firstInvalid = form.querySelector('.is-invalid');
+            if (firstInvalid) firstInvalid.focus();
+            return;
+        }
+
+        // Парсим числа (с поддержкой точки и запятой)
+        const number = parseInt(numberRaw);
+        const floor = parseInt(floorRaw);
+        const area = parseNumberInput(areaRaw);
+        const price = parseNumberInput(priceRaw);
+
+        if (isNaN(number) || number < 1) {
+            document.getElementById('editApartmentNumber').classList.add('is-invalid');
+            return;
+        }
+        if (isNaN(floor) || floor < 1) {
+            document.getElementById('editApartmentFloor').classList.add('is-invalid');
+            return;
+        }
+        if (area === null || area <= 0) {
+            document.getElementById('editApartmentArea').classList.add('is-invalid');
+            return;
+        }
+        if (price === null || price < 0) {
+            document.getElementById('editApartmentPrice').classList.add('is-invalid');
+            return;
+        }
+
+        const dto = { id, number, floor, area, price, type, bathroomType: bathroom, hasBalcony: balcony, status };
+
+        try {
+            const res = await fetch(`${API}/apartments/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dto)
+            });
+
+            if (!res.ok) {
+                const err = await res.text();
+                throw new Error(err || 'Ошибка сохранения');
+            }
+
+            // Закрываем модалку
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editApartmentModal'));
+            modal.hide();
+            loadData(); // перезагружаем список
+
+        } catch (error) {
+            alert('❌ Ошибка: ' + error.message);
+        }
+    }
+
+    // =============================================================
+    // ПОДПИСКА НА СОБЫТИЯ МОДАЛКИ
+    // =============================================================
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('saveApartmentBtn').addEventListener('click', saveApartment);
+
+        // При закрытии модалки — очищаем ошибки
+        document.getElementById('editApartmentModal').addEventListener('hidden.bs.modal', function () {
+            document.querySelectorAll('#editApartmentForm .is-invalid').forEach(el => {
+                el.classList.remove('is-invalid');
+            });
+        });
+    });
+    loadData();
+</script>
+<!-- ===== МОДАЛКА РЕДАКТИРОВАНИЯ КВАРТИРЫ ===== -->
+<div class="modal fade" id="editApartmentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Редактирование квартиры</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editApartmentForm" novalidate>
+                    <input type="hidden" id="editApartmentId">
+
+                    <!-- 1-я строка: Номер + Этаж + Площадь -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Номер <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="editApartmentNumber" required min="1">
+                            <div class="invalid-feedback">Введите номер квартиры</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Этаж <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="editApartmentFloor" required min="1">
+                            <div class="invalid-feedback">Введите этаж</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Площадь, м² <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editApartmentArea" placeholder="Например: 45.5" required>
+                            <div class="invalid-feedback">Введите площадь (допустимы точка и запятая)</div>
+                        </div>
+                    </div>
+
+                    <!-- 2-я строка: Цена + Тип + Санузел -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Цена, ₽ <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editApartmentPrice" placeholder="Например: 15000000" required>
+                            <div class="invalid-feedback">Введите цену</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Тип <span class="text-danger">*</span></label>
+                            <select class="form-select" id="editApartmentType" required>
+                                <option value="">Выберите</option>
+                                <option value="STUDIO">Студия</option>
+                                <option value="ONE_ROOM">1к-ком.</option>
+                                <option value="TWO_ROOM_EURO">2Е</option>
+                                <option value="TWO_ROOM">2к-ком.</option>
+                                <option value="THREE_ROOM_EURO">3Е</option>
+                                <option value="THREE_ROOM">3к-ком.</option>
+                                <option value="FOUR_ROOM_EURO">4Е</option>
+                            </select>
+                            <div class="invalid-feedback">Выберите тип</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Санузел <span class="text-danger">*</span></label>
+                            <select class="form-select" id="editApartmentBathroom" required>
+                                <option value="">Выберите</option>
+                                <option value="COMBINED">Совмещённый</option>
+                                <option value="SEPARATE">Раздельный</option>
+                            </select>
+                            <div class="invalid-feedback">Выберите санузел</div>
+                        </div>
+                    </div>
+
+                    <!-- 3-я строка: Балкон + Статус -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Балкон</label>
+                            <select class="form-select" id="editApartmentBalcony">
+                                <option value="true">Есть</option>
+                                <option value="false">Нет</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Статус <span class="text-danger">*</span></label>
+                            <select class="form-select" id="editApartmentStatus" required>
+                                <option value="AVAILABLE">Свободна</option>
+                                <option value="RESERVED">Забронирована</option>
+                                <option value="SOLD">Продана</option>
+                            </select>
+                            <div class="invalid-feedback">Выберите статус</div>
+                        </div>
+                    </div>
+
+                    <div class="text-muted small mt-2">
+                        <i class="bi bi-info-circle"></i> Поля со звёздочкой <span class="text-danger">*</span> обязательны
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" class="btn btn-primary" id="saveApartmentBtn">
+                    <i class="bi bi-check-lg"></i> Сохранить
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

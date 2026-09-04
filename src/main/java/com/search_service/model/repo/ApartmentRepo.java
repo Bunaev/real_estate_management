@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ApartmentRepo extends JpaRepository<Apartment, Long>, JpaSpecificationExecutor<Apartment> {
     List<Apartment> findAllByEntrance_Id(Long entranceId);
+
+    List<Apartment> findByEntrance_Building_ResidentialComplex_Id(Long complexId);
 }

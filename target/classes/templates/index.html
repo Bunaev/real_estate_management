@@ -116,6 +116,73 @@
             border-radius: 20px;
             font-size: 12px;
         }
+        /* Метро в карточке */
+        .complex-metro {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .metro-station {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f8f9fa;
+            padding: 4px 12px 4px 8px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .metro-station .metro-icon {
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        /* ⭐ Имя станции красится в цвет ветки */
+        .metro-station .station-name {
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .metro-station .station-distance {
+            color: #6c757d;
+            font-size: 11px;
+            margin-left: 4px;
+            background: #e9ecef;
+            padding: 0 8px;
+            border-radius: 10px;
+        }
+
+        /* Цвета веток Петербургского метро — применяются к имени */
+        .metro-line-spb-red .station-name { color: #E31E24; }
+        .metro-line-spb-blue .station-name { color: #0039A6; }
+        .metro-line-spb-green .station-name { color: #009B3A; }
+        .metro-line-spb-orange .station-name { color: #F47B20; }
+        .metro-line-spb-purple .station-name { color: #8B4794; }
+        .metro-line-spb-yellow .station-name { color: #D4A800; }
+        .metro-line-spb-default .station-name { color: #6c757d; }
+
+        /* При наведении можно добавить подсветку */
+        .metro-station:hover .station-name {
+            text-shadow: 0 0 8px rgba(0,0,0,0.1);
+        }
+        .metro-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+        }
+
+        .metro-icon svg {
+            display: block;
+            width: 20px;
+            height: 20px;
+        }
     </style>
 </head>
 <body>
@@ -232,6 +299,125 @@
         submitBtn.textContent = buttonTexts[type] || 'Создать';
     }
     // =============================================================
+    // ФУНКЦИЯ ДЛЯ ЦВЕТА МЕТРО (Санкт-Петербург)
+    // =============================================================
+    function getMetroLineColor(stationName) {
+        // Сопоставление станций с цветами веток (СПб)
+        const metroLines = {
+            // Красная ветка (Кировско-Выборгская)
+            'Девяткино': 'metro-line-spb-red',
+            'Гражданский проспект': 'metro-line-spb-red',
+            'Академическая': 'metro-line-spb-red',
+            'Политехническая': 'metro-line-spb-red',
+            'Площадь Мужества': 'metro-line-spb-red',
+            'Лесная': 'metro-line-spb-red',
+            'Выборгская': 'metro-line-spb-red',
+            'Площадь Ленина': 'metro-line-spb-red',
+            'Чернышевская': 'metro-line-spb-red',
+            'Площадь Восстания': 'metro-line-spb-red',
+            'Владимирская': 'metro-line-spb-red',
+            'Пушкинская': 'metro-line-spb-red',
+            'Технологический институт': 'metro-line-spb-red',
+            'Балтийская': 'metro-line-spb-red',
+            'Нарвская': 'metro-line-spb-red',
+            'Кировский завод': 'metro-line-spb-red',
+            'Автово': 'metro-line-spb-red',
+            'Дачное': 'metro-line-spb-red',
+            'Ленинский проспект': 'metro-line-spb-red',
+            'Проспект Ветеранов': 'metro-line-spb-red',
+
+            // Синяя ветка (Московско-Петроградская)
+            'Парнас': 'metro-line-spb-blue',
+            'Проспект Просвещения': 'metro-line-spb-blue',
+            'Озерки': 'metro-line-spb-blue',
+            'Удельная': 'metro-line-spb-blue',
+            'Пионерская': 'metro-line-spb-blue',
+            'Чёрная речка': 'metro-line-spb-blue',
+            'Петроградская': 'metro-line-spb-blue',
+            'Горьковская': 'metro-line-spb-blue',
+            'Невский проспект': 'metro-line-spb-blue',
+            'Сенная площадь': 'metro-line-spb-blue',
+            'Технологический институт': 'metro-line-spb-blue',
+            'Фрунзенская': 'metro-line-spb-blue',
+            'Московские ворота': 'metro-line-spb-blue',
+            'Электросила': 'metro-line-spb-blue',
+            'Парк Победы': 'metro-line-spb-blue',
+            'Московская': 'metro-line-spb-blue',
+            'Звёздная': 'metro-line-spb-blue',
+            'Купчино': 'metro-line-spb-blue',
+
+            // Зеленая ветка (Невско-Василеостровская)
+            'Беговая': 'metro-line-spb-green',
+            'Зенит': 'metro-line-spb-green',
+            'Приморская': 'metro-line-spb-green',
+            'Василеостровская': 'metro-line-spb-green',
+            'Гостиный двор': 'metro-line-spb-green',
+            'Маяковская': 'metro-line-spb-green',
+            'Площадь Александра Невского': 'metro-line-spb-green',
+            'Елизаровская': 'metro-line-spb-green',
+            'Ломоносовская': 'metro-line-spb-green',
+            'Пролетарская': 'metro-line-spb-green',
+            'Обухово': 'metro-line-spb-green',
+            'Рыбацкое': 'metro-line-spb-green',
+
+            // Оранжевая ветка (Правобережная)
+            'Спасская': 'metro-line-spb-orange',
+            'Достоевская': 'metro-line-spb-orange',
+            'Лиговский проспект': 'metro-line-spb-orange',
+            'Площадь Александра Невского': 'metro-line-spb-orange',
+            'Новочеркасская': 'metro-line-spb-orange',
+            'Ладожская': 'metro-line-spb-orange',
+            'Проспект Большевиков': 'metro-line-spb-orange',
+            'Улица Дыбенко': 'metro-line-spb-orange',
+
+            // Фиолетовая ветка (Фрунзенско-Приморская)
+            'Комендантский проспект': 'metro-line-spb-purple',
+            'Старая Деревня': 'metro-line-spb-purple',
+            'Крестовский остров': 'metro-line-spb-purple',
+            'Чкаловская': 'metro-line-spb-purple',
+            'Спортивная': 'metro-line-spb-purple',
+            'Адмиралтейская': 'metro-line-spb-purple',
+            'Садовая': 'metro-line-spb-purple',
+            'Звенигородская': 'metro-line-spb-purple',
+            'Обводный канал': 'metro-line-spb-purple',
+            'Волковская': 'metro-line-spb-purple',
+            'Бухарестская': 'metro-line-spb-purple',
+            'Международная': 'metro-line-spb-purple',
+            'Проспект Славы': 'metro-line-spb-purple',
+            'Дунайская': 'metro-line-spb-purple',
+            'Шушары': 'metro-line-spb-purple',
+        };
+
+        // Поиск станции в словаре (частичное совпадение)
+        for (const [key, value] of Object.entries(metroLines)) {
+            if (stationName?.includes(key) || key.includes(stationName)) {
+                return value;
+            }
+        }
+
+        // Если не нашли - возвращаем цвет по умолчанию
+        return 'metro-line-spb-default';
+    }
+    // =============================================================
+    // РАСЧЕТ ВРЕМЕНИ ПЕШКОМ
+    // =============================================================
+    function getWalkingTime(distanceMeters) {
+        if (!distanceMeters || distanceMeters === 0) return '0 мин';
+
+        // Скорость пешехода: 5 км/ч = 5000 м/ч = 83.33 м/мин
+        const speedMetersPerMinute = 83.33;
+        const minutes = Math.round(distanceMeters / speedMetersPerMinute);
+
+        if (minutes < 1) return '< 1 мин';
+        if (minutes === 1) return '1 мин';
+        if (minutes < 60) return minutes + ' мин';
+
+        const hours = Math.floor(minutes / 60);
+        const remainingMinutes = minutes % 60;
+        if (remainingMinutes === 0) return hours + ' ч';
+        return hours + ' ч ' + remainingMinutes + ' мин';
+    }
+    // =============================================================
     // 3. ЗАГРУЗКА ДАННЫХ
     // =============================================================
     async function loadAllData() {
@@ -290,6 +476,28 @@
         let html = '';
 
         cachedComplexes.forEach(item => {
+            // Формируем блок с метро
+            if (item.metroDistances && item.metroDistances.length > 0) {
+                metroHtml = '<div class="complex-metro">';
+                item.metroDistances.forEach(metro => {
+                    const colorClass = getMetroLineColor(metro.stationName);
+                    const walkingTime = getWalkingTime(metro.distance);
+                    metroHtml += `
+            <div class="metro-station ${colorClass}">
+                <span class="metro-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="2" width="20" height="20" rx="3" fill="#0072BC" stroke="#005A8C" stroke-width="2"/>
+                        <text x="12" y="18" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle">М</text>
+                    </svg>
+                </span>
+                <span class="station-name">${metro.stationName}</span>
+                <span class="station-distance">🚶 ${walkingTime}</span>
+            </div>
+        `;
+                });
+                metroHtml += '</div>';
+            }
+
             html += `
             <div class="complex-card" onclick="navigateToComplex(${item.id})">
                 <div class="complex-header">
@@ -323,6 +531,7 @@
                     <span class="badge bg-light text-dark">📍 ${item.location || '—'}</span>
                     <span class="badge bg-light text-dark">🏘️ ${item.district || '—'}</span>
                 </div>
+                ${metroHtml}
             </div>
         `;
         });
@@ -331,8 +540,7 @@
     }
 
     function navigateToComplex(id) {
-        // Пока просто показываем toast, потом будет переход на детальную страницу
-        showToast(`📋 Переход к ЖК #${id} (скоро будет реализовано)`, 'success');
+        window.location.href = `/complex/${id}`;
     }
 
     async function deleteComplex(id) {

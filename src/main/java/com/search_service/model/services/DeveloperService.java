@@ -4,6 +4,7 @@ import com.search_service.model.entityes.Developer;
 import com.search_service.model.repo.DeveloperRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,10 +13,12 @@ import java.util.List;
 public class DeveloperService {
     private final DeveloperRepo devRepo;
 
+    @Transactional
     public Developer create(String name) {
         return devRepo.save(Developer.builder().name(name).build());
     }
 
+    @Transactional(readOnly = true)
     public List<Developer> findAll() {
         return devRepo.findAll();
     }

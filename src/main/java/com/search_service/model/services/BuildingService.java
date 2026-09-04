@@ -5,14 +5,12 @@ import com.search_service.model.entityes.Entrance;
 import com.search_service.model.entityes.ResidentialComplex;
 import com.search_service.model.entityes.dto.BuildingMapper;
 import com.search_service.model.entityes.dto.EntranceMapper;
-import com.search_service.model.entityes.dto.ResidentialComplexMapper;
 import com.search_service.model.entityes.dto.in.BuildingDTO;
-import com.search_service.model.entityes.dto.in.EntranceDTO;
 import com.search_service.model.repo.BuildingRepo;
 import com.search_service.model.repo.ResidentialComplexRepo;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;

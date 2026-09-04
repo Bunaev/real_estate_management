@@ -1,7 +1,7 @@
 package com.search_service.model.controllers;
 
-import com.search_service.model.entityes.ResidentialComplex;
 import com.search_service.model.entityes.dto.in.ResidentialComplexDTO;
+import com.search_service.model.entityes.dto.out.ResidentialComplexDetailDTO;
 import com.search_service.model.entityes.dto.out.ResidentialComplexOutDTO;
 import com.search_service.model.entityes.dto.out.ResidentialComplexShortDTO;
 import com.search_service.model.services.ResidentialComplexService;
@@ -21,7 +21,7 @@ public class ComplexController {
 
     @GetMapping()
     public List<ResidentialComplexOutDTO> getComplexes() {
-        return complexService.findAll();
+        return complexService.findAllLightweight();
     }
 
     @PostMapping
@@ -34,5 +34,10 @@ public class ComplexController {
     public ResponseEntity<Void> deleteComplex(@PathVariable Long id) {
         complexService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResidentialComplexDetailDTO> getComplex(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(complexService.findById(id));
     }
 }
