@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.search_service.controller.ApartmentControllerTest
 -------------------------------------------------------------------------------
-Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 11.79 s -- in com.search_service.controller.ApartmentControllerTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 25.32 s -- in com.search_service.controller.ApartmentControllerTest

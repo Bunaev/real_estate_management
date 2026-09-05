@@ -6,7 +6,6 @@
     <title>Детали ЖК</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <!-- Подключаем noUiSlider -->
     <link href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css" rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
@@ -22,11 +21,8 @@
             transition: padding-right 0.3s ease;
             padding-right: 0;
         }
-        .container-fluid.shifted {
-            padding-right: 380px;
-        }
+        .container-fluid.shifted { padding-right: 380px; }
 
-        /* ===== HEADER ===== */
         .header {
             background: linear-gradient(135deg, #1a1a2e, #0f3460);
             color: white;
@@ -39,17 +35,11 @@
             flex-wrap: wrap;
             gap: 10px;
         }
-        .header .back-link {
-            color: #aaa;
-            text-decoration: none;
-            font-size: 18px;
-            transition: 0.3s;
-        }
+        .header .back-link { color: #aaa; text-decoration: none; font-size: 18px; transition: 0.3s; }
         .header .back-link:hover { color: white; }
         .header .complex-title h1 { margin: 0; font-size: 28px; font-weight: 600; }
         .header .complex-title small { display: block; font-size: 14px; opacity: 0.7; }
 
-        /* ===== КНОПКА ФИЛЬТРОВ ===== */
         .filter-toggle-btn {
             position: fixed;
             right: 0;
@@ -66,145 +56,57 @@
             box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
             transition: right 0.3s ease;
         }
-        .filter-toggle-btn:hover {
-            background: #1a1a2e;
-            padding-left: 14px;
-        }
-        .filter-toggle-btn.shifted {
-            right: 380px;
-        }
+        .filter-toggle-btn:hover { background: #1a1a2e; padding-left: 14px; }
+        .filter-toggle-btn.shifted { right: 380px; }
 
-        /* ===== OFF-CANVAS ФИЛЬТРЫ ===== */
-        .offcanvas {
-            width: 380px !important;
-        }
+        .offcanvas { width: 380px !important; }
         .offcanvas-body { padding: 20px; }
         .filter-group { margin-bottom: 20px; }
-        .filter-group label {
-            font-weight: 600;
-            font-size: 14px;
-            color: #1a1a2e;
-            display: block;
-            margin-bottom: 5px;
-        }
+        .filter-group label { font-weight: 600; font-size: 14px; color: #1a1a2e; display: block; margin-bottom: 5px; }
         .filter-group select, .filter-group input[type="number"] {
-            width: 100%;
-            padding: 6px 12px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
+            width: 100%; padding: 6px 12px; border-radius: 6px; border: 1px solid #ddd;
         }
         .filter-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 30px;
-            border-top: 1px solid #dee2e6;
-            padding-top: 20px;
+            display: flex; gap: 10px; margin-top: 30px;
+            border-top: 1px solid #dee2e6; padding-top: 20px;
         }
         .filter-actions button { flex: 1; }
 
-        /* ===== КНОПКИ ТИПОВ КВАРТИР ===== */
-        .type-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
+        .type-buttons { display: flex; flex-wrap: wrap; gap: 6px; }
         .type-btn {
-            flex: 1 0 calc(14.28% - 6px);
-            min-width: 38px;
-            max-width: 48px;
-            padding: 8px 2px;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
-            background: white;
-            color: #495057;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            text-align: center;
-            user-select: none;
-            line-height: 1.2;
+            flex: 1 0 calc(14.28% - 6px); min-width: 38px; max-width: 48px;
+            padding: 8px 2px; border: 2px solid #dee2e6; border-radius: 8px;
+            background: white; color: #495057; font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: all 0.15s ease; text-align: center; user-select: none; line-height: 1.2;
         }
-        .type-btn:hover {
-            border-color: #adb5bd;
-            background: #f8f9fa;
-        }
+        .type-btn:hover { border-color: #adb5bd; background: #f8f9fa; }
         .type-btn.active {
-            background: #0f3460;
-            border-color: #0f3460;
-            color: white;
+            background: #0f3460; border-color: #0f3460; color: white;
             box-shadow: 0 2px 8px rgba(15, 52, 96, 0.3);
         }
-        .type-btn.active:hover {
-            background: #1a1a2e;
-            border-color: #1a1a2e;
-        }
-        .type-btn .btn-sub {
-            display: block;
-            font-size: 8px;
-            font-weight: 400;
-            opacity: 0.6;
-            text-transform: uppercase;
-        }
-        .type-btn.active .btn-sub {
-            opacity: 0.8;
-        }
+        .type-btn .btn-sub { display: block; font-size: 8px; font-weight: 400; opacity: 0.6; text-transform: uppercase; }
+        .type-btn.active .btn-sub { opacity: 0.8; }
 
-        /* ===== RANGE SLIDERS (noUiSlider) ===== */
-        .range-wrapper {
-            margin: 12px 0 4px;
-        }
-        .range-values {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            color: #495057;
-            margin-top: 4px;
-        }
-        .range-values .range-min,
-        .range-values .range-max {
-            font-weight: 600;
-            color: #0f3460;
-        }
+        .range-wrapper { margin: 12px 0 4px; }
+        .range-values { display: flex; justify-content: space-between; font-size: 13px; color: #495057; margin-top: 4px; }
+        .range-values .range-min, .range-values .range-max { font-weight: 600; color: #0f3460; }
 
-        /* ===== ТАБЛИЦА КВАРТИР ===== */
-        .table-wrapper {
-            overflow-x: auto;
-            transition: all 0.3s ease;
-        }
+        .table-wrapper { overflow-x: auto; transition: all 0.3s ease; }
         .apartment-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            table-layout: auto;
-            min-width: 900px;
+            width: 100%; border-collapse: collapse; font-size: 14px; background: white;
+            border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            table-layout: auto; min-width: 900px;
         }
         .apartment-table th {
-            background: #f8f9fa;
-            color: #1a1a2e;
-            font-weight: 600;
-            padding: 12px 8px;
-            text-align: left;
-            border-bottom: 2px solid #dee2e6;
-            white-space: nowrap;
+            background: #f8f9fa; color: #1a1a2e; font-weight: 600;
+            padding: 12px 8px; text-align: left; border-bottom: 2px solid #dee2e6; white-space: nowrap;
         }
         .apartment-table td {
-            padding: 10px 8px;
-            border-bottom: 1px solid #f0f0f0;
-            vertical-align: middle;
-            white-space: nowrap;
+            padding: 10px 8px; border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle; white-space: nowrap;
         }
-        .apartment-table tbody tr {
-            cursor: pointer;
-            transition: background 0.15s;
-        }
-        .apartment-table tbody tr:hover {
-            background: #f8f9fa !important;
-        }
+        .apartment-table tbody tr { cursor: pointer; transition: background 0.15s; }
+        .apartment-table tbody tr:hover { background: #f8f9fa !important; }
 
         .apartment-table .col-number { width: 60px; text-align: center; }
         .apartment-table .col-building { width: 90px; }
@@ -222,39 +124,47 @@
         .status-reserved { background: #f5f5f5; }
         .status-sold { background: #e0e0e0; }
 
-        .apartment-actions {
-            display: flex;
-            gap: 6px;
-            justify-content: center;
-        }
-        .apartment-actions button {
-            border: none;
-            background: transparent;
-            font-size: 16px;
-            padding: 4px 6px;
-            border-radius: 6px;
-            transition: 0.2s;
-        }
+        .apartment-actions { display: flex; gap: 6px; justify-content: center; }
+        .apartment-actions button { border: none; background: transparent; font-size: 16px; padding: 4px 6px; border-radius: 6px; transition: 0.2s; }
         .apartment-actions .edit-btn { color: #0f3460; }
         .apartment-actions .edit-btn:hover { background: #e9ecef; }
         .apartment-actions .delete-btn { color: #dc3545; }
         .apartment-actions .delete-btn:hover { background: #f8d7da; }
 
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6c757d;
-        }
+        .empty-state { text-align: center; padding: 60px 20px; color: #6c757d; }
         .empty-state i { font-size: 48px; color: #dee2e6; }
         .apartment-number { font-weight: 700; color: #1a1a2e; }
-        .badge-status {
-            font-size: 12px;
-            padding: 3px 12px;
-            border-radius: 20px;
-        }
+        .badge-status { font-size: 12px; padding: 3px 12px; border-radius: 20px; }
         .badge-available { background: #c8e6c9; color: #1e7e34; }
         .badge-reserved { background: #fff3cd; color: #856404; }
         .badge-sold { background: #d6d8db; color: #383d41; }
+
+        /* ===== СОРТИРОВКА ===== */
+        .sort-header {
+            cursor: pointer; user-select: none;
+            display: inline-flex; align-items: center; gap: 4px;
+            transition: 0.2s; padding: 2px 4px; border-radius: 4px;
+        }
+        .sort-header:hover { background: rgba(0,0,0,0.05); color: #0f3460; }
+        .sort-icon { font-size: 12px; opacity: 0.3; transition: 0.2s; }
+        .sort-icon.active { opacity: 1; color: #0f3460; }
+
+        /* ===== ПАГИНАЦИЯ ===== */
+        .pagination-wrapper {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 16px 20px; flex-wrap: wrap; gap: 12px;
+            background: white; border-top: 1px solid #f0f0f0;
+        }
+        .pagination-info { color: #6c757d; font-size: 14px; }
+        .pagination-controls { display: flex; gap: 8px; align-items: center; }
+        .page-btn {
+            width: 32px; height: 32px; border: 1px solid #dee2e6; border-radius: 6px;
+            background: white; cursor: pointer; display: inline-flex; align-items: center;
+            justify-content: center; font-size: 14px; transition: 0.15s;
+        }
+        .page-btn:hover { background: #f0f2f5; border-color: #0f3460; }
+        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .page-btn.active { background: #0f3460; color: white; border-color: #0f3460; }
 
         @media (max-width: 1200px) {
             .container-fluid.shifted { padding-right: 0; }
@@ -272,38 +182,24 @@
             .type-btn { flex: 1 0 calc(20% - 6px); }
         }
         .loading-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.3);
-            z-index: 9998;
-            justify-content: center;
-            align-items: center;
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.3);
+            z-index: 9998; justify-content: center; align-items: center;
         }
         .loading-spinner {
-            background: white;
-            padding: 20px 40px;
-            border-radius: 12px;
+            background: white; padding: 20px 40px; border-radius: 12px;
             box-shadow: 0 5px 30px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            display: flex; align-items: center; gap: 12px;
         }
     </style>
 </head>
 <body>
 
-<!-- КНОПКА-ПОЛЗУНОК ДЛЯ ФИЛЬТРОВ -->
-<button class="filter-toggle-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterPanel" aria-controls="filterPanel">
+<button class="filter-toggle-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterPanel">
     <i class="bi bi-funnel"></i>
 </button>
 
-<!-- ОСНОВНОЙ КОНТЕЙНЕР -->
 <div class="container-fluid" id="mainContainer">
-    <!-- ХЕДЕР -->
     <div class="header">
         <div class="d-flex align-items-center gap-3">
             <a href="/" class="back-link"><i class="bi bi-arrow-left"></i> На главную</a>
@@ -318,50 +214,27 @@
         </div>
     </div>
 
-    <!-- ПАНЕЛЬ ФИЛЬТРОВ (OFFCANVAS) -->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="filterPanel" aria-labelledby="filterPanelLabel">
+    <!-- ПАНЕЛЬ ФИЛЬТРОВ -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="filterPanel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title" id="filterPanelLabel"><i class="bi bi-funnel"></i> Фильтры</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <h5 class="offcanvas-title"><i class="bi bi-funnel"></i> Фильтры</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
         </div>
         <div class="offcanvas-body">
-            <form id="filterForm">
-                <!-- Тип квартиры (КРАСИВЫЕ КНОПКИ) -->
+            <form id="filterForm" onsubmit="return false;">
                 <div class="filter-group">
                     <label>Тип квартиры</label>
                     <div class="type-buttons" id="filterTypesContainer">
-                        <button class="type-btn" data-value="STUDIO">
-                            С
-                            <span class="btn-sub">студия</span>
-                        </button>
-                        <button class="type-btn" data-value="ONE_ROOM">
-                            1
-                            <span class="btn-sub">комн</span>
-                        </button>
-                        <button class="type-btn" data-value="TWO_ROOM_EURO">
-                            2Е
-                            <span class="btn-sub">евро</span>
-                        </button>
-                        <button class="type-btn" data-value="TWO_ROOM">
-                            2
-                            <span class="btn-sub">комн</span>
-                        </button>
-                        <button class="type-btn" data-value="THREE_ROOM_EURO">
-                            3Е
-                            <span class="btn-sub">евро</span>
-                        </button>
-                        <button class="type-btn" data-value="THREE_ROOM">
-                            3
-                            <span class="btn-sub">комн</span>
-                        </button>
-                        <button class="type-btn" data-value="FOUR_ROOM_EURO">
-                            4Е
-                            <span class="btn-sub">евро</span>
-                        </button>
+                        <button class="type-btn" data-value="STUDIO">С<span class="btn-sub">студия</span></button>
+                        <button class="type-btn" data-value="ONE_ROOM">1<span class="btn-sub">комн</span></button>
+                        <button class="type-btn" data-value="TWO_ROOM_EURO">2Е<span class="btn-sub">евро</span></button>
+                        <button class="type-btn" data-value="TWO_ROOM">2<span class="btn-sub">комн</span></button>
+                        <button class="type-btn" data-value="THREE_ROOM_EURO">3Е<span class="btn-sub">евро</span></button>
+                        <button class="type-btn" data-value="THREE_ROOM">3<span class="btn-sub">комн</span></button>
+                        <button class="type-btn" data-value="FOUR_ROOM_EURO">4Е<span class="btn-sub">евро</span></button>
                     </div>
                 </div>
 
-                <!-- Тип санузла -->
                 <div class="filter-group">
                     <label>Тип санузла</label>
                     <select class="form-select" id="filterBathroomType">
@@ -371,55 +244,43 @@
                     </select>
                 </div>
 
-                <!-- Корпус -->
                 <div class="filter-group">
                     <label>Корпус</label>
                     <select class="form-select" id="filterBuilding"><option value="">Все</option></select>
                 </div>
 
-                <!-- Секция -->
                 <div class="filter-group">
                     <label>Секция</label>
                     <select class="form-select" id="filterEntrance"><option value="">Все</option></select>
                 </div>
 
-                <!-- Этажи (range) -->
                 <div class="filter-group">
                     <label>Этаж</label>
-                    <div class="range-wrapper">
-                        <div id="floorSlider" class="noUiSlider"></div>
-                    </div>
+                    <div class="range-wrapper"><div id="floorSlider" class="noUiSlider"></div></div>
                     <div class="range-values">
                         <span class="range-min" id="floorMinLabel">-</span>
                         <span class="range-max" id="floorMaxLabel">-</span>
                     </div>
                 </div>
 
-                <!-- Площадь (range) -->
                 <div class="filter-group">
                     <label>Площадь, м²</label>
-                    <div class="range-wrapper">
-                        <div id="areaSlider" class="noUiSlider"></div>
-                    </div>
+                    <div class="range-wrapper"><div id="areaSlider" class="noUiSlider"></div></div>
                     <div class="range-values">
                         <span class="range-min" id="areaMinLabel">-</span>
                         <span class="range-max" id="areaMaxLabel">-</span>
                     </div>
                 </div>
 
-                <!-- Цена (range) -->
                 <div class="filter-group">
                     <label>Цена, ₽</label>
-                    <div class="range-wrapper">
-                        <div id="priceSlider" class="noUiSlider"></div>
-                    </div>
+                    <div class="range-wrapper"><div id="priceSlider" class="noUiSlider"></div></div>
                     <div class="range-values">
                         <span class="range-min" id="priceMinLabel">-</span>
                         <span class="range-max" id="priceMaxLabel">-</span>
                     </div>
                 </div>
 
-                <!-- Балкон -->
                 <div class="filter-group">
                     <label>Балкон</label>
                     <div class="form-check">
@@ -428,7 +289,6 @@
                     </div>
                 </div>
 
-                <!-- Кнопки -->
                 <div class="filter-actions">
                     <button type="button" class="btn btn-primary" id="applyFiltersBtn">Применить</button>
                     <button type="button" class="btn btn-outline-secondary" id="resetFiltersBtn">Сбросить все</button>
@@ -437,555 +297,527 @@
         </div>
     </div>
 
-    <!-- ТАБЛИЦА КВАРТИР -->
+    <!-- ТАБЛИЦА -->
     <div id="apartmentList">
         <div class="text-center py-5 text-muted">Загрузка квартир...</div>
     </div>
 </div>
 
-<!-- ===== SCRIPTS ===== -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
 <script>
     // =============================================================
-    // 1. КОНСТАНТЫ И ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
+    // 1. КОНСТАНТЫ И ГЛОБАЛЬНОЕ СОСТОЯНИЕ
     // =============================================================
     const pathParts = window.location.pathname.split('/');
     const complexId = pathParts[pathParts.length - 1];
     const API = '/api';
 
-    let allApartments = [];
     let complexData = null;
-    let filteredApartments = [];
     let buildingsMap = {};
     let entrancesMap = {};
 
+    // Пул ВСЕХ квартир ЖК. Нужен для того, чтобы динамические границы
+    // слайдеров считались по всем квартирам комплекса, а не по текущей
+    // странице / предыдущему результату фильтрации.
+    let apartmentPool = [];
+
+    // Текущая страница (как вернул сервер) — для отрисовки таблицы.
+    let allApartments = [];
+
+    // Пагинация / сортировка
+    let currentPage = 0;
+    let pageSize = 50;
+    let totalPages = 1;
+    let totalElements = 0;
+    let sortField = 'price';
+    let sortDir = 'asc';
+
+    // Слайдеры
+    let floorSlider = null;
+    let areaSlider = null;
+    let priceSlider = null;
+    let slidersInited = false;
+
+    // Колонка таблицы → поле для сортировки на бэкенде.
+    // Пустая строка = сортировка клиентская (поля вложенных связей).
+    const SORT_BACKEND = {
+        number: 'number',
+        building: '',
+        entrance: '',
+        floor: 'floor',
+        area: 'area',
+        type: 'type',
+        bathroom: 'bathroomType',
+        balcony: 'hasBalcony',
+        price: 'price',
+        status: 'status'
+    };
+
     // =============================================================
-    // 2. ФУНКЦИИ ДЛЯ ФОРМАТИРОВАНИЯ ENUM
+    // 2. ФОРМАТИРОВАНИЕ
     // =============================================================
     function formatApartmentType(type) {
-        const map = {
-            'STUDIO': 'Студия',
-            'ONE_ROOM': '1к-ком.',
-            'TWO_ROOM_EURO': '2Е',
-            'TWO_ROOM': '2к-ком.',
-            'THREE_ROOM_EURO': '3Е',
-            'THREE_ROOM': '3к-ком.',
-            'FOUR_ROOM_EURO': '4Е'
-        };
+        const map = { STUDIO: 'Студия', ONE_ROOM: '1к-ком.', TWO_ROOM_EURO: '2Е', TWO_ROOM: '2к-ком.', THREE_ROOM_EURO: '3Е', THREE_ROOM: '3к-ком.', FOUR_ROOM_EURO: '4Е' };
         return map[type] || type || '—';
     }
-
     function formatBathroomType(type) {
-        const map = {
-            'COMBINED': 'Совмещённый',
-            'SEPARATE': 'Раздельный'
-        };
-        return map[type] || type || '—';
+        return type === 'COMBINED' ? 'Совмещённый' : type === 'SEPARATE' ? 'Раздельный' : (type || '—');
     }
-
     function formatStatus(status) {
-        const map = {
-            'AVAILABLE': 'Свободна',
-            'RESERVED': 'Забронирована',
-            'SOLD': 'Продана'
-        };
+        const map = { AVAILABLE: 'Свободна', RESERVED: 'Забронирована', SOLD: 'Продана' };
         return map[status] || status || '—';
     }
-
-    function getStatusClass(status) {
-        const map = {
-            'AVAILABLE': 'status-available',
-            'RESERVED': 'status-reserved',
-            'SOLD': 'status-sold'
-        };
-        return map[status] || '';
+    function getStatusClass(s) {
+        return s === 'AVAILABLE' ? 'status-available' : s === 'RESERVED' ? 'status-reserved' : s === 'SOLD' ? 'status-sold' : '';
     }
-
-    function getStatusBadgeClass(status) {
-        const map = {
-            'AVAILABLE': 'badge-available',
-            'RESERVED': 'badge-reserved',
-            'SOLD': 'badge-sold'
-        };
-        return map[status] || 'badge-secondary';
+    function getStatusBadgeClass(s) {
+        return s === 'AVAILABLE' ? 'badge-available' : s === 'RESERVED' ? 'badge-reserved' : s === 'SOLD' ? 'badge-sold' : 'badge-secondary';
     }
-
     function showLoading(show) {
-        const overlay = document.getElementById('loadingOverlay');
-        if (overlay) overlay.style.display = show ? 'flex' : 'none';
+        const el = document.getElementById('loadingOverlay');
+        if (el) el.style.display = show ? 'flex' : 'none';
     }
-    function showToast(message, type) {
-        alert(message);
+    function showToast(m) { alert(m); }
+
+    // =============================================================
+    // 3. ЧТЕНИЕ ТЕКУЩИХ «ЖЁСТКИХ» ФИЛЬТРОВ (без слайдеров)
+    // =============================================================
+    function activeTypes() {
+        return Array.from(document.querySelectorAll('#filterTypesContainer .type-btn.active')).map(b => b.dataset.value);
+    }
+    function getBathroomFilter() { return document.getElementById('filterBathroomType').value; }
+    function getBuildingFilter() { return document.getElementById('filterBuilding').value; }
+    function getEntranceFilter() { return document.getElementById('filterEntrance').value; }
+    function isBalconyFilter() { return document.getElementById('filterBalcony').checked; }
+
+    // Совпадает ли квартира с выбранными типами/санузлом/корпусом/секцией/балконом.
+    function hardFilterMatch(ap) {
+        const types = activeTypes();
+        if (types.length && !types.includes(ap.type)) return false;
+
+        const bth = getBathroomFilter();
+        if (bth && ap.bathroomType !== bth) return false;
+
+        const bld = getBuildingFilter();
+        if (bld && !(ap.entrance && ap.entrance.building && String(ap.entrance.building.id) === String(bld))) return false;
+
+        const ent = getEntranceFilter();
+        if (ent && !(ap.entrance && String(ap.entrance.id) === String(ent))) return false;
+
+        if (isBalconyFilter() && !ap.hasBalcony) return false;
+
+        return true;
     }
 
     // =============================================================
-    // 3. ЗАГРУЗКА ДАННЫХ
+    // 4. ЗАГРУЗКА ПУЛА ВСЕХ КВАРТИР ЖК
+    // =============================================================
+    async function loadApartmentPool() {
+        const url = `${API}/apartments/filter?residentialComplexId=${complexId}&page=0&size=100000&sort=id,asc`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Ошибка загрузки пула квартир');
+        const data = await res.json();
+        apartmentPool = Array.isArray(data.content) ? data.content : (Array.isArray(data) ? data : []);
+    }
+
+    // =============================================================
+    // 5. ДИНАМИЧЕСКИЕ ГРАНИЦЫ СЛАЙДЕРОВ
+    //    = min/max по ВСЕМ квартирам ЖК, удовлетворяющим «жёстким»
+    //      фильтрам (типы/санузел/корпус/секция/балкон). Слайдеры при
+    //      изменении этих фильтров сбрасываются на полный диапазон,
+    //      поэтому не «запирают» выборку при расширении фильтра.
+    // =============================================================
+    function computeLimits() {
+        const subset = apartmentPool.filter(hardFilterMatch);
+        let minFloor = Infinity, maxFloor = -Infinity;
+        let minArea = Infinity, maxArea = -Infinity;
+        let minPrice = Infinity, maxPrice = -Infinity;
+        subset.forEach(a => {
+            if (typeof a.floor === 'number' && isFinite(a.floor)) { if (a.floor < minFloor) minFloor = a.floor; if (a.floor > maxFloor) maxFloor = a.floor; }
+            if (typeof a.area === 'number' && isFinite(a.area)) { if (a.area < minArea) minArea = a.area; if (a.area > maxArea) maxArea = a.area; }
+            if (typeof a.price === 'number' && isFinite(a.price)) { if (a.price < minPrice) minPrice = a.price; if (a.price > maxPrice) maxPrice = a.price; }
+        });
+        return {
+            floor: isFinite(minFloor) ? [minFloor, maxFloor] : [1, 200],
+            area: isFinite(minArea) ? [minArea, maxArea] : [0, 10000],
+            price: isFinite(minPrice) ? [minPrice, maxPrice] : [0, 100000000]
+        };
+    }
+
+    function applySliderRange(slider, range) {
+        if (!slider || !slider.noUiSlider) return;
+        let [min, max] = range;
+        if (min === max) {
+            // noUiSlider требует min < max — делаем маленький запас вокруг значения
+            slider.noUiSlider.updateOptions({ range: { min: min - 1, max: max + 1 } });
+            slider.noUiSlider.set([min, max]);
+            return;
+        }
+        slider.noUiSlider.updateOptions({ range: { min: min, max: max } });
+        slider.noUiSlider.set([min, max]);
+    }
+
+    function refreshSliderLimits() {
+        if (!slidersInited) return;
+        const lim = computeLimits();
+        applySliderRange(floorSlider, lim.floor);
+        applySliderRange(areaSlider, lim.area);
+        applySliderRange(priceSlider, lim.price);
+        renderSliderLabels();
+    }
+
+    function renderSliderLabels() {
+        const lim = computeLimits();
+        document.getElementById('floorMinLabel').textContent = lim.floor[0];
+        document.getElementById('floorMaxLabel').textContent = lim.floor[1];
+        document.getElementById('areaMinLabel').textContent = +lim.area[0].toFixed(1);
+        document.getElementById('areaMaxLabel').textContent = +lim.area[1].toFixed(1);
+        document.getElementById('priceMinLabel').textContent = Math.round(lim.price[0]).toLocaleString();
+        document.getElementById('priceMaxLabel').textContent = Math.round(lim.price[1]).toLocaleString();
+    }
+
+    // =============================================================
+    // 6. ИНИЦИАЛИЗАЦИЯ СЛАЙДЕРОВ (один раз)
+    // =============================================================
+    function initSliders() {
+        const fs = document.getElementById('floorSlider');
+        noUiSlider.create(fs, { start: [1, 200], connect: true, step: 1, range: { min: 1, max: 200 }, format: { to: v => Math.round(v), from: v => Math.round(parseFloat(v)) } });
+        fs.noUiSlider.on('update', v => {
+            const el1 = document.getElementById('floorMinLabel');
+            const el2 = document.getElementById('floorMaxLabel');
+            if (el1) el1.textContent = Math.round(v[0]);
+            if (el2) el2.textContent = Math.round(v[1]);
+        });
+        floorSlider = fs;
+
+        const as = document.getElementById('areaSlider');
+        noUiSlider.create(as, { start: [0, 10000], connect: true, step: 0.5, range: { min: 0, max: 10000 }, format: { to: v => parseFloat(v).toFixed(1), from: v => parseFloat(v) } });
+        as.noUiSlider.on('update', v => {
+            const el1 = document.getElementById('areaMinLabel');
+            const el2 = document.getElementById('areaMaxLabel');
+            if (el1) el1.textContent = parseFloat(v[0]).toFixed(1);
+            if (el2) el2.textContent = parseFloat(v[1]).toFixed(1);
+        });
+        areaSlider = as;
+
+        const ps = document.getElementById('priceSlider');
+        noUiSlider.create(ps, { start: [0, 100000000], connect: true, step: 1000, range: { min: 0, max: 100000000 }, format: { to: v => Math.round(v), from: v => Math.round(parseFloat(v)) } });
+        ps.noUiSlider.on('update', v => {
+            const el1 = document.getElementById('priceMinLabel');
+            const el2 = document.getElementById('priceMaxLabel');
+            if (el1) el1.textContent = Math.round(v[0]).toLocaleString();
+            if (el2) el2.textContent = Math.round(v[1]).toLocaleString();
+        });
+        priceSlider = ps;
+    }
+
+    // =============================================================
+    // 7. ЗАГРУЗКА КВАРТИР С СЕРВЕРА (таблица)
+    //    Границы слайдеров здесь НЕ пересчитываются: они всегда
+    //    считаются от пула (refreshSliderLimits).
+    // =============================================================
+    function loadApartments() {
+        const params = new URLSearchParams();
+        params.append('residentialComplexId', complexId);
+        params.append('page', currentPage);
+        params.append('size', pageSize);
+        const backendField = SORT_BACKEND[sortField] || 'price';
+        if (backendField) params.append('sort', `${backendField},${sortDir}`);
+
+        const bld = getBuildingFilter();
+        if (bld) params.append('buildingId', bld);
+        const ent = getEntranceFilter();
+        if (ent) params.append('entranceId', ent);
+
+        activeTypes().forEach(t => params.append('types', t));
+
+        const bth = getBathroomFilter();
+        if (bth) params.append('bathroomType', bth);
+
+        // Слайдеры: текущие значения ручек.
+        if (slidersInited) {
+            const fv = floorSlider.noUiSlider.get();
+            params.append('floorFrom', Math.round(fv[0]));
+            params.append('floorTo', Math.round(fv[1]));
+            const av = areaSlider.noUiSlider.get();
+            params.append('areaFrom', parseFloat(av[0]));
+            params.append('areaTo', parseFloat(av[1]));
+            const pv = priceSlider.noUiSlider.get();
+            params.append('priceFrom', parseFloat(pv[0]));
+            params.append('priceTo', parseFloat(pv[1]));
+        }
+
+        if (isBalconyFilter()) params.append('hasBalcony', 'true');
+
+        showLoading(true);
+        fetch(`${API}/apartments/filter?${params.toString()}`)
+            .then(res => { if (!res.ok) throw new Error(`Ошибка ${res.status}`); return res.json(); })
+            .then(data => {
+                const apartments = data.content || [];
+                totalElements = data.totalElements || 0;
+                totalPages = data.totalPages || 1;
+                currentPage = data.number || 0;
+                allApartments = apartments;
+                renderApartments(apartments);
+            })
+            .catch(err => {
+                console.error('Ошибка загрузки квартир:', err);
+                document.getElementById('apartmentList').innerHTML = `<div class="empty-state"><i class="bi bi-exclamation-triangle"></i><p class="mt-2">Ошибка загрузки квартир</p></div>`;
+            })
+            .finally(() => showLoading(false));
+    }
+
+    // =============================================================
+    // 8. ОСНОВНАЯ ЗАГРУЗКА СТРАНИЦЫ
     // =============================================================
     async function loadData() {
+        showLoading(true);
         try {
-            const complexRes = await fetch(`${API}/complexes/${complexId}`);
-            if (!complexRes.ok) throw new Error('Ошибка загрузки ЖК');
-            complexData = await complexRes.json();
+            const cr = await fetch(`${API}/complexes/${complexId}`);
+            if (!cr.ok) throw new Error('Ошибка загрузки ЖК');
+            complexData = await cr.json();
             renderComplexHeader(complexData);
-
-            const apartmentsRes = await fetch(`${API}/apartments?complexId=${complexId}&size=1000`);
-            if (!apartmentsRes.ok) throw new Error('Ошибка загрузки квартир');
-            const pageData = await apartmentsRes.json();
-            allApartments = Array.isArray(pageData.content) ? pageData.content : (Array.isArray(pageData) ? pageData : []);
-            filteredApartments = [...allApartments];
-            renderApartments(filteredApartments);
-
-            // ВАЖНО: сначала заполняем фильтры, потом слайдеры
             populateFilters(complexData);
-            updateAllLimits();
-            initSliders();
-        } catch (error) {
-            console.error(error);
-            document.getElementById('apartmentList').innerHTML = `
-            <div class="empty-state">
-                <i class="bi bi-exclamation-triangle"></i>
-                <p class="mt-2">Ошибка загрузки данных</p>
-            </div>
-        `;
+
+            if (!slidersInited) {
+                initSliders();
+                slidersInited = true;
+            }
+
+            // Пустой пул → слайдеры показывают полный «пустой» диапазон
+            await loadApartmentPool();
+            refreshSliderLimits();
+
+            sortField = 'price';
+            sortDir = 'asc';
+            currentPage = 0;
+            loadApartments();
+        } catch (e) {
+            console.error(e);
+            document.getElementById('apartmentList').innerHTML = '<div class="empty-state"><i class="bi bi-exclamation-triangle"></i><p class="mt-2">Ошибка загрузки данных</p></div>';
+        } finally {
+            showLoading(false);
         }
     }
 
-    // =============================================================
-    // 4. ХЕДЕР
-    // =============================================================
     function renderComplexHeader(data) {
         document.getElementById('complexName').textContent = data.name || 'Без названия';
         document.getElementById('complexAddress').textContent = data.address || '';
         document.getElementById('complexDeveloper').textContent = '🏗️ ' + (data.developer || '—');
         document.getElementById('complexDistrict').textContent = '🏘️ ' + (data.district || '—');
-
         if (data.buildings) {
             data.buildings.forEach(b => {
                 buildingsMap[b.id] = b.name;
-                if (b.entrances) {
-                    b.entrances.forEach(e => { entrancesMap[e.id] = e.name; });
-                }
+                if (b.entrances) b.entrances.forEach(e => { entrancesMap[e.id] = e.name; });
             });
         }
     }
 
     // =============================================================
-    // 5. ЗАПОЛНЕНИЕ ВЫПАДАЮЩИХ СПИСКОВ (КОРПУСА, СЕКЦИИ)
+    // 9. ВЫПАДАЮЩИЕ СПИСКИ (корпус → секция)
     // =============================================================
     function populateFilters(complex) {
-        const buildingSelect = document.getElementById('filterBuilding');
-        const entranceSelect = document.getElementById('filterEntrance');
-
-        // Сохраняем выбранное значение, если было
-        const currentBuildingId = buildingSelect.value;
-
-        // Очищаем и заполняем корпуса
-        buildingSelect.innerHTML = '<option value="">Все</option>';
-        if (complex.buildings && complex.buildings.length > 0) {
-            complex.buildings.forEach(b => {
-                buildingSelect.innerHTML += `<option value="${b.id}">${b.name}</option>`;
-            });
+        const bs = document.getElementById('filterBuilding');
+        const es = document.getElementById('filterEntrance');
+        const curB = bs.value;
+        bs.innerHTML = '<option value="">Все</option>';
+        if (complex.buildings) {
+            complex.buildings.forEach(b => { bs.innerHTML += `<option value="${b.id}">${b.name}</option>`; });
         }
+        if (curB) bs.value = curB;
 
-        // Восстанавливаем выбранное значение
-        if (currentBuildingId) {
-            buildingSelect.value = currentBuildingId;
-        }
-
-        // Заполняем секции
-        function updateEntrances() {
-            const selectedBuildingId = buildingSelect.value;
-            entranceSelect.innerHTML = '<option value="">Все</option>';
-
-            if (selectedBuildingId) {
-                const building = complex.buildings.find(b => b.id == selectedBuildingId);
-                if (building && building.entrances) {
-                    building.entrances.forEach(e => {
-                        entranceSelect.innerHTML += `<option value="${e.id}">${e.name}</option>`;
-                    });
-                }
+        const updateEntrances = () => {
+            const selB = bs.value;
+            es.innerHTML = '<option value="">Все</option>';
+            if (!complex.buildings) return;
+            if (selB) {
+                const bld = complex.buildings.find(b => String(b.id) === String(selB));
+                if (bld && bld.entrances) bld.entrances.forEach(e => { es.innerHTML += `<option value="${e.id}">${e.name}</option>`; });
             } else {
-                const allEntrances = [];
                 complex.buildings.forEach(b => {
-                    if (b.entrances) {
-                        b.entrances.forEach(e => { allEntrances.push(e); });
-                    }
-                });
-                allEntrances.forEach(e => {
-                    entranceSelect.innerHTML += `<option value="${e.id}">${e.name}</option>`;
+                    if (b.entrances) b.entrances.forEach(e => { es.innerHTML += `<option value="${e.id}">${e.name}</option>`; });
                 });
             }
-        }
+        };
 
-        // Убираем старые слушатели и добавляем новый
-        const newBuildingSelect = buildingSelect.cloneNode(true);
-        buildingSelect.parentNode.replaceChild(newBuildingSelect, buildingSelect);
-        const freshBuildingSelect = document.getElementById('filterBuilding');
-
-        freshBuildingSelect.addEventListener('change', function() {
-            updateEntrances();
-            // При смене корпуса обновляем ограничения
-            updateAllLimits();
-        });
-
-        // Сразу заполняем секции
+        // Заменяем select корпуса новым, чтобы повесить свежий слушатель
+        const newBs = bs.cloneNode(true);
+        bs.parentNode.replaceChild(newBs, bs);
+        const freshBs = document.getElementById('filterBuilding');
+        freshBs.addEventListener('change', () => { updateEntrances(); refreshSliderLimits(); });
         updateEntrances();
     }
 
     // =============================================================
-    // 6. ОБНОВЛЕНИЕ ОГРАНИЧЕНИЙ ФИЛЬТРОВ
+    // 10. ПАГИНАЦИЯ И СОРТИРОВКА
     // =============================================================
-    function getCurrentFilteredData() {
-        const selectedTypes = Array.from(document.querySelectorAll('#filterTypesContainer .type-btn.active'))
-            .map(btn => btn.dataset.value);
-        const bathroomType = document.getElementById('filterBathroomType').value;
-        const hasBalcony = document.getElementById('filterBalcony').checked;
-
-        let data = [...allApartments];
-
-        if (selectedTypes.length > 0) {
-            data = data.filter(ap => selectedTypes.includes(ap.type));
+    function applySort(field) {
+        if (sortField === field) {
+            sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+            sortField = field;
+            sortDir = 'asc';
         }
-        if (bathroomType) {
-            data = data.filter(ap => ap.bathroomType === bathroomType);
-        }
-        if (hasBalcony) {
-            data = data.filter(ap => ap.hasBalcony === true);
-        }
+        currentPage = 0;
 
-        return data;
+        const backendField = SORT_BACKEND[field];
+        if (!backendField) {
+            // Корпус/Секция — вложенные связи, сортируем загруженную страницу клиентски
+            sortLocallyAndRender();
+            return;
+        }
+        loadApartments();
     }
 
-    function updateAllLimits() {
-        const data = getCurrentFilteredData();
+    function sortLocallyAndRender() {
+        const field = sortField;
+        const dir = sortDir === 'asc' ? 1 : -1;
+        const sorted = [...allApartments].sort((a, b) => {
+            let va, vb;
+            if (field === 'building') { va = a.entrance && a.entrance.building ? a.entrance.building.name : ''; vb = b.entrance && b.entrance.building ? b.entrance.building.name : ''; }
+            else if (field === 'entrance') { va = a.entrance ? a.entrance.name : ''; vb = b.entrance ? b.entrance.name : ''; }
+            else { va = a[field]; vb = b[field]; }
+            if (va == null) va = '';
+            if (vb == null) vb = '';
+            if (typeof va === 'string' || typeof vb === 'string') return String(va).localeCompare(String(vb)) * dir;
+            return (Number(va) - Number(vb)) * dir;
+        });
+        allApartments = sorted;
+        renderApartments(sorted);
+    }
 
-        const floors = [...new Set(data.map(ap => ap.floor))].sort((a,b) => a-b);
-        const minFloor = floors[0] || 1;
-        const maxFloor = floors[floors.length-1] || 1;
+    function changePage(dir) {
+        if (dir === 'prev' && currentPage > 0) currentPage--;
+        else if (dir === 'next' && currentPage < totalPages - 1) currentPage++;
+        else return;
+        loadApartments();
+    }
 
-        const areas = data.map(ap => ap.area);
-        const minArea = areas.length > 0 ? Math.min(...areas) : 0;
-        const maxArea = areas.length > 0 ? Math.max(...areas) : 0;
-
-        const prices = data.map(ap => ap.price);
-        const minPrice = prices.length > 0 ? Math.min(...prices) : 0;
-        const maxPrice = prices.length > 0 ? Math.max(...prices) : 0;
-
-        document.getElementById('floorMinLabel').textContent = minFloor;
-        document.getElementById('floorMaxLabel').textContent = maxFloor;
-        document.getElementById('areaMinLabel').textContent = minArea.toFixed(1);
-        document.getElementById('areaMaxLabel').textContent = maxArea.toFixed(1);
-        document.getElementById('priceMinLabel').textContent = Math.round(minPrice).toLocaleString();
-        document.getElementById('priceMaxLabel').textContent = Math.round(maxPrice).toLocaleString();
-
-        const floorSlider = document.getElementById('floorSlider').noUiSlider;
-        const areaSlider = document.getElementById('areaSlider').noUiSlider;
-        const priceSlider = document.getElementById('priceSlider').noUiSlider;
-
-        if (floorSlider) {
-            floorSlider.updateOptions({
-                range: { min: minFloor, max: maxFloor },
-                start: [minFloor, maxFloor]
-            });
-        }
-        if (areaSlider) {
-            areaSlider.updateOptions({
-                range: { min: minArea, max: maxArea },
-                start: [minArea, maxArea]
-            });
-        }
-        if (priceSlider) {
-            priceSlider.updateOptions({
-                range: { min: minPrice, max: maxPrice },
-                start: [minPrice, maxPrice]
-            });
-        }
+    function changePageSize() {
+        pageSize = parseInt(document.getElementById('pageSizeSelect').value);
+        currentPage = 0;
+        loadApartments();
     }
 
     // =============================================================
-    // 7. ИНИЦИАЛИЗАЦИЯ СЛАЙДЕРОВ
-    // =============================================================
-    let floorSlider, areaSlider, priceSlider;
-
-    function initSliders() {
-        const data = getCurrentFilteredData();
-        const floors = [...new Set(data.map(ap => ap.floor))].sort((a,b) => a-b);
-        const minFloor = floors[0] || 1;
-        const maxFloor = floors[floors.length-1] || 1;
-        const areas = data.map(ap => ap.area);
-        const minArea = areas.length > 0 ? Math.min(...areas) : 0;
-        const maxArea = areas.length > 0 ? Math.max(...areas) : 0;
-        const prices = data.map(ap => ap.price);
-        const minPrice = prices.length > 0 ? Math.min(...prices) : 0;
-        const maxPrice = prices.length > 0 ? Math.max(...prices) : 0;
-
-        floorSlider = document.getElementById('floorSlider');
-        noUiSlider.create(floorSlider, {
-            start: [minFloor, maxFloor],
-            connect: true,
-            step: 1,
-            range: { min: minFloor, max: maxFloor },
-            format: {
-                to: value => Math.round(value),
-                from: value => Math.round(parseFloat(value))
-            }
-        });
-        floorSlider.noUiSlider.on('update', function(values) {
-            document.getElementById('floorMinLabel').textContent = Math.round(values[0]);
-            document.getElementById('floorMaxLabel').textContent = Math.round(values[1]);
-        });
-
-        areaSlider = document.getElementById('areaSlider');
-        noUiSlider.create(areaSlider, {
-            start: [minArea, maxArea],
-            connect: true,
-            step: 0.5,
-            range: { min: minArea, max: maxArea },
-            format: {
-                to: value => parseFloat(value).toFixed(1),
-                from: value => parseFloat(value)
-            }
-        });
-        areaSlider.noUiSlider.on('update', function(values) {
-            document.getElementById('areaMinLabel').textContent = parseFloat(values[0]).toFixed(1);
-            document.getElementById('areaMaxLabel').textContent = parseFloat(values[1]).toFixed(1);
-        });
-
-        priceSlider = document.getElementById('priceSlider');
-        noUiSlider.create(priceSlider, {
-            start: [minPrice, maxPrice],
-            connect: true,
-            step: 1000,
-            range: { min: minPrice, max: maxPrice },
-            format: {
-                to: value => Math.round(value),
-                from: value => Math.round(parseFloat(value))
-            }
-        });
-        priceSlider.noUiSlider.on('update', function(values) {
-            document.getElementById('priceMinLabel').textContent = Math.round(values[0]).toLocaleString();
-            document.getElementById('priceMaxLabel').textContent = Math.round(values[1]).toLocaleString();
-        });
-
-        document.getElementById('floorMinLabel').textContent = minFloor;
-        document.getElementById('floorMaxLabel').textContent = maxFloor;
-        document.getElementById('areaMinLabel').textContent = minArea.toFixed(1);
-        document.getElementById('areaMaxLabel').textContent = maxArea.toFixed(1);
-        document.getElementById('priceMinLabel').textContent = Math.round(minPrice).toLocaleString();
-        document.getElementById('priceMaxLabel').textContent = Math.round(maxPrice).toLocaleString();
-    }
-
-    // =============================================================
-    // 8. ТАБЛИЦА КВАРТИР
+    // 11. ТАБЛИЦА КВАРТИР
     // =============================================================
     function renderApartments(apartments) {
         const container = document.getElementById('apartmentList');
         if (!apartments || apartments.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <i class="bi bi-house"></i>
-                    <p class="mt-2">Нет квартир, соответствующих фильтрам</p>
-                </div>
-            `;
+            container.innerHTML = '<div class="empty-state"><i class="bi bi-house"></i><p class="mt-2">Нет квартир, соответствующих фильтрам</p></div>';
             return;
         }
+        const total = totalElements || apartments.length;
+        const startItem = currentPage * pageSize + 1;
+        const endItem = Math.min(startItem + apartments.length - 1, total);
 
-        let html = `
-            <div class="table-wrapper">
-                <table class="apartment-table">
-                    <thead>
-                        <tr>
-                            <th class="col-number">№</th>
-                            <th class="col-building">Корпус</th>
-                            <th class="col-entrance">Секция</th>
-                            <th class="col-floor">Этаж</th>
-                            <th class="col-area">Площадь</th>
-                            <th class="col-type">Формат</th>
-                            <th class="col-bathroom">Санузел</th>
-                            <th class="col-balcony">Балкон</th>
-                            <th class="col-price">Цена</th>
-                            <th class="col-status">Статус</th>
-                            <th class="col-actions">Действия</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-        `;
+        let html = `<div class="table-wrapper"><table class="apartment-table"><thead><tr>`;
+        const cols = [
+            ['number', '№', 'col-number'],
+            ['building', 'Корпус', 'col-building'],
+            ['entrance', 'Секция', 'col-entrance'],
+            ['floor', 'Этаж', 'col-floor'],
+            ['area', 'Площадь', 'col-area'],
+            ['type', 'Формат', 'col-type'],
+            ['bathroom', 'Санузел', 'col-bathroom'],
+            ['balcony', 'Балкон', 'col-balcony'],
+            ['price', 'Цена', 'col-price'],
+            ['status', 'Статус', 'col-status']
+        ];
+        cols.forEach(([field, label, cls]) => {
+            const isActive = sortField === field;
+            const icon = isActive ? (sortDir === 'asc' ? '↑' : '↓') : '⇅';
+            html += `<th class="${cls}"><span class="sort-header" onclick="applySort('${field}')">${label} <span class="sort-icon${isActive ? ' active' : ''}" id="sort-icon-${field}">${icon}</span></span></th>`;
+        });
+        html += `<th class="col-actions">Действия</th></tr></thead><tbody>`;
 
         apartments.forEach(ap => {
-            const statusClass = getStatusClass(ap.status);
-            const badgeClass = getStatusBadgeClass(ap.status);
-            const buildingName = ap.entrance?.building?.name || '—';
-            const entranceName = ap.entrance?.name || '—';
-            const typeDisplay = formatApartmentType(ap.type);
-            const bathroomDisplay = formatBathroomType(ap.bathroomType);
-            const statusDisplay = formatStatus(ap.status);
-            const balconyIcon = ap.hasBalcony ? '✅' : '❌';
-
-            html += `
-                <tr class="${statusClass}" onclick="navigateToApartment(${ap.id})">
-                    <td class="col-number apartment-number">${ap.number}</td>
-                    <td class="col-building">${buildingName}</td>
-                    <td class="col-entrance">${entranceName}</td>
-                    <td class="col-floor">${ap.floor}</td>
-                    <td class="col-area">${ap.area} м²</td>
-                    <td class="col-type">${typeDisplay}</td>
-                    <td class="col-bathroom">${bathroomDisplay}</td>
-                    <td class="col-balcony">${balconyIcon}</td>
-                    <td class="col-price">${ap.price ? ap.price.toLocaleString() + ' ₽' : '—'}</td>
-                    <td class="col-status"><span class="badge-status ${badgeClass}">${statusDisplay}</span></td>
-                    <td class="col-actions">
-                        <div class="apartment-actions">
-                            <button class="edit-btn" onclick="event.stopPropagation(); editApartment(${ap.id})" title="Редактировать">
-                                <i class="bi bi-pencil-square"></i>
-                            </button>
-                            <button class="delete-btn" onclick="event.stopPropagation(); deleteApartment(${ap.id})" title="Удалить">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `;
+            const bn = ap.entrance && ap.entrance.building ? ap.entrance.building.name : '—';
+            const en = ap.entrance ? ap.entrance.name : '—';
+            html += `<tr class="${getStatusClass(ap.status)}" onclick="navigateToApartment(${ap.id})">
+                <td class="col-number apartment-number">${ap.number}</td>
+                <td class="col-building">${bn}</td>
+                <td class="col-entrance">${en}</td>
+                <td class="col-floor">${ap.floor}</td>
+                <td class="col-area">${ap.area} м²</td>
+                <td class="col-type">${formatApartmentType(ap.type)}</td>
+                <td class="col-bathroom">${formatBathroomType(ap.bathroomType)}</td>
+                <td class="col-balcony">${ap.hasBalcony ? '✅' : '❌'}</td>
+                <td class="col-price">${ap.price ? Number(ap.price).toLocaleString() + ' ₽' : '—'}</td>
+                <td class="col-status"><span class="badge-status ${getStatusBadgeClass(ap.status)}">${formatStatus(ap.status)}</span></td>
+                <td class="col-actions">
+                    <div class="apartment-actions">
+                        <button class="edit-btn" onclick="event.stopPropagation();editApartment(${ap.id})" title="Редактировать"><i class="bi bi-pencil-square"></i></button>
+                        <button class="delete-btn" onclick="event.stopPropagation();deleteApartment(${ap.id})" title="Удалить"><i class="bi bi-trash"></i></button>
+                    </div>
+                </td>
+            </tr>`;
         });
+        html += `</tbody></table>`;
 
-        html += `</tbody></table></div>`;
+        html += `<div class="pagination-wrapper">
+            <div class="pagination-info">Показано <strong>${apartments.length}</strong> из <strong>${total}</strong> квартир</div>
+            <div class="pagination-controls">
+                <button class="page-btn" onclick="changePage('prev')" ${currentPage <= 0 ? 'disabled' : ''}><i class="bi bi-chevron-left"></i></button>
+                <span style="font-size:14px;font-weight:500;">${currentPage + 1} / ${totalPages || 1}</span>
+                <button class="page-btn" onclick="changePage('next')" ${currentPage >= totalPages - 1 ? 'disabled' : ''}><i class="bi bi-chevron-right"></i></button>
+                <span style="margin-left:16px;font-size:14px;color:#6c757d;">На странице:</span>
+                <select id="pageSizeSelect" class="form-select form-select-sm" style="width:auto;display:inline-block;" onchange="changePageSize()">
+                    <option value="20" ${pageSize === 20 ? 'selected' : ''}>20</option>
+                    <option value="50" ${pageSize === 50 ? 'selected' : ''}>50</option>
+                    <option value="100" ${pageSize === 100 ? 'selected' : ''}>100</option>
+                </select>
+            </div>
+        </div></div>`;
         container.innerHTML = html;
     }
 
     // =============================================================
-    // 9. ФИЛЬТРАЦИЯ
+    // 12. КНОПКИ «ПРИМЕНИТЬ» / «СБРОСИТЬ»
     // =============================================================
     function applyFilters() {
-        const params = new URLSearchParams();
-        params.append('residentialComplexId', complexId);
-
-        const buildingId = document.getElementById('filterBuilding').value;
-        if (buildingId) params.append('buildingId', buildingId);
-
-        const entranceId = document.getElementById('filterEntrance').value;
-        if (entranceId) params.append('entranceId', entranceId);
-
-        const selectedTypes = Array.from(document.querySelectorAll('#filterTypesContainer .type-btn.active'))
-            .map(btn => btn.dataset.value);
-        selectedTypes.forEach(t => params.append('types', t));
-
-        const bathroomType = document.getElementById('filterBathroomType').value;
-        if (bathroomType) params.append('bathroomType', bathroomType);
-
-        if (floorSlider) {
-            const vals = floorSlider.noUiSlider.get();
-            params.append('floorFrom', Math.round(vals[0]));
-            params.append('floorTo', Math.round(vals[1]));
-        }
-        if (areaSlider) {
-            const vals = areaSlider.noUiSlider.get();
-            params.append('areaFrom', parseFloat(vals[0]));
-            params.append('areaTo', parseFloat(vals[1]));
-        }
-        if (priceSlider) {
-            const vals = priceSlider.noUiSlider.get();
-            params.append('priceFrom', parseFloat(vals[0]));
-            params.append('priceTo', parseFloat(vals[1]));
-        }
-        if (document.getElementById('filterBalcony').checked) {
-            params.append('hasBalcony', 'true');
-        }
-
-        showLoading(true);
-        fetch(`${API}/apartments/filter?${params.toString()}&size=1000`, { method: 'GET' })
-            .then(res => {
-                if (!res.ok) throw new Error(`Ошибка ${res.status}: ${res.statusText}`);
-                return res.json();
-            })
-            .then(data => {
-                const apartments = Array.isArray(data.content) ? data.content : (Array.isArray(data) ? data : []);
-                if (apartments.length > 0) {
-                    renderApartments(apartments);
-                    // Для слайдеров используем полученные данные
-                    allApartments = apartments;
-                    updateAllLimits();
-                } else {
-                    console.error('Ответ сервера пустой:', data);
-                    renderApartments([]);
-                }
-            })
-            .catch(err => {
-                console.error('Ошибка фильтрации:', err);
-                document.getElementById('apartmentList').innerHTML = `
-                <div class="empty-state">
-                    <i class="bi bi-exclamation-triangle"></i>
-                    <p class="mt-2">Ошибка фильтрации: ${err.message}</p>
-                </div>
-            `;
-            })
-            .finally(() => showLoading(false));
+        currentPage = 0;
+        loadApartments();
     }
 
     function resetFilters() {
-        // 1. Сбрасываем кнопки типов квартир
-        document.querySelectorAll('#filterTypesContainer .type-btn').forEach(btn => btn.classList.remove('active'));
-
-        // 2. Сбрасываем выпадающие списки
+        document.querySelectorAll('#filterTypesContainer .type-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('filterBathroomType').value = '';
         document.getElementById('filterBuilding').value = '';
         document.getElementById('filterEntrance').value = '';
-
-        // 3. Сбрасываем чекбокс балкона
         document.getElementById('filterBalcony').checked = false;
 
-        // 4. Обновляем секции (чтобы они соответствовали сброшенному корпусу)
-        if (complexData) {
-            populateFilters(complexData);
-        }
+        if (complexData) populateFilters(complexData);
 
-        // 5. Получаем данные для сброса слайдеров
-        const data = getCurrentFilteredData();
-        const floors = [...new Set(data.map(ap => ap.floor))].sort((a, b) => a - b);
-        const minFloor = floors[0] || 1;
-        const maxFloor = floors[floors.length - 1] || 1;
+        refreshSliderLimits();
 
-        const areas = data.map(ap => ap.area);
-        const minArea = areas.length > 0 ? Math.min(...areas) : 0;
-        const maxArea = areas.length > 0 ? Math.max(...areas) : 0;
-
-        const prices = data.map(ap => ap.price);
-        const minPrice = prices.length > 0 ? Math.min(...prices) : 0;
-        const maxPrice = prices.length > 0 ? Math.max(...prices) : 0;
-
-        // 6. Сбрасываем слайдеры на полный диапазон
-        if (floorSlider) floorSlider.noUiSlider.set([minFloor, maxFloor]);
-        if (areaSlider) areaSlider.noUiSlider.set([minArea, maxArea]);
-        if (priceSlider) priceSlider.noUiSlider.set([minPrice, maxPrice]);
-
-        // 7. Обновляем метки и ограничения
-        updateAllLimits();
-
-        // 8. Показываем все квартиры (перезагружаем)
-        loadData();
+        sortField = 'price';
+        sortDir = 'asc';
+        currentPage = 0;
+        loadApartments();
     }
 
     // =============================================================
-    // 10. СДВИГ КОНТЕЙНЕРА
+    // 13. СДВИГ КОНТЕЙНЕРА ПРИ ОТКРЫТИИ ПАНЕЛИ ФИЛЬТРОВ
     // =============================================================
-    const filterPanel = document.getElementById('filterPanel');
-    const toggleBtn = document.querySelector('.filter-toggle-btn');
-    const mainContainer = document.getElementById('mainContainer');
-
-    filterPanel.addEventListener('show.bs.offcanvas', function () {
-        toggleBtn.classList.add('shifted');
-        mainContainer.classList.add('shifted');
+    const filterPanelEl = document.getElementById('filterPanel');
+    const toggleBtnEl = document.querySelector('.filter-toggle-btn');
+    const mainContainerEl = document.getElementById('mainContainer');
+    filterPanelEl.addEventListener('show.bs.offcanvas', () => {
+        toggleBtnEl.classList.add('shifted');
+        mainContainerEl.classList.add('shifted');
     });
-    filterPanel.addEventListener('hide.bs.offcanvas', function () {
-        toggleBtn.classList.remove('shifted');
-        mainContainer.classList.remove('shifted');
+    filterPanelEl.addEventListener('hide.bs.offcanvas', () => {
+        toggleBtnEl.classList.remove('shifted');
+        mainContainerEl.classList.remove('shifted');
     });
 
     // =============================================================
-    // 11. ДЕЙСТВИЯ
+    // 14. ДЕЙСТВИЯ
     // =============================================================
-    function navigateToApartment(id) {
-        alert(`Переход к квартире #${id} (скоро будет реализовано)`);
-    }
+    function navigateToApartment(id) { alert(`Переход к квартире #${id} (скоро)`); }
 
     async function deleteApartment(id) {
         if (!confirm('Удалить квартиру #' + id + '?')) return;
@@ -993,130 +825,107 @@
             const res = await fetch(`${API}/apartments/${id}`, { method: 'DELETE' });
             if (!res.ok) throw new Error('Ошибка удаления');
             alert('Квартира удалена');
-            loadData();
-        } catch (error) {
-            alert('Ошибка: ' + error.message);
-        }
+            await refreshPoolAndReload();
+        } catch (e) { alert('Ошибка: ' + e.message); }
+    }
+
+    // Перезагружает пул (границы слайдеров) и список квартир после изменений БД
+    async function refreshPoolAndReload() {
+        try {
+            await loadApartmentPool();
+            refreshSliderLimits();
+        } catch (e) { console.error(e); }
+        loadApartments();
     }
 
     // =============================================================
-    // 12. РЕДАКТИРОВАНИЕ
+    // 15. РЕДАКТИРОВАНИЕ
     // =============================================================
-    function parseNumberInput(value) {
-        if (!value) return null;
-        const cleaned = value.trim().replace(',', '.');
-        const parsed = parseFloat(cleaned);
-        return isNaN(parsed) ? null : parsed;
-    }
+    function parseNumberInput(v) { if (!v) return null; const c = v.trim().replace(',', '.'); const p = parseFloat(c); return isNaN(p) ? null : p; }
 
     function editApartment(id) {
-        const apartment = allApartments.find(a => a.id === id);
-        if (!apartment) {
-            alert('Квартира не найдена');
-            return;
-        }
-        document.getElementById('editApartmentId').value = apartment.id;
-        document.getElementById('editApartmentNumber').value = apartment.number || '';
-        document.getElementById('editApartmentFloor').value = apartment.floor || '';
-        document.getElementById('editApartmentArea').value = apartment.area || '';
-        document.getElementById('editApartmentPrice').value = apartment.price || '';
-        document.getElementById('editApartmentType').value = apartment.type || '';
-        document.getElementById('editApartmentBathroom').value = apartment.bathroomType || '';
-        document.getElementById('editApartmentBalcony').value = apartment.hasBalcony !== undefined ? String(apartment.hasBalcony) : 'true';
-        document.getElementById('editApartmentStatus').value = apartment.status || 'AVAILABLE';
-
-        const modal = new bootstrap.Modal(document.getElementById('editApartmentModal'));
-        modal.show();
+        const ap = allApartments.find(a => a.id === id);
+        if (!ap) { alert('Квартира не найдена'); return; }
+        document.getElementById('editApartmentId').value = ap.id;
+        document.getElementById('editApartmentNumber').value = ap.number || '';
+        document.getElementById('editApartmentFloor').value = ap.floor || '';
+        document.getElementById('editApartmentArea').value = ap.area || '';
+        document.getElementById('editApartmentPrice').value = ap.price || '';
+        document.getElementById('editApartmentType').value = ap.type || '';
+        document.getElementById('editApartmentBathroom').value = ap.bathroomType || '';
+        document.getElementById('editApartmentBalcony').value = ap.hasBalcony !== undefined ? String(ap.hasBalcony) : 'true';
+        document.getElementById('editApartmentStatus').value = ap.status || 'AVAILABLE';
+        new bootstrap.Modal(document.getElementById('editApartmentModal')).show();
     }
 
     async function saveApartment() {
         const form = document.getElementById('editApartmentForm');
         const id = document.getElementById('editApartmentId').value;
-
-        const numberRaw = document.getElementById('editApartmentNumber').value.trim();
-        const floorRaw = document.getElementById('editApartmentFloor').value.trim();
-        const areaRaw = document.getElementById('editApartmentArea').value.trim();
-        const priceRaw = document.getElementById('editApartmentPrice').value.trim();
+        const nR = document.getElementById('editApartmentNumber').value.trim();
+        const fR = document.getElementById('editApartmentFloor').value.trim();
+        const aR = document.getElementById('editApartmentArea').value.trim();
+        const pR = document.getElementById('editApartmentPrice').value.trim();
         const type = document.getElementById('editApartmentType').value;
         const bathroom = document.getElementById('editApartmentBathroom').value;
         const balcony = document.getElementById('editApartmentBalcony').value === 'true';
         const status = document.getElementById('editApartmentStatus').value;
 
-        let isValid = true;
-        form.querySelectorAll('.form-control, .form-select').forEach(el => el.classList.remove('is-invalid'));
-
-        if (!numberRaw || !floorRaw || !areaRaw || !priceRaw || !type || !bathroom) {
-            isValid = false;
-            if (!numberRaw) document.getElementById('editApartmentNumber').classList.add('is-invalid');
-            if (!floorRaw) document.getElementById('editApartmentFloor').classList.add('is-invalid');
-            if (!areaRaw) document.getElementById('editApartmentArea').classList.add('is-invalid');
-            if (!priceRaw) document.getElementById('editApartmentPrice').classList.add('is-invalid');
+        form.querySelectorAll('.form-control,.form-select').forEach(el => el.classList.remove('is-invalid'));
+        if (!nR || !fR || !aR || !pR || !type || !bathroom) {
+            if (!nR) document.getElementById('editApartmentNumber').classList.add('is-invalid');
+            if (!fR) document.getElementById('editApartmentFloor').classList.add('is-invalid');
+            if (!aR) document.getElementById('editApartmentArea').classList.add('is-invalid');
+            if (!pR) document.getElementById('editApartmentPrice').classList.add('is-invalid');
             if (!type) document.getElementById('editApartmentType').classList.add('is-invalid');
             if (!bathroom) document.getElementById('editApartmentBathroom').classList.add('is-invalid');
-            const firstInvalid = form.querySelector('.is-invalid');
-            if (firstInvalid) firstInvalid.focus();
             return;
         }
-
-        const number = parseInt(numberRaw);
-        const floor = parseInt(floorRaw);
-        const area = parseNumberInput(areaRaw);
-        const price = parseNumberInput(priceRaw);
-
+        const number = parseInt(nR), floor = parseInt(fR), area = parseNumberInput(aR), price = parseNumberInput(pR);
         if (isNaN(number) || number < 1) { document.getElementById('editApartmentNumber').classList.add('is-invalid'); return; }
         if (isNaN(floor) || floor < 1) { document.getElementById('editApartmentFloor').classList.add('is-invalid'); return; }
         if (area === null || area <= 0) { document.getElementById('editApartmentArea').classList.add('is-invalid'); return; }
         if (price === null || price < 0) { document.getElementById('editApartmentPrice').classList.add('is-invalid'); return; }
 
         const dto = { id, number, floor, area, price, type, bathroomType: bathroom, hasBalcony: balcony, status };
-
         try {
-            const res = await fetch(`${API}/apartments/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dto)
-            });
+            const res = await fetch(`${API}/apartments/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dto) });
             if (!res.ok) throw new Error('Ошибка сохранения');
-            const modal = bootstrap.Modal.getInstance(document.getElementById('editApartmentModal'));
-            modal.hide();
-            loadData();
-        } catch (error) {
-            alert('❌ Ошибка: ' + error.message);
-        }
+            bootstrap.Modal.getInstance(document.getElementById('editApartmentModal')).hide();
+            await refreshPoolAndReload();
+        } catch (e) { alert('❌ Ошибка: ' + e.message); }
     }
 
     // =============================================================
-    // 13. ПОДПИСКА НА СОБЫТИЯ
+    // 16. ПОДПИСКА НА СОБЫТИЯ
     // =============================================================
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('applyFiltersBtn').addEventListener('click', applyFilters);
         document.getElementById('resetFiltersBtn').addEventListener('click', resetFilters);
         document.getElementById('saveApartmentBtn').addEventListener('click', saveApartment);
 
-        // Кнопки типов — toggle
+        // Кнопки типов — toggle + немедленный пересчёт границ слайдеров
         document.querySelectorAll('#filterTypesContainer .type-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
+            btn.addEventListener('click', function (e) {
                 e.preventDefault();
                 this.classList.toggle('active');
-                updateAllLimits();
+                refreshSliderLimits();
             });
         });
 
-        document.getElementById('filterBathroomType').addEventListener('change', updateAllLimits);
-        document.getElementById('filterBalcony').addEventListener('change', updateAllLimits);
+        // Изменение «жёстких» фильтров → немедленный пересчёт границ слайдеров
+        document.getElementById('filterBathroomType').addEventListener('change', refreshSliderLimits);
+        document.getElementById('filterEntrance').addEventListener('change', refreshSliderLimits);
+        document.getElementById('filterBalcony').addEventListener('change', refreshSliderLimits);
 
-        document.getElementById('editApartmentModal').addEventListener('hidden.bs.modal', function () {
+        document.getElementById('editApartmentModal').addEventListener('hidden.bs.modal', () => {
             document.querySelectorAll('#editApartmentForm .is-invalid').forEach(el => el.classList.remove('is-invalid'));
         });
     });
 
-    // =============================================================
-    // 14. ЗАПУСК
-    // =============================================================
     loadData();
 </script>
 
-<!-- ===== МОДАЛКА РЕДАКТИРОВАНИЯ ===== -->
+<!-- МОДАЛКА РЕДАКТИРОВАНИЯ -->
 <div class="modal fade" id="editApartmentModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -1127,44 +936,34 @@
             <div class="modal-body">
                 <form id="editApartmentForm" novalidate>
                     <input type="hidden" id="editApartmentId">
-
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label class="form-label fw-bold">Номер <span class="text-danger">*</span></label>
                             <input type="number" class="form-control" id="editApartmentNumber" required min="1">
-                            <div class="invalid-feedback">Введите номер квартиры</div>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label fw-bold">Этаж <span class="text-danger">*</span></label>
                             <input type="number" class="form-control" id="editApartmentFloor" required min="1">
-                            <div class="invalid-feedback">Введите этаж</div>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label fw-bold">Площадь, м² <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="editApartmentArea" placeholder="Например: 45.5" required>
-                            <div class="invalid-feedback">Введите площадь (допустимы точка и запятая)</div>
+                            <input type="text" class="form-control" id="editApartmentArea" placeholder="45.5" required>
                         </div>
                     </div>
-
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label class="form-label fw-bold">Цена, ₽ <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="editApartmentPrice" placeholder="Например: 15000000" required>
-                            <div class="invalid-feedback">Введите цену</div>
+                            <input type="text" class="form-control" id="editApartmentPrice" placeholder="15000000" required>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label fw-bold">Тип <span class="text-danger">*</span></label>
                             <select class="form-select" id="editApartmentType" required>
                                 <option value="">Выберите</option>
-                                <option value="STUDIO">Студия</option>
-                                <option value="ONE_ROOM">1к-ком.</option>
-                                <option value="TWO_ROOM_EURO">2Е</option>
-                                <option value="TWO_ROOM">2к-ком.</option>
-                                <option value="THREE_ROOM_EURO">3Е</option>
-                                <option value="THREE_ROOM">3к-ком.</option>
+                                <option value="STUDIO">Студия</option><option value="ONE_ROOM">1к-ком.</option>
+                                <option value="TWO_ROOM_EURO">2Е</option><option value="TWO_ROOM">2к-ком.</option>
+                                <option value="THREE_ROOM_EURO">3Е</option><option value="THREE_ROOM">3к-ком.</option>
                                 <option value="FOUR_ROOM_EURO">4Е</option>
                             </select>
-                            <div class="invalid-feedback">Выберите тип</div>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label fw-bold">Санузел <span class="text-danger">*</span></label>
@@ -1173,16 +972,13 @@
                                 <option value="COMBINED">Совмещённый</option>
                                 <option value="SEPARATE">Раздельный</option>
                             </select>
-                            <div class="invalid-feedback">Выберите санузел</div>
                         </div>
                     </div>
-
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Балкон</label>
                             <select class="form-select" id="editApartmentBalcony">
-                                <option value="true">Есть</option>
-                                <option value="false">Нет</option>
+                                <option value="true">Есть</option><option value="false">Нет</option>
                             </select>
                         </div>
                         <div class="col-md-6">
@@ -1192,31 +988,21 @@
                                 <option value="RESERVED">Забронирована</option>
                                 <option value="SOLD">Продана</option>
                             </select>
-                            <div class="invalid-feedback">Выберите статус</div>
                         </div>
-                    </div>
-
-                    <div class="text-muted small mt-2">
-                        <i class="bi bi-info-circle"></i> Поля со звёздочкой <span class="text-danger">*</span> обязательны
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                <button type="button" class="btn btn-primary" id="saveApartmentBtn">
-                    <i class="bi bi-check-lg"></i> Сохранить
-                </button>
+                <button type="button" class="btn btn-primary" id="saveApartmentBtn"><i class="bi bi-check-lg"></i> Сохранить</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ===== ЗАГРУЗОЧНЫЙ ОВЕРЛЕЙ ===== -->
 <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Загрузка...</span>
-        </div>
+        <div class="spinner-border text-primary" role="status"></div>
         <span class="ms-2">Загрузка данных...</span>
     </div>
 </div>
