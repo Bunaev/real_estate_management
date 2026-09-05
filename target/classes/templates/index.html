@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>REM - Real Estate Management</title>
+    <link rel="icon" type="image/png" href="/fav.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
@@ -711,7 +712,48 @@
             justify-content: center; font-size: 14px; transition: 0.15s;
         }
         .page-btn:hover { background: #f0f2f5; border-color: #0f3460; }
-        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .page-btn:disabled { opacity: 0.4; cursor: not-allowed;
+        }
+        .header {
+            position: relative; /* Важно! Чтобы логотип позиционировался относительно шапки */
+        }
+
+        .header .logo {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%); /* Сдвигает логотип ровно на половину его ширины влево */
+            top: 50%;
+            transform: translate(-50%, -50%); /* Центрирует и по вертикали, и по горизонтали */
+        }
+        /* Обязательно добавьте это к классу .header */
+        .header {
+            position: relative;
+            min-height: 80px; /* Добавляем минимальную высоту шапке, чтобы она не была слишком низкой */
+            padding: 20px 30px; /* Сохраняем отступы */
+        }
+
+        /* Логотип по центру */
+        .header .logo {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%); /* Центрируем идеально */
+
+            /* ВАЖНО: Добавляем ширину, чтобы блок был широким */
+            width: 100%;
+            max-width: 300px; /* Ограничиваем максимальную ширину, чтобы не наезжал на края */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Сам логотип (картинка) */
+        .header .logo img {
+            height: 60px;
+            width: auto;
+            max-width: 100%; /* Чтобы не вылезал за пределы блока */
+            object-fit: contain; /* Сохраняет пропорции */
+        }
     </style>
 </head>
 <body>
@@ -770,11 +812,7 @@
                 </div>
             </div>
             <div class="logo">
-                <span class="logo-icon">🏢</span>
-                <div>
-                    <span>REM</span>
-                    <span class="logo-sub">Real Estate Management</span>
-                </div>
+                <img src="/logo.png" alt="REM Logo" style="height: 60px; width: auto;">
             </div>
         </div>
         <span class="time" id="time"></span>
