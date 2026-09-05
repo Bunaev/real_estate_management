@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TransferController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">search-service</a> &gt; <a href="index.source.html" class="el_package">com.search_service.controller</a> &gt; <span class="el_source">TransferController.java</span></div><h1>TransferController.java</h1><pre class="source lang-java linenums">package com.search_service.controller;
+
+import com.search_service.entity.Apartment;
+import com.search_service.service.ApartmentService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping(&quot;/api&quot;)
+public class TransferController {
+
+    private final ApartmentService apartmentService;
+
+    @PostMapping(value = &quot;/import-apartments&quot;, consumes = &quot;multipart/form-data&quot;)
+    public ResponseEntity&lt;String&gt; importApartments(@RequestParam(&quot;entranceId&quot;) Long entranceId, @RequestPart(&quot;file&quot;) MultipartFile file) {
+<span class="nc" id="L23">        List&lt;Apartment&gt; apartments = apartmentService.importApartments(entranceId, file);</span>
+<span class="nc" id="L24">        return ResponseEntity.ok(&quot;Загружено &quot; + apartments.size() + &quot; квартир&quot;);</span>
+    }
+
+    @GetMapping(&quot;/export-apartments/{entranceId}&quot;)
+    public ResponseEntity&lt;byte[]&gt; exportApartments(@PathVariable Long entranceId) {
+<span class="nc" id="L29">        HttpHeaders headers = new HttpHeaders();</span>
+<span class="nc" id="L30">        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);</span>
+<span class="nc" id="L31">        headers.setContentDispositionFormData(&quot;attachment&quot;, &quot;apartments.xlsx&quot;);</span>
+<span class="nc" id="L32">        return ResponseEntity.ok().headers(headers).body(apartmentService.exportApartmentByEntranceId(entranceId));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

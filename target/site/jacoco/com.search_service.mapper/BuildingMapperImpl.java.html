@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BuildingMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">search-service</a> &gt; <a href="index.source.html" class="el_package">com.search_service.mapper</a> &gt; <span class="el_source">BuildingMapperImpl.java</span></div><h1>BuildingMapperImpl.java</h1><pre class="source lang-java linenums">package com.search_service.mapper;
+
+import com.search_service.dto.in.BuildingDTO;
+import com.search_service.dto.out.BuildingShortDTO;
+import com.search_service.dto.out.EntranceShortDTO;
+import com.search_service.entity.Building;
+import com.search_service.entity.Entrance;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.processing.Generated;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2026-09-05T16:57:06+0300&quot;,
+    comments = &quot;version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)&quot;
+)
+@Component
+<span class="nc" id="L20">public class BuildingMapperImpl implements BuildingMapper {</span>
+
+    @Autowired
+    private EntranceMapper entranceMapper;
+
+    @Override
+    public Building toEntity(BuildingDTO dto) {
+<span class="nc bnc" id="L27" title="All 2 branches missed.">        if ( dto == null ) {</span>
+<span class="nc" id="L28">            return null;</span>
+        }
+
+<span class="nc" id="L31">        Building.BuildingBuilder building = Building.builder();</span>
+
+<span class="nc" id="L33">        building.name( dto.getName() );</span>
+<span class="nc" id="L34">        building.completionDate( dto.getCompletionDate() );</span>
+<span class="nc" id="L35">        building.keyHandoverDate( dto.getKeyHandoverDate() );</span>
+
+<span class="nc" id="L37">        return building.build();</span>
+    }
+
+    @Override
+    public List&lt;BuildingShortDTO&gt; toListDTO(List&lt;Building&gt; buildings) {
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        if ( buildings == null ) {</span>
+<span class="nc" id="L43">            return null;</span>
+        }
+
+<span class="nc" id="L46">        List&lt;BuildingShortDTO&gt; list = new ArrayList&lt;BuildingShortDTO&gt;( buildings.size() );</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">        for ( Building building : buildings ) {</span>
+<span class="nc" id="L48">            list.add( buildingToBuildingShortDTO( building ) );</span>
+<span class="nc" id="L49">        }</span>
+
+<span class="nc" id="L51">        return list;</span>
+    }
+
+    protected List&lt;EntranceShortDTO&gt; entranceListToEntranceShortDTOList(List&lt;Entrance&gt; list) {
+<span class="nc bnc" id="L55" title="All 2 branches missed.">        if ( list == null ) {</span>
+<span class="nc" id="L56">            return null;</span>
+        }
+
+<span class="nc" id="L59">        List&lt;EntranceShortDTO&gt; list1 = new ArrayList&lt;EntranceShortDTO&gt;( list.size() );</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">        for ( Entrance entrance : list ) {</span>
+<span class="nc" id="L61">            list1.add( entranceMapper.toDto( entrance ) );</span>
+<span class="nc" id="L62">        }</span>
+
+<span class="nc" id="L64">        return list1;</span>
+    }
+
+    protected BuildingShortDTO buildingToBuildingShortDTO(Building building) {
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        if ( building == null ) {</span>
+<span class="nc" id="L69">            return null;</span>
+        }
+
+<span class="nc" id="L72">        BuildingShortDTO.BuildingShortDTOBuilder buildingShortDTO = BuildingShortDTO.builder();</span>
+
+<span class="nc" id="L74">        buildingShortDTO.id( building.getId() );</span>
+<span class="nc" id="L75">        buildingShortDTO.name( building.getName() );</span>
+<span class="nc" id="L76">        buildingShortDTO.entrances( entranceListToEntranceShortDTOList( building.getEntrances() ) );</span>
+
+<span class="nc" id="L78">        return buildingShortDTO.build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LocalCacheContext.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">search-service</a> &gt; <a href="index.source.html" class="el_package">com.search_service.util.cache</a> &gt; <span class="el_source">LocalCacheContext.java</span></div><h1>LocalCacheContext.java</h1><pre class="source lang-java linenums">package com.search_service.util.cache;
+
+import com.search_service.exception.GeneralFormatException;
+import com.search_service.exception.TypeError;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
+
+<span class="nc" id="L12">@Slf4j</span>
+@Getter
+public class LocalCacheContext&lt;T&gt; {
+
+    private final Class&lt;T&gt; targetClass;
+    private final Map&lt;String, Class&lt;?&gt;&gt; fieldTypes;
+    private final Map&lt;String, List&lt;String&gt;&gt; fieldSynonyms;
+    private final List&lt;String&gt; classSynonyms;
+    private final Map&lt;Field, String&gt; columnNames;
+    private final Map&lt;Field, Method&gt; setters;
+    private final Map&lt;Field, Method&gt; getters;
+
+    private LocalCacheContext(Class&lt;T&gt; tClass, Map&lt;String, Class&lt;?&gt;&gt; fieldTypes, Map&lt;String, List&lt;String&gt;&gt; fieldSynonyms,
+                              List&lt;String&gt; classSynonyms, LinkedHashMap&lt;Field, String&gt; columnName,
+<span class="nc" id="L26">                              Map&lt;Field, Method&gt; setters, Map&lt;Field, Method&gt; getters) {</span>
+<span class="nc" id="L27">        this.targetClass = tClass;</span>
+<span class="nc" id="L28">        this.fieldTypes = Collections.unmodifiableMap(fieldTypes);</span>
+<span class="nc" id="L29">        this.fieldSynonyms = Collections.unmodifiableMap(fieldSynonyms);</span>
+<span class="nc" id="L30">        this.classSynonyms = Collections.unmodifiableList(classSynonyms);</span>
+<span class="nc" id="L31">        this.columnNames = Collections.unmodifiableMap(columnName);</span>
+<span class="nc" id="L32">        this.setters = Collections.unmodifiableMap(setters);</span>
+<span class="nc" id="L33">        this.getters = Collections.unmodifiableMap(getters);</span>
+<span class="nc" id="L34">    }</span>
+
+    static &lt;T&gt; LocalCacheContext&lt;T&gt; create(Class&lt;T&gt; tClass) {
+<span class="nc" id="L37">        ExcelClass excelClass = tClass.getAnnotation(ExcelClass.class);</span>
+<span class="nc" id="L38">        List&lt;Field&gt; annotatedFields = getAnnotationFields(tClass);</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">        if (excelClass != null) {</span>
+<span class="nc" id="L40">            return new LocalCacheContext&lt;&gt;(tClass, readFieldTypes(annotatedFields), readSynonymFields(annotatedFields),</span>
+<span class="nc" id="L41">                    readSynonymsClass(excelClass), readColumnName(annotatedFields), getSettersFields(annotatedFields, tClass),</span>
+<span class="nc" id="L42">                    getGettersFields(annotatedFields, tClass));</span>
+        } else {
+<span class="nc" id="L44">            log.error(&quot;Над классом {} нет аннотации @ExcelClass.&quot;, tClass.getSimpleName());</span>
+<span class="nc" id="L45">            throw new GeneralFormatException(TypeError.ABSENT_ANNOTATION, &quot;Класс &quot; + tClass.getName() + &quot; не аннотирован @ExcelClass&quot;);</span>
+        }
+    }
+
+    private static &lt;T&gt; Map&lt;Field, Method&gt; getGettersFields(List&lt;Field&gt; annotatedFields, Class&lt;T&gt; tClass) {
+        try {
+<span class="nc" id="L51">            Map&lt;Field, Method&gt; result = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">            for (Field field : annotatedFields) {</span>
+<span class="nc" id="L53">                String name = field.getName();</span>
+<span class="nc" id="L54">                String methodName = &quot;get&quot; + capitalizeWord(name);</span>
+<span class="nc" id="L55">                Method method = tClass.getMethod(methodName);</span>
+<span class="nc" id="L56">                result.put(field, method);</span>
+<span class="nc" id="L57">            }</span>
+<span class="nc" id="L58">            return result;</span>
+<span class="nc" id="L59">        } catch (NoSuchMethodException var8) {</span>
+<span class="nc" id="L60">            throw new GeneralFormatException(TypeError.ABSENT_METHOD, &quot;GET&quot;);</span>
+        }
+    }
+
+    private static &lt;T&gt; Map&lt;Field, Method&gt; getSettersFields(List&lt;Field&gt; annotatedFields, Class&lt;T&gt; tClass) {
+        try {
+<span class="nc" id="L66">            Map&lt;Field, Method&gt; result = new HashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">            for (Field field : annotatedFields) {</span>
+<span class="nc" id="L68">                String name = field.getName();</span>
+<span class="nc" id="L69">                String methodName = &quot;set&quot; + capitalizeWord(name);</span>
+<span class="nc" id="L70">                Method method = tClass.getMethod(methodName, field.getType());</span>
+<span class="nc" id="L71">                result.put(field, method);</span>
+<span class="nc" id="L72">            }</span>
+<span class="nc" id="L73">            return result;</span>
+<span class="nc" id="L74">        } catch (NoSuchMethodException var8) {</span>
+<span class="nc" id="L75">            throw new GeneralFormatException(TypeError.ABSENT_METHOD, &quot;SET&quot;);</span>
+        }
+    }
+
+    private static String capitalizeWord(String name) {
+<span class="nc" id="L80">        return name.substring(0, 1).toUpperCase() + name.substring(1);</span>
+    }
+
+    private static LinkedHashMap&lt;Field, String&gt; readColumnName(List&lt;Field&gt; fields) {
+<span class="nc" id="L84">        LinkedHashMap&lt;Field, String&gt; columnNames = new LinkedHashMap&lt;&gt;();</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">        for (Field field : fields) {</span>
+<span class="nc" id="L86">            ExcelColumn annotation = field.getAnnotation(ExcelColumn.class);</span>
+<span class="nc" id="L87">            String name = annotation.columnName();</span>
+<span class="nc bnc" id="L88" title="All 4 branches missed.">            if (name == null || name.isBlank()) {</span>
+<span class="nc" id="L89">                name = field.getName();</span>
+            }
+<span class="nc" id="L91">            columnNames.put(field, name);</span>
+<span class="nc" id="L92">        }</span>
+<span class="nc" id="L93">        return columnNames;</span>
+    }
+
+    private static Map&lt;String, List&lt;String&gt;&gt; readSynonymFields(List&lt;Field&gt; fields) {
+<span class="nc" id="L97">        return fields.stream().collect(java.util.stream.Collectors.toMap(Field::getName, field -&gt;</span>
+<span class="nc" id="L98">                Arrays.stream(field.getAnnotation(ExcelColumn.class).synonyms()).map(String::toLowerCase).toList()));</span>
+    }
+
+    private static Map&lt;String, Class&lt;?&gt;&gt; readFieldTypes(List&lt;Field&gt; fields) {
+<span class="nc" id="L102">        return fields.stream().collect(java.util.stream.Collectors.toMap(Field::getName, Field::getType));</span>
+    }
+
+    private static &lt;T&gt; List&lt;Field&gt; getAnnotationFields(Class&lt;T&gt; tClass) {
+<span class="nc" id="L106">        return Arrays.stream(tClass.getDeclaredFields())</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">                .filter(field -&gt; field.getAnnotation(ExcelColumn.class) != null).toList();</span>
+    }
+
+    private static List&lt;String&gt; readSynonymsClass(ExcelClass excelClass) {
+<span class="nc" id="L111">        return Arrays.stream(excelClass.synonyms()).map(String::toLowerCase).toList();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

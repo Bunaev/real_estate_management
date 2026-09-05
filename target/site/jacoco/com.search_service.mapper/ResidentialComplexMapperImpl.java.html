@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ResidentialComplexMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">search-service</a> &gt; <a href="index.source.html" class="el_package">com.search_service.mapper</a> &gt; <span class="el_source">ResidentialComplexMapperImpl.java</span></div><h1>ResidentialComplexMapperImpl.java</h1><pre class="source lang-java linenums">package com.search_service.mapper;
+
+import com.search_service.dto.in.BuildingDTO;
+import com.search_service.dto.in.EntranceDTO;
+import com.search_service.dto.in.ResidentialComplexDTO;
+import com.search_service.entity.Building;
+import com.search_service.entity.Entrance;
+import com.search_service.entity.ResidentialComplex;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2026-09-05T16:57:06+0300&quot;,
+    comments = &quot;version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)&quot;
+)
+@Component
+<span class="nc" id="L20">public class ResidentialComplexMapperImpl implements ResidentialComplexMapper {</span>
+
+    @Override
+    public ResidentialComplex toEntity(ResidentialComplexDTO dto) {
+<span class="nc bnc" id="L24" title="All 2 branches missed.">        if ( dto == null ) {</span>
+<span class="nc" id="L25">            return null;</span>
+        }
+
+<span class="nc" id="L28">        ResidentialComplex.ResidentialComplexBuilder residentialComplex = ResidentialComplex.builder();</span>
+
+<span class="nc" id="L30">        residentialComplex.name( dto.getName() );</span>
+<span class="nc" id="L31">        residentialComplex.address( dto.getAddress() );</span>
+
+<span class="nc" id="L33">        return residentialComplex.build();</span>
+    }
+
+    @Override
+    public ResidentialComplexDTO toDTO(ResidentialComplex entity) {
+<span class="nc bnc" id="L38" title="All 2 branches missed.">        if ( entity == null ) {</span>
+<span class="nc" id="L39">            return null;</span>
+        }
+
+<span class="nc" id="L42">        ResidentialComplexDTO.ResidentialComplexDTOBuilder residentialComplexDTO = ResidentialComplexDTO.builder();</span>
+
+<span class="nc" id="L44">        residentialComplexDTO.name( entity.getName() );</span>
+<span class="nc" id="L45">        residentialComplexDTO.address( entity.getAddress() );</span>
+<span class="nc" id="L46">        residentialComplexDTO.buildings( buildingListToBuildingDTOList( entity.getBuildings() ) );</span>
+
+<span class="nc" id="L48">        return residentialComplexDTO.build();</span>
+    }
+
+    protected EntranceDTO entranceToEntranceDTO(Entrance entrance) {
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        if ( entrance == null ) {</span>
+<span class="nc" id="L53">            return null;</span>
+        }
+
+<span class="nc" id="L56">        EntranceDTO.EntranceDTOBuilder entranceDTO = EntranceDTO.builder();</span>
+
+<span class="nc" id="L58">        entranceDTO.name( entrance.getName() );</span>
+
+<span class="nc" id="L60">        return entranceDTO.build();</span>
+    }
+
+    protected List&lt;EntranceDTO&gt; entranceListToEntranceDTOList(List&lt;Entrance&gt; list) {
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        if ( list == null ) {</span>
+<span class="nc" id="L65">            return null;</span>
+        }
+
+<span class="nc" id="L68">        List&lt;EntranceDTO&gt; list1 = new ArrayList&lt;EntranceDTO&gt;( list.size() );</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">        for ( Entrance entrance : list ) {</span>
+<span class="nc" id="L70">            list1.add( entranceToEntranceDTO( entrance ) );</span>
+<span class="nc" id="L71">        }</span>
+
+<span class="nc" id="L73">        return list1;</span>
+    }
+
+    protected BuildingDTO buildingToBuildingDTO(Building building) {
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        if ( building == null ) {</span>
+<span class="nc" id="L78">            return null;</span>
+        }
+
+<span class="nc" id="L81">        BuildingDTO.BuildingDTOBuilder buildingDTO = BuildingDTO.builder();</span>
+
+<span class="nc" id="L83">        buildingDTO.name( building.getName() );</span>
+<span class="nc" id="L84">        buildingDTO.completionDate( building.getCompletionDate() );</span>
+<span class="nc" id="L85">        buildingDTO.keyHandoverDate( building.getKeyHandoverDate() );</span>
+<span class="nc" id="L86">        buildingDTO.entrances( entranceListToEntranceDTOList( building.getEntrances() ) );</span>
+
+<span class="nc" id="L88">        return buildingDTO.build();</span>
+    }
+
+    protected List&lt;BuildingDTO&gt; buildingListToBuildingDTOList(List&lt;Building&gt; list) {
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        if ( list == null ) {</span>
+<span class="nc" id="L93">            return null;</span>
+        }
+
+<span class="nc" id="L96">        List&lt;BuildingDTO&gt; list1 = new ArrayList&lt;BuildingDTO&gt;( list.size() );</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        for ( Building building : list ) {</span>
+<span class="nc" id="L98">            list1.add( buildingToBuildingDTO( building ) );</span>
+<span class="nc" id="L99">        }</span>
+
+<span class="nc" id="L101">        return list1;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

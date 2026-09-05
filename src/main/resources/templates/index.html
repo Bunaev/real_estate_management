@@ -3,56 +3,382 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Управление недвижимостью</title>
+    <title>REM - Real Estate Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        body { background: #f0f2f5; padding: 20px; }
-        .container { max-width: 1400px; margin: 0 auto; }
-        .header { background: linear-gradient(135deg, #1a1a2e, #0f3460); color: white; padding: 20px; border-radius: 10px; margin-bottom: 25px; }
-        .header h1 { margin: 0; font-size: 24px; }
-        .search-bar { background: white; padding: 15px 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); margin-bottom: 20px; }
-        .search-bar input { border: 1px solid #ddd; border-radius: 25px; padding: 12px 20px; width: 100%; font-size: 16px; }
-        .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
-        .actions button { padding: 10px 20px; border: none; border-radius: 8px; font-weight: 500; cursor: pointer; transition: 0.3s; }
-        .btn-primary { background: #0f3460; color: white; }
-        .btn-primary:hover { background: #1a1a2e; }
-        .btn-success { background: #28a745; color: white; }
-        .btn-success:hover { background: #1e7e34; }
-        .btn-warning { background: #ffc107; color: #333; }
-        .btn-warning:hover { background: #e0a800; }
-        .btn-info { background: #17a2b8; color: white; }
-        .btn-info:hover { background: #138496; }
-        .btn-secondary { background: #6c757d; color: white; }
-        .btn-secondary:hover { background: #5a6268; }
-        .btn-danger { background: #dc3545; color: white; }
-        .btn-danger:hover { background: #c82333; }
-        .btn-outline-secondary { background: white; border: 1px solid #ddd; }
-        .btn-outline-secondary:hover { background: #f8f9fa; }
-        .card { background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 20px; margin-bottom: 20px; }
-        .complex-item { border-bottom: 1px solid #eee; padding: 12px 0; display: flex; justify-content: space-between; align-items: center; }
-        .complex-item:last-child { border-bottom: none; }
-        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
-        .toast { background: white; padding: 12px 24px; border-radius: 8px; box-shadow: 0 5px 20px rgba(0,0,0,0.15); margin-bottom: 10px; border-left: 4px solid; }
-        .toast.success { border-color: #28a745; }
-        .toast.error { border-color: #dc3545; }
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 30px; border-radius: 12px; max-width: 750px; width: 95%; max-height: 90vh; overflow-y: auto; }
-        .modal-content h4 { margin-top: 0; }
-        .form-control { border-radius: 8px; margin-bottom: 10px; }
-        .badge-count { background: #e9ecef; padding: 2px 10px; border-radius: 20px; font-size: 12px; }
-        .inline-group { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-        .inline-group .form-control { flex: 1; min-width: 100px; }
-        .sub-block { border: 1px solid #dee2e6; border-radius: 8px; padding: 15px; margin-top: 10px; background: #f8f9fa; }
-        .sub-block .sub-header { font-weight: 600; color: #0f3460; margin-bottom: 10px; }
-        .delete-btn { color: #dc3545; cursor: pointer; font-size: 18px; margin-left: 5px; }
-        .delete-btn:hover { color: #c82333; }
-        .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; border-top: 1px solid #dee2e6; padding-top: 15px; }
-        .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 9998; justify-content: center; align-items: center; }
-        .loading-spinner { background: white; padding: 20px 40px; border-radius: 12px; box-shadow: 0 5px 30px rgba(0,0,0,0.2); }
-        .btn-sm-file { font-size: 12px; padding: 2px 8px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        .btn-sm-file:hover { background: #1e7e34; }
-        .file-input-hidden { display: none; }
+        * { box-sizing: border-box; }
+        body {
+            background: #f0f2f5;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            transition: padding-right 0.3s ease;
+            padding-right: 0;
+        }
+        .container.shifted {
+            padding-right: 380px;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #1a1a2e, #0f3460);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            position: relative;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .header .logo {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header .logo .logo-icon {
+            font-size: 28px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 8px;
+            padding: 4px 8px;
+        }
+        .header .logo .logo-sub {
+            font-size: 12px;
+            font-weight: 400;
+            opacity: 0.6;
+            letter-spacing: 2px;
+        }
+        .header .time {
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        /* ===== МЕНЮ АДМИНИСТРИРОВАНИЯ ===== */
+        .admin-menu-toggle {
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 22px;
+            cursor: pointer;
+            transition: 0.3s;
+            line-height: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            align-items: center;
+        }
+        .admin-menu-toggle:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .admin-menu-toggle .bar {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+            transition: 0.3s;
+        }
+        .admin-menu-toggle .bar:nth-child(2) { width: 16px; }
+        .admin-menu-toggle .bar:nth-child(3) { width: 20px; }
+
+        .admin-menu-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            margin-top: 8px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            padding: 12px 8px;
+            min-width: 220px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px) scale(0.95);
+            transform-origin: top left;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+        }
+        .admin-menu-dropdown.open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+        .admin-menu-dropdown .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            color: #1a1a2e;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.15s;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+        }
+        .admin-menu-dropdown .menu-item:hover { background: #f0f2f5; }
+        .admin-menu-dropdown .menu-item i {
+            font-size: 18px;
+            width: 24px;
+            color: #0f3460;
+        }
+        .admin-menu-dropdown .menu-divider {
+            height: 1px;
+            background: #eee;
+            margin: 6px 12px;
+        }
+
+        /* ===== ПОИСК ===== */
+        .search-bar {
+            background: white;
+            padding: 12px 20px;
+            border-radius: 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            margin-bottom: 20px;
+        }
+        .search-bar input {
+            border: 1px solid #e0e0e0;
+            border-radius: 0;
+            padding: 12px 20px;
+            width: 100%;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+        .search-bar input:focus {
+            outline: none;
+            border-color: #0f3460;
+            box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.1);
+        }
+
+        /* ===== СЛАЙДЕР ===== */
+        .promo-slider {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            margin-bottom: 24px;
+            position: relative;
+            height: 120px;
+        }
+        .promo-slider .slide {
+            display: none;
+            padding: 24px 32px;
+            height: 100%;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e, #0f3460);
+            color: white;
+        }
+        .promo-slider .slide.active { display: flex; }
+        .promo-slider .slide h3 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 20px;
+        }
+        .promo-slider .slide p {
+            margin: 0;
+            opacity: 0.8;
+            font-size: 14px;
+        }
+        .promo-slider .slide .slide-content {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            width: 100%;
+            justify-content: center;
+        }
+        .promo-slider .slide .slide-icon { font-size: 40px; opacity: 0.8; }
+        .promo-slider .slide-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+        .promo-slider .slide-dots .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .promo-slider .slide-dots .dot.active {
+            background: white;
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* ===== КНОПКА ГЛОБАЛЬНЫХ ФИЛЬТРОВ ===== */
+        .filter-toggle-btn {
+            position: fixed;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1050;
+            background: #0f3460;
+            color: white;
+            border: none;
+            border-radius: 8px 0 0 8px;
+            padding: 12px 8px;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            transition: right 0.3s ease;
+        }
+        .filter-toggle-btn:hover {
+            background: #1a1a2e;
+            padding-left: 14px;
+        }
+        .filter-toggle-btn.shifted { right: 380px; }
+
+        /* ===== OFF-CANVAS ФИЛЬТРОВ ===== */
+        .offcanvas { width: 380px !important; }
+        .offcanvas-body { padding: 20px; }
+        .filter-group { margin-bottom: 20px; }
+        .filter-group label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1a1a2e;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .filter-group select, .filter-group input[type="number"] {
+            width: 100%;
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            border-top: 1px solid #dee2e6;
+            padding-top: 20px;
+        }
+        .filter-actions button { flex: 1; }
+
+        .range-inputs {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .range-inputs input { width: 100%; }
+
+        /* ===== ЧЕКБОКСЫ МЕТРО ===== */
+        .metro-checkboxes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 12px;
+            max-height: 120px;
+            overflow-y: auto;
+            padding: 8px 4px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        .metro-checkboxes .form-check {
+            padding-left: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            min-width: 80px;
+        }
+        .metro-checkboxes .form-check-input {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        .metro-checkboxes .form-check-label {
+            font-size: 13px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* ===== КНОПКИ ТИПОВ КВАРТИР ===== */
+        .type-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .type-btn {
+            flex: 1 0 calc(14.28% - 6px);
+            min-width: 38px;
+            max-width: 48px;
+            padding: 8px 2px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            background: white;
+            color: #495057;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-align: center;
+            user-select: none;
+            line-height: 1.2;
+        }
+        .type-btn:hover {
+            border-color: #adb5bd;
+            background: #f8f9fa;
+        }
+        .type-btn.active {
+            background: #0f3460;
+            border-color: #0f3460;
+            color: white;
+            box-shadow: 0 2px 8px rgba(15, 52, 96, 0.3);
+        }
+        .type-btn.active:hover {
+            background: #1a1a2e;
+            border-color: #1a1a2e;
+        }
+        .type-btn .btn-sub {
+            display: block;
+            font-size: 8px;
+            font-weight: 400;
+            opacity: 0.6;
+            text-transform: uppercase;
+        }
+        .type-btn.active .btn-sub { opacity: 0.8; }
+
+        /* ===== КАРТОЧКИ ЖК ===== */
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .card h5 {
+            margin-left: 8px;
+            margin-top: 4px;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+
         .complex-card {
             background: white;
             border-radius: 12px;
@@ -116,7 +442,6 @@
             border-radius: 20px;
             font-size: 12px;
         }
-        /* Метро в карточке */
         .complex-metro {
             display: flex;
             flex-wrap: wrap;
@@ -125,7 +450,6 @@
             padding-top: 10px;
             border-top: 1px solid #f0f0f0;
         }
-
         .metro-station {
             display: flex;
             align-items: center;
@@ -135,18 +459,11 @@
             border-radius: 20px;
             font-size: 13px;
         }
-
-        .metro-station .metro-icon {
-            font-size: 16px;
-            line-height: 1;
-        }
-
-        /* ⭐ Имя станции красится в цвет ветки */
+        .metro-station .metro-icon { font-size: 16px; line-height: 1; }
         .metro-station .station-name {
             font-weight: 600;
             transition: color 0.2s;
         }
-
         .metro-station .station-distance {
             color: #6c757d;
             font-size: 11px;
@@ -155,8 +472,6 @@
             padding: 0 8px;
             border-radius: 10px;
         }
-
-        /* Цвета веток Петербургского метро — применяются к имени */
         .metro-line-spb-red .station-name { color: #E31E24; }
         .metro-line-spb-blue .station-name { color: #0039A6; }
         .metro-line-spb-green .station-name { color: #009B3A; }
@@ -164,11 +479,7 @@
         .metro-line-spb-purple .station-name { color: #8B4794; }
         .metro-line-spb-yellow .station-name { color: #D4A800; }
         .metro-line-spb-default .station-name { color: #6c757d; }
-
-        /* При наведении можно добавить подсветку */
-        .metro-station:hover .station-name {
-            text-shadow: 0 0 8px rgba(0,0,0,0.1);
-        }
+        .metro-station:hover .station-name { text-shadow: 0 0 8px rgba(0,0,0,0.1); }
         .metro-icon {
             display: inline-flex;
             align-items: center;
@@ -177,47 +488,410 @@
             width: 20px;
             height: 20px;
         }
-
         .metro-icon svg {
             display: block;
             width: 20px;
             height: 20px;
         }
+
+        .badge-count {
+            background: #e9ecef;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+        .empty-state i { font-size: 48px; color: #dee2e6; }
+
+        /* ===== МОДАЛКИ ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 750px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-content h4 { margin-top: 0; }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            border-top: 1px solid #dee2e6;
+            padding-top: 15px;
+        }
+        .form-control, .form-select {
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .inline-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .inline-group .form-control {
+            flex: 1;
+            min-width: 100px;
+        }
+        .sub-block {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            background: #f8f9fa;
+        }
+        .sub-block .sub-header {
+            font-weight: 600;
+            color: #0f3460;
+            margin-bottom: 10px;
+        }
+        .delete-btn {
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 18px;
+            margin-left: 5px;
+        }
+        .delete-btn:hover { color: #c82333; }
+
+        /* ===== ЗАГРУЗКА ===== */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+        }
+        .loading-spinner {
+            background: white;
+            padding: 20px 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        .toast {
+            background: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            margin-bottom: 10px;
+            border-left: 4px solid;
+        }
+        .toast.success { border-color: #28a745; }
+        .toast.error { border-color: #dc3545; }
+
+        @media (max-width: 768px) {
+            .header { flex-direction: column; align-items: flex-start; }
+            .offcanvas { width: 100% !important; max-width: 380px !important; }
+            .filter-toggle-btn.shifted { right: 100%; }
+            .complex-stats { flex-wrap: wrap; gap: 12px; }
+            .admin-menu-dropdown {
+                left: -10px;
+                min-width: 200px;
+            }
+        }
+        /* ===== МЕТРО ФИЛЬТР ===== */
+        .metro-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            max-height: 160px;
+            overflow-y: auto;
+            padding: 4px;
+            align-content: flex-start;
+        }
+        .metro-filter::-webkit-scrollbar {
+            width: 4px;
+        }
+        .metro-filter::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 4px;
+        }
+
+        .metro-chip {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px 4px 4px;
+            border-radius: 20px;
+            border: 2px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 13px;
+            background: white;
+            user-select: none;
+        }
+        .metro-chip:hover {
+            border-color: #adb5bd;
+            background: #f8f9fa;
+            transform: scale(1.02);
+        }
+        .metro-chip.active {
+            border-color: #0f3460;
+            background: #e9ecef;
+        }
+        .metro-chip .metro-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            color: white;
+            font-weight: 700;
+            font-size: 10px;
+            flex-shrink: 0;
+        }
+        .metro-chip .metro-name {
+            font-weight: 500;
+            font-size: 13px;
+        }
+        .metro-chip .metro-line {
+            font-size: 10px;
+            opacity: 0.5;
+        }
+        .metro-chip .check-mark {
+            display: none;
+            color: #0f3460;
+            font-size: 14px;
+            margin-left: auto;
+        }
+        .metro-chip.active .check-mark {
+            display: inline;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header d-flex justify-content-between align-items-center">
-        <h1><i class="bi bi-building"></i> Управление недвижимостью</h1>
-        <span id="time" class="text-light opacity-75 small"></span>
+<div class="toast-container" id="toastContainer"></div>
+
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Загрузка...</span>
+        </div>
+        <span class="ms-2">Загрузка данных...</span>
+    </div>
+</div>
+
+<button class="filter-toggle-btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#globalFilterPanel" aria-controls="globalFilterPanel">
+    <i class="bi bi-funnel"></i>
+</button>
+
+<div class="container" id="mainContainer">
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-left">
+            <div style="position: relative;">
+                <button class="admin-menu-toggle" id="adminMenuToggle">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
+                <div class="admin-menu-dropdown" id="adminMenuDropdown">
+                    <button class="menu-item" onclick="showModal('complex')">
+                        <i class="bi bi-plus-circle"></i> Создать ЖК
+                    </button>
+                    <button class="menu-item" onclick="showModal('building')">
+                        <i class="bi bi-plus-square"></i> Добавить корпус
+                    </button>
+                    <button class="menu-item" onclick="showModal('entrance')">
+                        <i class="bi bi-plus-square"></i> Добавить секцию
+                    </button>
+                    <button class="menu-item" onclick="showModal('import')">
+                        <i class="bi bi-upload"></i> Загрузить квартиры
+                    </button>
+                    <button class="menu-item" onclick="showModal('export')">
+                        <i class="bi bi-download"></i> Выгрузить квартиры
+                    </button>
+                    <div class="menu-divider"></div>
+                    <button class="menu-item" onclick="showModal('developer')">
+                        <i class="bi bi-person"></i> Застройщик
+                    </button>
+                    <button class="menu-item" onclick="showModal('location')">
+                        <i class="bi bi-geo-alt"></i> Локация
+                    </button>
+                    <button class="menu-item" onclick="showModal('district')">
+                        <i class="bi bi-map"></i> Район
+                    </button>
+                </div>
+            </div>
+            <div class="logo">
+                <span class="logo-icon">🏢</span>
+                <div>
+                    <span>REM</span>
+                    <span class="logo-sub">Real Estate Management</span>
+                </div>
+            </div>
+        </div>
+        <span class="time" id="time"></span>
     </div>
 
+    <!-- ПОИСК -->
     <div class="search-bar">
         <input type="text" id="searchInput" class="form-control" placeholder="🔍 Поиск по каталогу (скоро Elasticsearch)..."
                onkeyup="if(event.key==='Enter') showToast('🔍 Поиск: ' + this.value + ' (функция в разработке)', 'success')">
     </div>
 
-    <div class="actions">
-        <button class="btn-primary" onclick="showModal('complex')"><i class="bi bi-plus-lg"></i> Создать ЖК (мастер)</button>
-        <button class="btn-warning" onclick="showModal('building')"><i class="bi bi-plus-lg"></i> Добавить корпус</button>
-        <button class="btn-info" onclick="showModal('entrance')"><i class="bi bi-plus-lg"></i> Добавить секцию</button>
-        <button class="btn-success" onclick="showModal('import')"><i class="bi bi-upload"></i> Загрузить квартиры</button>
-        <button class="btn-primary" onclick="showModal('export')" style="background:#17a2b8;">
-            <i class="bi bi-download"></i> Скачать квартиры (Excel)
-        </button>
-        <button class="btn-secondary" onclick="showModal('developer')"><i class="bi bi-person-plus"></i> Застройщик</button>
-        <button class="btn-secondary" onclick="showModal('location')"><i class="bi bi-plus-lg"></i> Локация</button>
-        <button class="btn-secondary" onclick="showModal('district')"><i class="bi bi-plus-lg"></i> Район</button>
-        <button class="btn-outline-secondary" onclick="refreshData()"><i class="bi bi-arrow-clockwise"></i> Обновить данные</button>
+    <!-- СЛАЙДЕР -->
+    <div class="promo-slider" id="promoSlider">
+        <div class="slide active">
+            <div class="slide-content">
+                <span class="slide-icon">🏠</span>
+                <div>
+                    <h3>Найдите своё идеальное жильё</h3>
+                    <p>Тысячи квартир в лучших ЖК Санкт-Петербурга</p>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="slide-content">
+                <span class="slide-icon">📈</span>
+                <div>
+                    <h3>Акции и спецпредложения</h3>
+                    <p>Скидки до 15% на квартиры в новых корпусах</p>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <div class="slide-content">
+                <span class="slide-icon">🚇</span>
+                <div>
+                    <h3>Рядом с метро</h3>
+                    <p>Удобная транспортная доступность — пешком до станции</p>
+                </div>
+            </div>
+        </div>
+        <div class="slide-dots" id="sliderDots">
+            <span class="dot active" data-index="0"></span>
+            <span class="dot" data-index="1"></span>
+            <span class="dot" data-index="2"></span>
+        </div>
     </div>
 
+    <!-- ГЛОБАЛЬНЫЕ ФИЛЬТРЫ (OFFCANVAS) -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="globalFilterPanel" aria-labelledby="globalFilterPanelLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title"><i class="bi bi-funnel"></i> Глобальные фильтры</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <form id="globalFilterForm">
+                <div class="filter-group">
+                    <label>Локация</label>
+                    <select class="form-select" id="globalFilterLocation">
+                        <option value="">Все</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Район</label>
+                    <select class="form-select" id="globalFilterDistrict">
+                        <option value="">Все</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Метро</label>
+                    <div class="metro-checkboxes" id="globalFilterMetroContainer"></div>
+                </div>
+                <hr>
+                <div class="filter-group">
+                    <label>Тип квартиры</label>
+                    <div class="type-buttons" id="globalFilterTypesContainer">
+                        <button class="type-btn" data-value="STUDIO">С <span class="btn-sub">студия</span></button>
+                        <button class="type-btn" data-value="ONE_ROOM">1 <span class="btn-sub">комн</span></button>
+                        <button class="type-btn" data-value="TWO_ROOM_EURO">2Е <span class="btn-sub">евро</span></button>
+                        <button class="type-btn" data-value="TWO_ROOM">2 <span class="btn-sub">комн</span></button>
+                        <button class="type-btn" data-value="THREE_ROOM_EURO">3Е <span class="btn-sub">евро</span></button>
+                        <button class="type-btn" data-value="THREE_ROOM">3 <span class="btn-sub">комн</span></button>
+                        <button class="type-btn" data-value="FOUR_ROOM_EURO">4Е <span class="btn-sub">евро</span></button>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label>Тип санузла</label>
+                    <select class="form-select" id="globalFilterBathroomType">
+                        <option value="">Все</option>
+                        <option value="COMBINED">Совмещённый</option>
+                        <option value="SEPARATE">Раздельный</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Этаж</label>
+                    <div class="range-inputs">
+                        <input type="number" class="form-control" id="globalFilterFloorFrom" placeholder="От" min="1">
+                        <span>—</span>
+                        <input type="number" class="form-control" id="globalFilterFloorTo" placeholder="До" min="1">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label>Площадь, м²</label>
+                    <div class="range-inputs">
+                        <input type="number" class="form-control" id="globalFilterAreaFrom" placeholder="От" step="0.1" min="0">
+                        <span>—</span>
+                        <input type="number" class="form-control" id="globalFilterAreaTo" placeholder="До" step="0.1" min="0">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label>Цена, ₽</label>
+                    <div class="range-inputs">
+                        <input type="number" class="form-control" id="globalFilterPriceFrom" placeholder="От" step="1000" min="0">
+                        <span>—</span>
+                        <input type="number" class="form-control" id="globalFilterPriceTo" placeholder="До" step="1000" min="0">
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label>Балкон</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="globalFilterBalcony">
+                        <label class="form-check-label" for="globalFilterBalcony">Только с балконом</label>
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button type="button" class="btn btn-primary" id="globalApplyFiltersBtn">Применить</button>
+                    <button type="button" class="btn btn-outline-secondary" id="globalResetFiltersBtn">Сбросить все</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- СПИСОК ЖК -->
     <div class="card">
         <h5><i class="bi bi-building me-2"></i>Жилые комплексы <span id="countBadge" class="badge-count"></span></h5>
         <div id="complexesList"><div class="text-center py-4 text-muted">Загрузка...</div></div>
     </div>
 </div>
 
+<!-- МОДАЛКА -->
 <div class="modal-overlay" id="createModal">
     <div class="modal-content">
         <h4 id="modalTitle">Создание</h4>
@@ -231,26 +905,10 @@
     </div>
 </div>
 
-<div class="loading-overlay" id="loadingOverlay">
-    <div class="loading-spinner">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Загрузка...</span>
-        </div>
-        <span class="ms-2">Загрузка данных...</span>
-    </div>
-</div>
-
-<div class="toast-container" id="toastContainer"></div>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // =============================================================
-    // 1. КОНСТАНТЫ
-    // =============================================================
     const API = '/api';
 
-    // =============================================================
-    // 2. КЕШИ
-    // =============================================================
     let cachedDevelopers = [];
     let cachedLocations = [];
     let cachedMetro = [];
@@ -258,7 +916,135 @@
     let cachedBuildings = {};
 
     // =============================================================
-    // 3. ФУНКЦИИ МОДАЛОК (ДОЛЖНЫ БЫТЬ ОПРЕДЕЛЕНЫ РАНЬШЕ)
+    // МЕНЮ АДМИНА
+    // =============================================================
+    document.getElementById('adminMenuToggle').addEventListener('click', function(e) {
+        e.stopPropagation();
+        document.getElementById('adminMenuDropdown').classList.toggle('open');
+    });
+    document.addEventListener('click', function(e) {
+        const toggle = document.getElementById('adminMenuToggle');
+        const dropdown = document.getElementById('adminMenuDropdown');
+        if (!toggle.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('open');
+        }
+    });
+    document.querySelectorAll('.admin-menu-dropdown .menu-item').forEach(item => {
+        item.addEventListener('click', () => {
+            document.getElementById('adminMenuDropdown').classList.remove('open');
+        });
+    });
+
+    // =============================================================
+    // СЛАЙДЕР
+    // =============================================================
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('#promoSlider .slide');
+    const dots = document.querySelectorAll('#sliderDots .dot');
+
+    function goToSlide(index) {
+        slides.forEach(s => s.classList.remove('active'));
+        dots.forEach(d => d.classList.remove('active'));
+        slides[index].classList.add('active');
+        dots[index].classList.add('active');
+        currentSlide = index;
+    }
+    dots.forEach(dot => {
+        dot.addEventListener('click', function() {
+            goToSlide(parseInt(this.dataset.index));
+        });
+    });
+    let sliderInterval = setInterval(() => {
+        goToSlide((currentSlide + 1) % slides.length);
+    }, 5000);
+    const sliderEl = document.getElementById('promoSlider');
+    sliderEl.addEventListener('mouseenter', () => clearInterval(sliderInterval));
+    sliderEl.addEventListener('mouseleave', () => {
+        clearInterval(sliderInterval);
+        sliderInterval = setInterval(() => {
+            goToSlide((currentSlide + 1) % slides.length);
+        }, 5000);
+    });
+
+    // =============================================================
+    // СДВИГ КОНТЕЙНЕРА
+    // =============================================================
+    const filterPanel = document.getElementById('globalFilterPanel');
+    const toggleBtn = document.querySelector('.filter-toggle-btn');
+    const mainContainer = document.getElementById('mainContainer');
+
+    filterPanel.addEventListener('show.bs.offcanvas', function () {
+        toggleBtn.classList.add('shifted');
+        mainContainer.classList.add('shifted');
+    });
+    filterPanel.addEventListener('hide.bs.offcanvas', function () {
+        toggleBtn.classList.remove('shifted');
+        mainContainer.classList.remove('shifted');
+    });
+
+    // =============================================================
+    // МЕТРО
+    // =============================================================
+    function getMetroLineColor(stationName) {
+        // Приводим к нижнему регистру для сравнения
+        const name = stationName.toLowerCase().trim();
+
+        const lines = {
+            // === КРАСНАЯ ВЕТКА (Кировско-Выборгская) ===
+            'девяткино': 'metro-line-spb-red',
+            'гражданская': 'metro-line-spb-red',
+            'выборгская': 'metro-line-spb-red',
+            'площадь ленина': 'metro-line-spb-red',
+            'чернышевская': 'metro-line-spb-red',
+            'площадь восстания': 'metro-line-spb-red',
+            'владимирская': 'metro-line-spb-red',
+            'пушкинская': 'metro-line-spb-red',
+            'технологический институт': 'metro-line-spb-red',
+            'балтийская': 'metro-line-spb-red',
+            'нарвская': 'metro-line-spb-red',
+            'кировский завод': 'metro-line-spb-red',
+            'автово': 'metro-line-spb-red',
+            'ленинский проспект': 'metro-line-spb-red',
+            'проспект ветеранов': 'metro-line-spb-red',
+
+            // === СИНЯЯ ВЕТКА (Московско-Петроградская) ===
+            'московская': 'metro-line-spb-blue',
+            'звездная': 'metro-line-spb-blue',
+            'парк победы': 'metro-line-spb-blue',
+            'фрунзенская': 'metro-line-spb-blue',
+            'купчино': 'metro-line-spb-blue',
+
+            // === ЗЕЛЁНАЯ ВЕТКА (Невско-Василеостровская) ===
+            'приморская': 'metro-line-spb-green',
+
+            // === ОРАНЖЕВАЯ ВЕТКА (Правобережная) ===
+            'проспект большевиков': 'metro-line-spb-orange',
+            'улица дыбенко': 'metro-line-spb-orange',
+            'кудрово': 'metro-line-spb-orange',
+
+            // === ФИОЛЕТОВАЯ ВЕТКА (Фрунзенско-Приморская) ===
+            'комендантский проспект': 'metro-line-spb-purple',
+            'шушары': 'metro-line-spb-purple',
+            'адмиралтейская': 'metro-line-spb-purple',
+            'невский проспект': 'metro-line-spb-purple',
+        };
+
+        return lines[name] || 'metro-line-spb-default';
+    }
+
+    function getWalkingTime(distanceMeters) {
+        if (!distanceMeters || distanceMeters === 0) return '0 мин';
+        const minutes = Math.round(distanceMeters / 83.33);
+        if (minutes < 1) return '< 1 мин';
+        if (minutes === 1) return '1 мин';
+        if (minutes < 60) return minutes + ' мин';
+        const hours = Math.floor(minutes / 60);
+        const rem = minutes % 60;
+        return rem === 0 ? hours + ' ч' : hours + ' ч ' + rem + ' мин';
+    }
+
+    // =============================================================
+    // ФУНКЦИИ МОДАЛОК
     // =============================================================
     function closeModal() {
         document.getElementById('createModal').style.display = 'none';
@@ -284,9 +1070,8 @@
         document.getElementById('modalFields').innerHTML = config.render();
         document.getElementById('createModal').style.display = 'flex';
 
-        // Меняем текст кнопки
         const submitBtn = document.getElementById('modalSubmitBtn');
-        const buttonTexts = {
+        const texts = {
             'complex': 'Создать',
             'building': 'Создать',
             'entrance': 'Создать',
@@ -296,267 +1081,432 @@
             'location': 'Создать',
             'district': 'Создать'
         };
-        submitBtn.textContent = buttonTexts[type] || 'Создать';
-    }
-    // =============================================================
-    // ФУНКЦИЯ ДЛЯ ЦВЕТА МЕТРО (Санкт-Петербург)
-    // =============================================================
-    function getMetroLineColor(stationName) {
-        // Сопоставление станций с цветами веток (СПб)
-        const metroLines = {
-            // Красная ветка (Кировско-Выборгская)
-            'Девяткино': 'metro-line-spb-red',
-            'Гражданский проспект': 'metro-line-spb-red',
-            'Академическая': 'metro-line-spb-red',
-            'Политехническая': 'metro-line-spb-red',
-            'Площадь Мужества': 'metro-line-spb-red',
-            'Лесная': 'metro-line-spb-red',
-            'Выборгская': 'metro-line-spb-red',
-            'Площадь Ленина': 'metro-line-spb-red',
-            'Чернышевская': 'metro-line-spb-red',
-            'Площадь Восстания': 'metro-line-spb-red',
-            'Владимирская': 'metro-line-spb-red',
-            'Пушкинская': 'metro-line-spb-red',
-            'Технологический институт': 'metro-line-spb-red',
-            'Балтийская': 'metro-line-spb-red',
-            'Нарвская': 'metro-line-spb-red',
-            'Кировский завод': 'metro-line-spb-red',
-            'Автово': 'metro-line-spb-red',
-            'Дачное': 'metro-line-spb-red',
-            'Ленинский проспект': 'metro-line-spb-red',
-            'Проспект Ветеранов': 'metro-line-spb-red',
-
-            // Синяя ветка (Московско-Петроградская)
-            'Парнас': 'metro-line-spb-blue',
-            'Проспект Просвещения': 'metro-line-spb-blue',
-            'Озерки': 'metro-line-spb-blue',
-            'Удельная': 'metro-line-spb-blue',
-            'Пионерская': 'metro-line-spb-blue',
-            'Чёрная речка': 'metro-line-spb-blue',
-            'Петроградская': 'metro-line-spb-blue',
-            'Горьковская': 'metro-line-spb-blue',
-            'Невский проспект': 'metro-line-spb-blue',
-            'Сенная площадь': 'metro-line-spb-blue',
-            'Технологический институт': 'metro-line-spb-blue',
-            'Фрунзенская': 'metro-line-spb-blue',
-            'Московские ворота': 'metro-line-spb-blue',
-            'Электросила': 'metro-line-spb-blue',
-            'Парк Победы': 'metro-line-spb-blue',
-            'Московская': 'metro-line-spb-blue',
-            'Звёздная': 'metro-line-spb-blue',
-            'Купчино': 'metro-line-spb-blue',
-
-            // Зеленая ветка (Невско-Василеостровская)
-            'Беговая': 'metro-line-spb-green',
-            'Зенит': 'metro-line-spb-green',
-            'Приморская': 'metro-line-spb-green',
-            'Василеостровская': 'metro-line-spb-green',
-            'Гостиный двор': 'metro-line-spb-green',
-            'Маяковская': 'metro-line-spb-green',
-            'Площадь Александра Невского': 'metro-line-spb-green',
-            'Елизаровская': 'metro-line-spb-green',
-            'Ломоносовская': 'metro-line-spb-green',
-            'Пролетарская': 'metro-line-spb-green',
-            'Обухово': 'metro-line-spb-green',
-            'Рыбацкое': 'metro-line-spb-green',
-
-            // Оранжевая ветка (Правобережная)
-            'Спасская': 'metro-line-spb-orange',
-            'Достоевская': 'metro-line-spb-orange',
-            'Лиговский проспект': 'metro-line-spb-orange',
-            'Площадь Александра Невского': 'metro-line-spb-orange',
-            'Новочеркасская': 'metro-line-spb-orange',
-            'Ладожская': 'metro-line-spb-orange',
-            'Проспект Большевиков': 'metro-line-spb-orange',
-            'Улица Дыбенко': 'metro-line-spb-orange',
-
-            // Фиолетовая ветка (Фрунзенско-Приморская)
-            'Комендантский проспект': 'metro-line-spb-purple',
-            'Старая Деревня': 'metro-line-spb-purple',
-            'Крестовский остров': 'metro-line-spb-purple',
-            'Чкаловская': 'metro-line-spb-purple',
-            'Спортивная': 'metro-line-spb-purple',
-            'Адмиралтейская': 'metro-line-spb-purple',
-            'Садовая': 'metro-line-spb-purple',
-            'Звенигородская': 'metro-line-spb-purple',
-            'Обводный канал': 'metro-line-spb-purple',
-            'Волковская': 'metro-line-spb-purple',
-            'Бухарестская': 'metro-line-spb-purple',
-            'Международная': 'metro-line-spb-purple',
-            'Проспект Славы': 'metro-line-spb-purple',
-            'Дунайская': 'metro-line-spb-purple',
-            'Шушары': 'metro-line-spb-purple',
-        };
-
-        // Поиск станции в словаре (частичное совпадение)
-        for (const [key, value] of Object.entries(metroLines)) {
-            if (stationName?.includes(key) || key.includes(stationName)) {
-                return value;
-            }
-        }
-
-        // Если не нашли - возвращаем цвет по умолчанию
-        return 'metro-line-spb-default';
-    }
-    // =============================================================
-    // РАСЧЕТ ВРЕМЕНИ ПЕШКОМ
-    // =============================================================
-    function getWalkingTime(distanceMeters) {
-        if (!distanceMeters || distanceMeters === 0) return '0 мин';
-
-        // Скорость пешехода: 5 км/ч = 5000 м/ч = 83.33 м/мин
-        const speedMetersPerMinute = 83.33;
-        const minutes = Math.round(distanceMeters / speedMetersPerMinute);
-
-        if (minutes < 1) return '< 1 мин';
-        if (minutes === 1) return '1 мин';
-        if (minutes < 60) return minutes + ' мин';
-
-        const hours = Math.floor(minutes / 60);
-        const remainingMinutes = minutes % 60;
-        if (remainingMinutes === 0) return hours + ' ч';
-        return hours + ' ч ' + remainingMinutes + ' мин';
-    }
-    // =============================================================
-    // 3. ЗАГРУЗКА ДАННЫХ
-    // =============================================================
-    async function loadAllData() {
-        showLoading(true);
-        console.log('🔄 Загрузка данных...');
-        try {
-            const [developers, locations, metro, complexes] = await Promise.all([
-                fetch(`${API}/developers`).then(r => { if (!r.ok) throw new Error('developers'); return r.json(); }),
-                fetch(`${API}/locations`).then(r => { if (!r.ok) throw new Error('locations'); return r.json(); }),
-                fetch(`${API}/metro-stations`).then(r => { if (!r.ok) throw new Error('metro'); return r.json(); }),
-                fetch(`${API}/complexes`).then(r => { if (!r.ok) throw new Error('complexes'); return r.json(); })
-            ]);
-            cachedDevelopers = Array.isArray(developers) ? developers : [];
-            cachedLocations = Array.isArray(locations) ? locations : [];
-            cachedMetro = Array.isArray(metro) ? metro : [];
-            cachedComplexes = Array.isArray(complexes) ? complexes : [];
-            console.log('✅ Данные загружены:', {
-                застройщики: cachedDevelopers.length,
-                локации: cachedLocations.length,
-                метро: cachedMetro.length,
-                жк: cachedComplexes.length
-            });
-            renderComplexes();
-        } catch (e) {
-            console.error('❌ Ошибка загрузки данных:', e);
-            showToast('❌ Ошибка загрузки данных. Проверьте консоль.', 'error');
-        } finally {
-            showLoading(false);
-        }
+        submitBtn.textContent = texts[type] || 'Создать';
     }
 
-    async function refreshData() {
-        await loadAllData();
-        showToast('✅ Данные обновлены', 'success');
-    }
-
-    function renderComplexes() {
-        const container = document.getElementById('complexesList');
-        const badge = document.getElementById('countBadge');
-
-        if (!cachedComplexes || cachedComplexes.length === 0) {
-            container.innerHTML = `
-            <div class="text-center py-5">
-                <i class="bi bi-building" style="font-size: 48px; color: #dee2e6;"></i>
-                <p class="text-muted mt-3">Нет ЖК. Создайте первый!</p>
-                <button class="btn btn-primary btn-sm" onclick="showModal('complex')">
-                    <i class="bi bi-plus-lg"></i> Создать ЖК
-                </button>
-            </div>
-        `;
-            badge.textContent = '0 ЖК';
-            return;
-        }
-
-        badge.textContent = cachedComplexes.length + ' ЖК';
-        let html = '';
-
-        cachedComplexes.forEach(item => {
-            // Формируем блок с метро
-            if (item.metroDistances && item.metroDistances.length > 0) {
-                metroHtml = '<div class="complex-metro">';
-                item.metroDistances.forEach(metro => {
-                    const colorClass = getMetroLineColor(metro.stationName);
-                    const walkingTime = getWalkingTime(metro.distance);
-                    metroHtml += `
-            <div class="metro-station ${colorClass}">
-                <span class="metro-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="2" y="2" width="20" height="20" rx="3" fill="#0072BC" stroke="#005A8C" stroke-width="2"/>
-                        <text x="12" y="18" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle">М</text>
-                    </svg>
-                </span>
-                <span class="station-name">${metro.stationName}</span>
-                <span class="station-distance">🚶 ${walkingTime}</span>
-            </div>
-        `;
+    // =============================================================
+    // МОДАЛ КОНФИГИ (ПОЛНЫЙ)
+    // =============================================================
+    const modalConfigs = {
+        complex: {
+            title: '🏘️ Создать ЖК (мастер)',
+            render: function() {
+                return `
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Название ЖК</label>
+                        <input type="text" class="form-control" id="complexName" placeholder="Например: Невский парк">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Адрес</label>
+                        <input type="text" class="form-control" id="complexAddress" placeholder="ул. Невская, 1">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Локация</label>
+                            <select class="form-control" id="complexLocation" onchange="onLocationChange(this.value)">
+                                <option value="">Выберите локацию</option>
+                                ${cachedLocations.map(d => `<option value="${d.id}">${d.name}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Район</label>
+                            <select class="form-control" id="complexDistrict">
+                                <option value="">Сначала выберите локацию</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Застройщик</label>
+                        <select class="form-control" id="complexDeveloper">
+                            <option value="">Выберите застройщика</option>
+                            ${cachedDevelopers.map(d => `<option value="${d.id}">${d.name}</option>`).join('')}
+                        </select>
+                    </div>
+                    <hr>
+                    <div class="fw-bold">🚇 Станции метро</div>
+                    <div id="metroContainer">
+                        <div class="inline-group metro-row">
+                            <select class="form-control metro-station-select">
+                                <option value="">Станция</option>
+                                ${cachedMetro.map(m => `<option value="${m.id}">${m.name}</option>`).join('')}
+                            </select>
+                            <input type="number" class="form-control metro-distance-input" placeholder="Расстояние (м)" style="width:120px">
+                            <span class="delete-btn" onclick="this.parentElement.remove()">✖</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-primary mt-1" onclick="addMetroRow()"><i class="bi bi-plus-lg"></i> Добавить метро</button>
+                    <hr>
+                    <div class="fw-bold">🏢 Корпуса</div>
+                    <div id="buildingsContainer"></div>
+                    <button type="button" class="btn btn-sm btn-outline-primary mt-1" onclick="addBuildingRow()"><i class="bi bi-plus-lg"></i> Добавить корпус</button>
+                `;
+            },
+            submit: function() {
+                const dto = {
+                    name: document.getElementById('complexName').value.trim(),
+                    address: document.getElementById('complexAddress').value.trim(),
+                    districtId: parseInt(document.getElementById('complexDistrict').value),
+                    developerId: parseInt(document.getElementById('complexDeveloper').value),
+                    metroStations: [],
+                    buildings: []
+                };
+                if (!dto.name || !dto.address || !dto.districtId || !dto.developerId) {
+                    showToast('Заполните все основные поля', 'error');
+                    return;
+                }
+                document.querySelectorAll('.metro-row').forEach(row => {
+                    const sel = row.querySelector('.metro-station-select');
+                    const dist = row.querySelector('.metro-distance-input');
+                    if (sel.value && dist.value) {
+                        dto.metroStations.push({
+                            metroStationId: parseInt(sel.value),
+                            distance: parseInt(dist.value)
+                        });
+                    }
                 });
-                metroHtml += '</div>';
+                let hasError = false;
+                document.querySelectorAll('.building-block').forEach(block => {
+                    const bName = block.querySelector('.building-name-input').value.trim();
+                    const completion = block.querySelector('.building-completion-input').value;
+                    const handover = block.querySelector('.building-handover-input').value;
+                    if (!bName || !completion || !handover) {
+                        showToast('Заполните даты для всех корпусов', 'error');
+                        hasError = true;
+                        return;
+                    }
+                    const building = { name: bName, completionDate: completion, keyHandoverDate: handover, entrances: [] };
+                    block.querySelectorAll('.entrance-block').forEach(eb => {
+                        const eName = eb.querySelector('.entrance-name-input').value.trim();
+                        const eFloor = eb.querySelector('.entrance-floor-input').value;
+                        if (eName && eFloor) {
+                            building.entrances.push({ name: eName, maxFloor: parseInt(eFloor) });
+                        }
+                    });
+                    dto.buildings.push(building);
+                });
+                if (hasError) return;
+                showLoading(true);
+                fetch('/api/complexes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dto)
+                })
+                    .then(res => {
+                        if (!res.ok) return res.text().then(text => { throw new Error(text); });
+                        return res.json();
+                    })
+                    .then(() => {
+                        showToast('✅ ЖК создан!', 'success');
+                        closeModal();
+                        loadAllData();
+                    })
+                    .catch(err => {
+                        showToast('❌ ' + err.message, 'error');
+                    })
+                    .finally(() => showLoading(false));
             }
-
-            html += `
-            <div class="complex-card" onclick="navigateToComplex(${item.id})">
-                <div class="complex-header">
-                    <div class="complex-title">
-                        <h5 class="mb-0">${item.name || 'Без названия'}</h5>
-                        <small class="text-muted">${item.address || ''}</small>
+        },
+        building: {
+            title: '🏢 Добавить корпус в ЖК',
+            render: function() {
+                return `
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Выберите ЖК</label>
+                        <select class="form-control" id="buildingComplexSelect">
+                            <option value="">Выберите ЖК</option>
+                            ${cachedComplexes.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+                        </select>
                     </div>
-                    <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); deleteComplex(${item.id})">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </div>
-                <div class="complex-stats">
-                    <div class="stat-item">
-                        <i class="bi bi-building"></i>
-                        <span>${item.countBuildings || 0}</span>
-                        <small>корпусов</small>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Название корпуса</label>
+                        <input type="text" class="form-control" id="buildingName" placeholder="Корпус 1">
                     </div>
-                    <div class="stat-item">
-                        <i class="bi bi-door-open"></i>
-                        <span>${item.countEntrance || 0}</span>
-                        <small>секций</small>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Дата сдачи</label>
+                        <input type="date" class="form-control" id="buildingCompletion" required>
                     </div>
-                    <div class="stat-item">
-                        <i class="bi bi-house"></i>
-                        <span>${item.countApartment || 0}</span>
-                        <small>квартир</small>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Дата выдачи ключей</label>
+                        <input type="date" class="form-control" id="buildingKeyHandover" required>
                     </div>
-                </div>
-                <div class="complex-meta">
-                    <span class="badge bg-light text-dark">🏗️ ${item.developer || '—'}</span>
-                    <span class="badge bg-light text-dark">📍 ${item.location || '—'}</span>
-                    <span class="badge bg-light text-dark">🏘️ ${item.district || '—'}</span>
-                </div>
-                ${metroHtml}
-            </div>
-        `;
-        });
-
-        container.innerHTML = html;
-    }
-
-    function navigateToComplex(id) {
-        window.location.href = `/complex/${id}`;
-    }
-
-    async function deleteComplex(id) {
-        if (!confirm('Удалить ЖК и все связанные данные?')) return;
-        try {
-            const res = await fetch(`${API}/complexes/${id}`, { method: 'DELETE' });
-            if (!res.ok) throw new Error('Ошибка удаления');
-            showToast('✅ ЖК удалён');
-            await refreshData();
-        } catch (err) {
-            showToast('❌ ' + err.message, 'error');
+                    <hr>
+                    <div class="fw-bold">🚪 Секции в этом корпусе</div>
+                    <div id="buildingEntrancesContainer">
+                        <div class="inline-group entrance-row">
+                            <input type="text" class="form-control entrance-name-input" placeholder="Название секции" style="flex:2">
+                            <input type="number" class="form-control entrance-floor-input" placeholder="Макс. этажей" style="width:120px">
+                            <span class="delete-btn" onclick="this.parentElement.remove()">✖</span>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-info mt-1" onclick="addBuildingEntranceRow()"><i class="bi bi-plus-lg"></i> Добавить секцию</button>
+                `;
+            },
+            submit: function() {
+                const complexId = document.getElementById('buildingComplexSelect').value;
+                const name = document.getElementById('buildingName').value.trim();
+                const completion = document.getElementById('buildingCompletion').value;
+                const handover = document.getElementById('buildingKeyHandover').value;
+                if (!complexId || !name || !completion || !handover) {
+                    showToast('Заполните все поля', 'error');
+                    return;
+                }
+                const entrances = [];
+                document.querySelectorAll('#buildingEntrancesContainer .entrance-row').forEach(row => {
+                    const eName = row.querySelector('.entrance-name-input').value.trim();
+                    const eFloor = row.querySelector('.entrance-floor-input').value;
+                    if (eName && eFloor) {
+                        entrances.push({ name: eName, maxFloor: parseInt(eFloor) });
+                    }
+                });
+                const dto = {
+                    name: name,
+                    completionDate: completion,
+                    keyHandoverDate: handover,
+                    entrances: entrances
+                };
+                showLoading(true);
+                fetch(`${API}/buildings?residentialComplexId=${complexId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dto)
+                })
+                    .then(res => {
+                        if (!res.ok) return res.text().then(text => { throw new Error(text); });
+                        return res.json();
+                    })
+                    .then(() => {
+                        showToast('✅ Корпус создан!', 'success');
+                        closeModal();
+                        loadAllData();
+                    })
+                    .catch(err => showToast('❌ ' + err.message, 'error'))
+                    .finally(() => showLoading(false));
+            }
+        },
+        entrance: {
+            title: '🚪 Добавить секцию в корпус',
+            render: function() {
+                return `
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Выберите ЖК</label>
+                        <select class="form-control" id="entranceComplexSelect" onchange="onEntranceComplexChange(this.value)">
+                            <option value="">Выберите ЖК</option>
+                            ${cachedComplexes.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Выберите корпус</label>
+                        <select class="form-control" id="entranceBuildingSelect">
+                            <option value="">Сначала выберите ЖК</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Название секции</label>
+                        <input type="text" class="form-control" id="entranceName" placeholder="Секция 1">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Максимальное количество этажей</label>
+                        <input type="number" class="form-control" id="entranceMaxFloors" placeholder="25">
+                    </div>
+                `;
+            },
+            submit: function() {
+                const buildingId = document.getElementById('entranceBuildingSelect').value;
+                const name = document.getElementById('entranceName').value.trim();
+                const maxFloors = document.getElementById('entranceMaxFloors').value;
+                if (!buildingId || !name || !maxFloors) {
+                    showToast('Заполните все поля', 'error');
+                    return;
+                }
+                const dto = { name: name, maxFloor: parseInt(maxFloors) };
+                showLoading(true);
+                fetch(`${API}/entrances?buildingId=${buildingId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dto)
+                })
+                    .then(res => {
+                        if (!res.ok) return res.text().then(text => { throw new Error(text); });
+                        return res.json();
+                    })
+                    .then(() => {
+                        showToast('✅ Секция создана!', 'success');
+                        closeModal();
+                        loadAllData();
+                    })
+                    .catch(err => showToast('❌ ' + err.message, 'error'))
+                    .finally(() => showLoading(false));
+            }
+        },
+        import: {
+            title: '📊 Загрузить квартиры из Excel',
+            render: function() {
+                return `
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Выберите ЖК</label>
+                        <select class="form-control" id="importComplexSelect" onchange="onImportComplexChange(this.value)">
+                            <option value="">Выберите ЖК</option>
+                            ${cachedComplexes.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Выберите корпус</label>
+                        <select class="form-control" id="importBuildingSelect" onchange="onImportBuildingChange(this.value)">
+                            <option value="">Сначала выберите ЖК</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Выберите секцию</label>
+                        <select class="form-control" id="importEntranceSelect">
+                            <option value="">Сначала выберите корпус</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Excel файл (.xlsx)</label>
+                        <input type="file" class="form-control" id="importFile" accept=".xlsx">
+                    </div>
+                `;
+            },
+            submit: function() {
+                const entranceId = document.getElementById('importEntranceSelect').value;
+                const fileInput = document.getElementById('importFile');
+                if (!entranceId || isNaN(parseInt(entranceId))) {
+                    showToast('Выберите секцию', 'error');
+                    return;
+                }
+                if (!fileInput.files[0]) {
+                    showToast('Выберите файл', 'error');
+                    return;
+                }
+                const formData = new FormData();
+                formData.append('entranceId', entranceId);
+                formData.append('file', fileInput.files[0]);
+                showLoading(true);
+                fetch(`${API}/import-apartments`, {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(res => {
+                        if (!res.ok) return res.text().then(text => { throw new Error(text); });
+                        return res.text();
+                    })
+                    .then(msg => {
+                        showToast('✅ ' + msg, 'success');
+                        closeModal();
+                        loadAllData();
+                    })
+                    .catch(err => showToast('❌ ' + err.message, 'error'))
+                    .finally(() => showLoading(false));
+            }
+        },
+        export: {
+            title: '📥 Скачать квартиры (Excel)',
+            render: function() {
+                return `
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Выберите ЖК</label>
+                        <select class="form-control" id="exportComplexSelect" onchange="onExportComplexChange(this.value)">
+                            <option value="">Выберите ЖК</option>
+                            ${cachedComplexes.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Выберите корпус</label>
+                        <select class="form-control" id="exportBuildingSelect" onchange="onExportBuildingChange(this.value)">
+                            <option value="">Сначала выберите ЖК</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label fw-bold">Выберите секцию</label>
+                        <select class="form-control" id="exportEntranceSelect">
+                            <option value="">Сначала выберите корпус</option>
+                        </select>
+                    </div>
+                `;
+            },
+            submit: function() {
+                const entranceId = document.getElementById('exportEntranceSelect').value;
+                if (!entranceId) {
+                    showToast('Выберите секцию', 'error');
+                    return;
+                }
+                window.location.href = `${API}/export-apartments/${entranceId}`;
+                closeModal();
+                showToast('✅ Начинается скачивание...', 'success');
+            }
+        },
+        developer: {
+            title: '🏗️ Создать застройщика',
+            render: function() {
+                return `<input type="text" class="form-control" id="devName" placeholder="Название компании">`;
+            },
+            submit: function() {
+                const name = document.getElementById('devName').value.trim();
+                if (!name) { showToast('Введите название', 'error'); return; }
+                showLoading(true);
+                fetch(`${API}/developers?name=${encodeURIComponent(name)}`, { method: 'POST' })
+                    .then(res => res.json())
+                    .then(() => {
+                        showToast('✅ Застройщик создан', 'success');
+                        closeModal();
+                        loadAllData();
+                    })
+                    .catch(err => showToast('❌ ' + err.message, 'error'))
+                    .finally(() => showLoading(false));
+            }
+        },
+        location: {
+            title: '🌍 Создать локацию (город/регион)',
+            render: function() {
+                return `<input type="text" class="form-control" id="locName" placeholder="Санкт-Петербург">`;
+            },
+            submit: function() {
+                const name = document.getElementById('locName').value.trim();
+                if (!name) { showToast('Введите название', 'error'); return; }
+                showLoading(true);
+                fetch(`${API}/locations?name=${encodeURIComponent(name)}`, { method: 'POST' })
+                    .then(res => res.json())
+                    .then(() => {
+                        showToast('✅ Локация создана', 'success');
+                        closeModal();
+                        loadAllData();
+                    })
+                    .catch(err => showToast('❌ ' + err.message, 'error'))
+                    .finally(() => showLoading(false));
+            }
+        },
+        district: {
+            title: '🗺️ Создать район',
+            render: function() {
+                return `
+                    <input type="text" class="form-control" id="distName" placeholder="Название района (например, Приморский)">
+                    <select class="form-control mt-2" id="distLocation">
+                        <option value="">Выберите локацию</option>
+                        ${cachedLocations.map(l => `<option value="${l.id}">${l.name}</option>`).join('')}
+                    </select>
+                `;
+            },
+            submit: function() {
+                const name = document.getElementById('distName').value.trim();
+                const locationId = document.getElementById('distLocation').value;
+                if (!name || !locationId) { showToast('Заполните все поля', 'error'); return; }
+                const params = new URLSearchParams({ name, locationId });
+                showLoading(true);
+                fetch(`${API}/districts?${params.toString()}`, { method: 'POST' })
+                    .then(res => res.json())
+                    .then(() => {
+                        showToast('✅ Район создан', 'success');
+                        closeModal();
+                        loadAllData();
+                    })
+                    .catch(err => showToast('❌ ' + err.message, 'error'))
+                    .finally(() => showLoading(false));
+            }
         }
-    }
+    };
 
     // =============================================================
-    // 4. КАСКАДНЫЕ ФУНКЦИИ
+    // КАСКАДНЫЕ ФУНКЦИИ
     // =============================================================
     function onLocationChange(locationId) {
         const districtSelect = document.getElementById('complexDistrict');
@@ -633,63 +1583,6 @@
             });
     }
 
-    // =============================================================
-    // КАСКАДНЫЕ ФУНКЦИИ ДЛЯ ЭКСПОРТА
-    // =============================================================
-
-    // При выборе ЖК в модалке экспорта — загружаем корпуса
-    function onExportComplexChange(complexId) {
-        const buildingSelect = document.getElementById('exportBuildingSelect');
-        const entranceSelect = document.getElementById('exportEntranceSelect');
-
-        if (!complexId) {
-            buildingSelect.innerHTML = '<option value="">Сначала выберите ЖК</option>';
-            entranceSelect.innerHTML = '<option value="">Сначала выберите корпус</option>';
-            return;
-        }
-
-        buildingSelect.innerHTML = '<option value="">Загрузка корпусов...</option>';
-        entranceSelect.innerHTML = '<option value="">Сначала выберите корпус</option>';
-
-        fetch(`${API}/buildings/by-complex/${complexId}`)
-            .then(r => r.json())
-            .then(data => {
-                const buildings = Array.isArray(data) ? data : [];
-                buildingSelect.innerHTML = '<option value="">Выберите корпус</option>';
-                buildings.forEach(b => {
-                    buildingSelect.innerHTML += `<option value="${b.id}">${b.name}</option>`;
-                });
-            })
-            .catch(() => {
-                buildingSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
-            });
-    }
-
-    // При выборе корпуса в модалке экспорта — загружаем секции
-    function onExportBuildingChange(buildingId) {
-        const entranceSelect = document.getElementById('exportEntranceSelect');
-
-        if (!buildingId) {
-            entranceSelect.innerHTML = '<option value="">Сначала выберите корпус</option>';
-            return;
-        }
-
-        entranceSelect.innerHTML = '<option value="">Загрузка секций...</option>';
-
-        fetch(`${API}/entrances/by-building/${buildingId}`)
-            .then(r => r.json())
-            .then(data => {
-                const entrances = Array.isArray(data) ? data : [];
-                entranceSelect.innerHTML = '<option value="">Выберите секцию</option>';
-                entrances.forEach(e => {
-                    entranceSelect.innerHTML += `<option value="${e.id}">${e.name}</option>`;
-                });
-            })
-            .catch(() => {
-                entranceSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
-            });
-    }
-
     function onImportBuildingChange(buildingId) {
         const entranceSelect = document.getElementById('importEntranceSelect');
         if (!buildingId) {
@@ -705,570 +1598,63 @@
                 entrances.forEach(e => {
                     entranceSelect.innerHTML += `<option value="${e.id}">${e.name}</option>`;
                 });
-                console.log('✅ Загружено секций:', entrances.length);
             })
             .catch(err => {
-                console.error('Ошибка загрузки секций:', err);
+                entranceSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
+            });
+    }
+
+    function onExportComplexChange(complexId) {
+        const buildingSelect = document.getElementById('exportBuildingSelect');
+        const entranceSelect = document.getElementById('exportEntranceSelect');
+        if (!complexId) {
+            buildingSelect.innerHTML = '<option value="">Сначала выберите ЖК</option>';
+            entranceSelect.innerHTML = '<option value="">Сначала выберите корпус</option>';
+            return;
+        }
+        buildingSelect.innerHTML = '<option value="">Загрузка корпусов...</option>';
+        entranceSelect.innerHTML = '<option value="">Сначала выберите корпус</option>';
+        fetch(`${API}/buildings/by-complex/${complexId}`)
+            .then(r => r.json())
+            .then(data => {
+                const buildings = Array.isArray(data) ? data : [];
+                buildingSelect.innerHTML = '<option value="">Выберите корпус</option>';
+                buildings.forEach(b => {
+                    buildingSelect.innerHTML += `<option value="${b.id}">${b.name}</option>`;
+                });
+            })
+            .catch(() => {
+                buildingSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
+            });
+    }
+
+    function onExportBuildingChange(buildingId) {
+        const entranceSelect = document.getElementById('exportEntranceSelect');
+        if (!buildingId) {
+            entranceSelect.innerHTML = '<option value="">Сначала выберите корпус</option>';
+            return;
+        }
+        entranceSelect.innerHTML = '<option value="">Загрузка секций...</option>';
+        fetch(`${API}/entrances/by-building/${buildingId}`)
+            .then(r => r.json())
+            .then(data => {
+                const entrances = Array.isArray(data) ? data : [];
+                entranceSelect.innerHTML = '<option value="">Выберите секцию</option>';
+                entrances.forEach(e => {
+                    entranceSelect.innerHTML += `<option value="${e.id}">${e.name}</option>`;
+                });
+            })
+            .catch(() => {
                 entranceSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
             });
     }
 
     // =============================================================
-    // 5. ЧАСЫ И TOAST
+    // ДИНАМИЧЕСКИЕ БЛОКИ
     // =============================================================
-    function updateTime() {
-        document.getElementById('time').textContent = new Date().toLocaleString('ru-RU');
-    }
-    setInterval(updateTime, 1000);
-    updateTime();
-
-    function showToast(message, type = 'success') {
-        const container = document.getElementById('toastContainer');
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.textContent = message;
-        container.appendChild(toast);
-        setTimeout(() => toast.remove(), 5000);
-    }
-
-    function showLoading(show) {
-        document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
-    }
-
-    // =============================================================
-    // 6. МОДАЛКИ
-    // =============================================================
-    function showModal(type) {
-        const config = modalConfigs[type];
-        if (!config) {
-            showToast('Ошибка: неизвестный тип модалки', 'error');
-            return;
-        }
-        document.getElementById('modalTitle').textContent = config.title;
-        document.getElementById('createForm').dataset.type = type;
-        document.getElementById('modalFields').innerHTML = config.render();
-        document.getElementById('createModal').style.display = 'flex';
-
-        // Меняем текст кнопки в зависимости от типа
-        const submitBtn = document.getElementById('modalSubmitBtn');
-        const buttonTexts = {
-            'complex': 'Создать',
-            'building': 'Создать',
-            'entrance': 'Создать',
-            'import': 'Загрузить',
-            'export': 'Скачать',
-            'developer': 'Создать',
-            'location': 'Создать',
-            'district': 'Создать'
-        };
-        submitBtn.textContent = buttonTexts[type] || 'Создать';
-    }
-
-    // =============================================================
-    // 7. КОНФИГИ МОДАЛОК
-    // =============================================================
-    const modalConfigs = {
-
-        // =============================================================
-        // 7.1. ЖК (МАСТЕР) — С ДАТАМИ И ЗАГРУЗКОЙ КВАРТИР
-        // =============================================================
-        complex: {
-            title: '🏘️ Создать ЖК (мастер)',
-            render: function() {
-                return `
-                    <div class="mb-2">
-                        <label class="form-label fw-bold">Название ЖК</label>
-                        <input type="text" class="form-control" id="complexName" placeholder="Например: Невский парк">
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label fw-bold">Адрес</label>
-                        <input type="text" class="form-control" id="complexAddress" placeholder="ул. Невская, 1">
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Локация</label>
-                            <select class="form-control" id="complexLocation" onchange="onLocationChange(this.value)">
-                                <option value="">Выберите локацию</option>
-                                ${cachedLocations && cachedLocations.length > 0
-                    ? cachedLocations.map(d => `<option value="${d.id}">${d.name}</option>`).join('')
-                    : '<option value="">Нет данных</option>'}
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Район</label>
-                            <select class="form-control" id="complexDistrict">
-                                <option value="">Сначала выберите локацию</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label fw-bold">Застройщик</label>
-                        <select class="form-control" id="complexDeveloper">
-                            <option value="">Выберите застройщика</option>
-                            ${cachedDevelopers && cachedDevelopers.length > 0
-                    ? cachedDevelopers.map(d => `<option value="${d.id}">${d.name}</option>`).join('')
-                    : '<option value="">Нет данных</option>'}
-                        </select>
-                    </div>
-                    <hr>
-                    <div class="fw-bold">🚇 Станции метро</div>
-                    <div id="metroContainer">
-                        <div class="inline-group metro-row">
-                            <select class="form-control metro-station-select">
-                                <option value="">Станция</option>
-                                ${cachedMetro && cachedMetro.length > 0
-                    ? cachedMetro.map(m => `<option value="${m.id}">${m.name}</option>`).join('')
-                    : '<option value="">Нет данных</option>'}
-                            </select>
-                            <input type="number" class="form-control metro-distance-input" placeholder="Расстояние (м)" style="width:120px">
-                            <span class="delete-btn" onclick="this.parentElement.remove()">✖</span>
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-sm btn-outline-primary mt-1" onclick="addMetroRow()"><i class="bi bi-plus-lg"></i> Добавить метро</button>
-                    <hr>
-                    <div class="fw-bold">🏢 Корпуса</div>
-                    <div id="buildingsContainer"></div>
-                    <button type="button" class="btn btn-sm btn-outline-primary mt-1" onclick="addBuildingRow()"><i class="bi bi-plus-lg"></i> Добавить корпус</button>
-                `;
-            },
-            submit: function() {
-                // Собираем данные в DTO
-                const dto = {
-                    name: document.getElementById('complexName').value.trim(),
-                    address: document.getElementById('complexAddress').value.trim(),
-                    districtId: parseInt(document.getElementById('complexDistrict').value),
-                    developerId: parseInt(document.getElementById('complexDeveloper').value),
-                    metroStations: [],
-                    buildings: []
-                };
-
-                // Валидация
-                if (!dto.name || !dto.address || !dto.districtId || !dto.developerId) {
-                    showToast('Заполните все основные поля', 'error');
-                    return;
-                }
-
-                // Собираем метро
-                document.querySelectorAll('.metro-row').forEach(row => {
-                    const sel = row.querySelector('.metro-station-select');
-                    const dist = row.querySelector('.metro-distance-input');
-                    if (sel.value && dist.value) {
-                        dto.metroStations.push({
-                            metroStationId: parseInt(sel.value),
-                            distance: parseInt(dist.value)
-                        });
-                    }
-                });
-
-                // Собираем корпуса
-                let hasError = false;
-                document.querySelectorAll('.building-block').forEach(block => {
-                    const bName = block.querySelector('.building-name-input').value.trim();
-                    const completion = block.querySelector('.building-completion-input').value;
-                    const handover = block.querySelector('.building-handover-input').value;
-
-                    if (!bName || !completion || !handover) {
-                        showToast('Заполните даты для всех корпусов', 'error');
-                        hasError = true;
-                        return;
-                    }
-
-                    const building = {
-                        name: bName,
-                        completionDate: completion,
-                        keyHandoverDate: handover,
-                        entrances: []
-                    };
-
-                    block.querySelectorAll('.entrance-block').forEach(eb => {
-                        const eName = eb.querySelector('.entrance-name-input').value.trim();
-                        const eFloor = eb.querySelector('.entrance-floor-input').value;
-                        if (eName && eFloor) {
-                            building.entrances.push({
-                                name: eName,
-                                maxFloor: parseInt(eFloor)
-                            });
-                        }
-                    });
-
-                    dto.buildings.push(building);
-                });
-
-                if (hasError) return;
-
-                // Отправляем JSON
-                showLoading(true);
-                fetch('/api/complexes', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(dto)
-                })
-                    .then(res => {
-                        if (!res.ok) {
-                            return res.text().then(text => { throw new Error(text); });
-                        }
-                        return res.json();
-                    })
-                    .then(() => {
-                        showToast('✅ ЖК создан!', 'success');
-                        closeModal();
-                        refreshData();
-                    })
-                    .catch(err => {
-                        console.error('❌ Ошибка:', err);
-                        showToast('❌ ' + err.message, 'error');
-                    })
-                    .finally(() => showLoading(false));
-            }
-        },
-
-        // =============================================================
-        // 7.2. КОРПУС
-        // =============================================================
-        building: {
-            title: '🏢 Добавить корпус в ЖК',
-            render: function() {
-                return `
-                    <div class="mb-2">
-                        <label class="form-label fw-bold">Выберите ЖК</label>
-                        <select class="form-control" id="buildingComplexSelect">
-                            <option value="">Выберите ЖК</option>
-                            ${cachedComplexes && cachedComplexes.length > 0
-                    ? cachedComplexes.map(c => `<option value="${c.id}">${c.name}</option>`).join('')
-                    : '<option value="">Нет данных</option>'}
-                        </select>
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label fw-bold">Название корпуса</label>
-                        <input type="text" class="form-control" id="buildingName" placeholder="Корпус 1">
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label fw-bold">Дата сдачи</label>
-                        <input type="date" class="form-control" id="buildingCompletion" required>
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label fw-bold">Дата выдачи ключей</label>
-                        <input type="date" class="form-control" id="buildingKeyHandover" required>
-                    </div>
-                    <hr>
-                    <div class="fw-bold">🚪 Секции в этом корпусе</div>
-                    <div id="buildingEntrancesContainer">
-                        <div class="inline-group entrance-row">
-                            <input type="text" class="form-control entrance-name-input" placeholder="Название секции" style="flex:2">
-                            <input type="number" class="form-control entrance-floor-input" placeholder="Макс. этажей" style="width:120px">
-                            <span class="delete-btn" onclick="this.parentElement.remove()">✖</span>
-                        </div>
-                    </div>
-                    <button type="button" class="btn btn-sm btn-outline-info mt-1" onclick="addBuildingEntranceRow()"><i class="bi bi-plus-lg"></i> Добавить секцию</button>
-                `;
-            },
-            submit: function() {
-                const complexId = document.getElementById('buildingComplexSelect').value;
-                const name = document.getElementById('buildingName').value.trim();
-                const completion = document.getElementById('buildingCompletion').value;
-                const handover = document.getElementById('buildingKeyHandover').value;
-                if (!complexId || !name || !completion || !handover) {
-                    showToast('Заполните все поля', 'error');
-                    return;
-                }
-
-                const entranceNames = [], entranceFloors = [];
-                document.querySelectorAll('#buildingEntrancesContainer .entrance-row').forEach(row => {
-                    const eName = row.querySelector('.entrance-name-input').value.trim();
-                    const eFloor = row.querySelector('.entrance-floor-input').value;
-                    if (eName && eFloor) {
-                        entranceNames.push(eName);
-                        entranceFloors.push(parseInt(eFloor));
-                    }
-                });
-
-                const params = new URLSearchParams();
-                params.append('name', name);
-                params.append('residentialComplexId', complexId);
-                params.append('completionDate', completion);
-                params.append('keyHandoverDate', handover);
-                entranceNames.forEach(n => params.append('entranceNames', n));
-                entranceFloors.forEach(f => params.append('entranceMaxFloors', f));
-
-                showLoading(true);
-                fetch(`${API}/buildings?${params.toString()}`, { method: 'POST' })
-                    .then(res => {
-                        if (!res.ok) throw new Error('Ошибка создания');
-                        return res.json();
-                    })
-                    .then(() => {
-                        showToast('✅ Корпус создан!');
-                        closeModal();
-                        refreshData();
-                    })
-                    .catch(err => {
-                        showToast('❌ ' + err.message, 'error');
-                    })
-                    .finally(() => showLoading(false));
-            }
-        },
-
-        // =============================================================
-        // 7.3. СЕКЦИЯ
-        // =============================================================
-        entrance: {
-            title: '🚪 Добавить секцию в корпус',
-            render: function() {
-                return `
-                    <div class="mb-2">
-                        <label class="form-label fw-bold">Выберите ЖК</label>
-                        <select class="form-control" id="entranceComplexSelect" onchange="onEntranceComplexChange(this.value)">
-                            <option value="">Выберите ЖК</option>
-                            ${cachedComplexes && cachedComplexes.length > 0
-                    ? cachedComplexes.map(c => `<option value="${c.id}">${c.name}</option>`).join('')
-                    : '<option value="">Нет данных</option>'}
-                        </select>
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label fw-bold">Выберите корпус</label>
-                        <select class="form-control" id="entranceBuildingSelect">
-                            <option value="">Сначала выберите ЖК</option>
-                        </select>
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label fw-bold">Название секции</label>
-                        <input type="text" class="form-control" id="entranceName" placeholder="Секция 1">
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label fw-bold">Максимальное количество этажей</label>
-                        <input type="number" class="form-control" id="entranceMaxFloors" placeholder="25">
-                    </div>
-                `;
-            },
-            submit: function() {
-                const buildingId = document.getElementById('entranceBuildingSelect').value;
-                const name = document.getElementById('entranceName').value.trim();
-                const maxFloors = document.getElementById('entranceMaxFloors').value;
-                if (!buildingId || !name || !maxFloors) {
-                    showToast('Заполните все поля', 'error');
-                    return;
-                }
-                const params = new URLSearchParams({ name, buildingId, maxFloors });
-
-                showLoading(true);
-                fetch(`${API}/entrances?${params.toString()}`, { method: 'POST' })
-                    .then(res => {
-                        if (!res.ok) throw new Error('Ошибка создания');
-                        return res.json();
-                    })
-                    .then(() => {
-                        showToast('✅ Секция создана!');
-                        closeModal();
-                        refreshData();
-                    })
-                    .catch(err => {
-                        showToast('❌ ' + err.message, 'error');
-                    })
-                    .finally(() => showLoading(false));
-            }
-        },
-
-        // =============================================================
-        // 7.4. ИМПОРТ КВАРТИР
-        // =============================================================
-        import: {
-            title: '📊 Загрузить квартиры из Excel',
-            render: function() {
-                return `
-            <div class="mb-2">
-                <label class="form-label fw-bold">Выберите ЖК</label>
-                <select class="form-control" id="importComplexSelect" onchange="onImportComplexChange(this.value)">
-                    <option value="">Выберите ЖК</option>
-                    ${cachedComplexes && cachedComplexes.length > 0
-                    ? cachedComplexes.map(c => `<option value="${c.id}">${c.name}</option>`).join('')
-                    : '<option value="">Нет данных</option>'}
-                </select>
-            </div>
-            <div class="mb-2">
-                <label class="form-label fw-bold">Выберите корпус</label>
-                <select class="form-control" id="importBuildingSelect" onchange="onImportBuildingChange(this.value)">
-                    <option value="">Сначала выберите ЖК</option>
-                </select>
-            </div>
-            <div class="mb-2">
-                <label class="form-label fw-bold">Выберите секцию</label>
-                <select class="form-control" id="importEntranceSelect">
-                    <option value="">Сначала выберите корпус</option>
-                </select>
-            </div>
-            <div class="mb-2">
-                <label class="form-label fw-bold">Excel файл (.xlsx)</label>
-                <input type="file" class="form-control" id="importFile" accept=".xlsx">
-            </div>
-        `;
-            },
-            submit: function() {
-                const entranceId = document.getElementById('importEntranceSelect').value;
-                const fileInput = document.getElementById('importFile');
-
-                console.log('entranceId:', entranceId);
-                console.log('file:', fileInput.files[0]);
-
-                if (!entranceId || isNaN(parseInt(entranceId))) {
-                    showToast('Выберите секцию', 'error');
-                    return;
-                }
-
-                if (!fileInput.files[0]) {
-                    showToast('Выберите файл', 'error');
-                    return;
-                }
-
-                const formData = new FormData();
-                formData.append('entranceId', entranceId);
-                formData.append('file', fileInput.files[0]);
-
-                showLoading(true);
-                fetch(`${API}/import-apartments`, {
-                    method: 'POST',
-                    body: formData
-                })
-                    .then(res => {
-                        if (!res.ok) {
-                            return res.text().then(text => { throw new Error(text); });
-                        }
-                        return res.text();
-                    })
-                    .then(msg => {
-                        showToast('✅ ' + msg);
-                        closeModal();
-                        refreshData();
-                    })
-                    .catch(err => {
-                        console.error('❌ Ошибка:', err);
-                        showToast('❌ ' + err.message, 'error');
-                    })
-                    .finally(() => showLoading(false));
-            }
-        },
-
-        // =============================================================
-        // 7.5. ЗАСТРОЙЩИК
-        // =============================================================
-        developer: {
-            title: '🏗️ Создать застройщика',
-            render: function() { return `<input type="text" class="form-control" id="devName" placeholder="Название компании">`; },
-            submit: function() {
-                const name = document.getElementById('devName').value.trim();
-                if (!name) { showToast('Введите название', 'error'); return; }
-                showLoading(true);
-                fetch(`${API}/developers?name=${encodeURIComponent(name)}`, { method: 'POST' })
-                    .then(res => res.json())
-                    .then(() => { showToast('✅ Застройщик создан'); closeModal(); refreshData(); })
-                    .catch(err => showToast('❌ ' + err.message, 'error'))
-                    .finally(() => showLoading(false));
-            }
-        },
-
-        // =============================================================
-        // 7.6. ЛОКАЦИЯ
-        // =============================================================
-        location: {
-            title: '🌍 Создать локацию (город/регион)',
-            render: function() { return `<input type="text" class="form-control" id="locName" placeholder="Санкт-Петербург">`; },
-            submit: function() {
-                const name = document.getElementById('locName').value.trim();
-                if (!name) { showToast('Введите название', 'error'); return; }
-                showLoading(true);
-                fetch(`${API}/locations?name=${encodeURIComponent(name)}`, { method: 'POST' })
-                    .then(res => res.json())
-                    .then(() => { showToast('✅ Локация создана'); closeModal(); refreshData(); })
-                    .catch(err => showToast('❌ ' + err.message, 'error'))
-                    .finally(() => showLoading(false));
-            }
-        },
-
-        // =============================================================
-        // 7.7. РАЙОН
-        // =============================================================
-        district: {
-            title: '🗺️ Создать район',
-            render: function() {
-                return `
-                    <input type="text" class="form-control" id="distName" placeholder="Название района (например, Приморский)">
-                    <select class="form-control mt-2" id="distLocation">
-                        <option value="">Выберите локацию</option>
-                        ${cachedLocations && cachedLocations.length > 0
-                    ? cachedLocations.map(l => `<option value="${l.id}">${l.name}</option>`).join('')
-                    : '<option value="">Нет данных</option>'}
-                    </select>
-                `;
-            },
-            submit: function() {
-                const name = document.getElementById('distName').value.trim();
-                const locationId = document.getElementById('distLocation').value;
-                if (!name || !locationId) { showToast('Заполните все поля', 'error'); return; }
-                const params = new URLSearchParams({ name, locationId });
-                showLoading(true);
-                fetch(`${API}/districts?${params.toString()}`, { method: 'POST' })
-                    .then(res => res.json())
-                    .then(() => { showToast('✅ Район создан'); closeModal(); refreshData(); })
-                    .catch(err => showToast('❌ ' + err.message, 'error'))
-                    .finally(() => showLoading(false));
-            }
-        },
-        // =============================================================
-// 7.8. ЭКСПОРТ КВАРТИР
-// =============================================================
-        export: {
-            title: '📥 Скачать квартиры (Excel)',
-            render: function() {
-                return `
-            <div class="mb-2">
-                <label class="form-label fw-bold">Выберите ЖК</label>
-                <select class="form-control" id="exportComplexSelect" onchange="onExportComplexChange(this.value)">
-                    <option value="">Выберите ЖК</option>
-                    ${cachedComplexes && cachedComplexes.length > 0
-                    ? cachedComplexes.map(c => `<option value="${c.id}">${c.name}</option>`).join('')
-                    : '<option value="">Нет данных</option>'}
-                </select>
-            </div>
-            <div class="mb-2">
-                <label class="form-label fw-bold">Выберите корпус</label>
-                <select class="form-control" id="exportBuildingSelect" onchange="onExportBuildingChange(this.value)">
-                    <option value="">Сначала выберите ЖК</option>
-                </select>
-            </div>
-            <div class="mb-2">
-                <label class="form-label fw-bold">Выберите секцию</label>
-                <select class="form-control" id="exportEntranceSelect">
-                    <option value="">Сначала выберите корпус</option>
-                </select>
-            </div>
-        `;
-            },
-            submit: function() {
-                const entranceId = document.getElementById('exportEntranceSelect').value;
-
-                if (!entranceId) {
-                    showToast('Выберите секцию', 'error');
-                    return;
-                }
-
-                // Открываем ссылку для скачивания
-                window.location.href = `${API}/export-apartments/${entranceId}`;
-                closeModal();
-                showToast('✅ Начинается скачивание...', 'success');
-            }
-        }
-    };
-
-    // =============================================================
-    // 8. ДИНАМИЧЕСКИЕ БЛОКИ
-    // =============================================================
-
     function addMetroRow() {
         const container = document.getElementById('metroContainer');
-        const options = cachedMetro && cachedMetro.length > 0
-            ? cachedMetro.map(m => `<option value="${m.id}">${m.name}</option>`).join('')
-            : '<option value="">Нет данных</option>';
+        const options = cachedMetro.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
         const html = `
             <div class="inline-group metro-row mt-1">
                 <select class="form-control metro-station-select"><option value="">Станция</option>${options}</select>
@@ -1300,7 +1686,7 @@
                 </div>
                 <div class="entrances-container mt-2">
                     <div class="fw-bold small">🚪 Секции</div>
-                    <div id="entranceTemplate" class="entrance-block inline-group">
+                    <div class="entrance-block inline-group">
                         <input type="text" class="form-control entrance-name-input" placeholder="Название секции" style="flex:2">
                         <input type="number" class="form-control entrance-floor-input" placeholder="Макс. этажей" style="width:120px">
                         <input type="file" class="form-control entrance-file-input" accept=".xlsx" style="width:150px">
@@ -1339,14 +1725,334 @@
     }
 
     // =============================================================
-    // 9. ЗАКРЫТИЕ МОДАЛКИ ПО ESC
+    // ЗАГРУЗКА ДАННЫХ
     // =============================================================
+    async function loadAllData() {
+        showLoading(true);
+        try {
+            const [developers, locations, metro, complexes] = await Promise.all([
+                fetch(`${API}/developers`).then(r => { if (!r.ok) throw new Error('developers'); return r.json(); }),
+                fetch(`${API}/locations`).then(r => { if (!r.ok) throw new Error('locations'); return r.json(); }),
+                fetch(`${API}/metro-stations`).then(r => { if (!r.ok) throw new Error('metro'); return r.json(); }),
+                fetch(`${API}/complexes`).then(r => { if (!r.ok) throw new Error('complexes'); return r.json(); })
+            ]);
+            cachedDevelopers = Array.isArray(developers) ? developers : [];
+            cachedLocations = Array.isArray(locations) ? locations : [];
+            cachedMetro = Array.isArray(metro) ? metro : [];
+            cachedComplexes = Array.isArray(complexes) ? complexes : [];
+
+            populateGlobalFilters();
+            renderComplexes();
+        } catch (e) {
+            console.error(e);
+            showToast('❌ Ошибка загрузки данных. Проверьте консоль.', 'error');
+        } finally {
+            showLoading(false);
+        }
+    }
+
+    function refreshData() {
+        loadAllData();
+        showToast('✅ Данные обновлены', 'success');
+    }
+
+    // =============================================================
+    // ГЛОБАЛЬНЫЕ ФИЛЬТРЫ
+    // =============================================================
+    function populateGlobalFilters() {
+        const locationSelect = document.getElementById('globalFilterLocation');
+        locationSelect.innerHTML = '<option value="">Все</option>';
+        cachedLocations.forEach(l => {
+            locationSelect.innerHTML += `<option value="${l.id}">${l.name}</option>`;
+        });
+
+        locationSelect.addEventListener('change', function() {
+            const locationId = this.value;
+            const districtSelect = document.getElementById('globalFilterDistrict');
+            districtSelect.innerHTML = '<option value="">Все</option>';
+            if (locationId) {
+                fetch(`${API}/districts/by-location/${locationId}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (Array.isArray(data)) {
+                            data.forEach(d => {
+                                districtSelect.innerHTML += `<option value="${d.id}">${d.name}</option>`;
+                            });
+                        }
+                    })
+                    .catch(() => {
+                        districtSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
+                    });
+            }
+        });
+
+        // ===== МЕТРО — КРАСИВЫЕ ЧИПСЫ =====
+        const metroContainer = document.getElementById('globalFilterMetroContainer');
+        metroContainer.className = 'metro-filter';
+        metroContainer.innerHTML = '';
+
+        cachedMetro.forEach(m => {
+            const color = getMetroLineColor(m.name);
+            const hexColor = getColorHex(color);
+            const div = document.createElement('div');
+            div.className = 'metro-chip';  // ← УБРАЛ 'active'
+            div.dataset.id = m.id;
+            div.dataset.name = m.name;
+            div.innerHTML = `
+        <span class="metro-badge" style="background: ${hexColor};">М</span>
+        <span class="metro-name">${m.name}</span>
+        <span class="check-mark">✓</span>
+    `;
+            div.addEventListener('click', function(e) {
+                e.stopPropagation();
+                this.classList.toggle('active');
+            });
+            metroContainer.appendChild(div);
+        });
+
+        // Кнопки типов квартир
+        document.querySelectorAll('#globalFilterTypesContainer .type-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.classList.toggle('active');
+            });
+        });
+    }
+
+    function getColorHex(colorClass) {
+        const colors = {
+            'metro-line-spb-red': '#E31E24',
+            'metro-line-spb-blue': '#0039A6',
+            'metro-line-spb-green': '#009B3A',
+            'metro-line-spb-orange': '#F47B20',
+            'metro-line-spb-purple': '#8B4794',
+            'metro-line-spb-yellow': '#FEDB00',
+            'metro-line-spb-default': '#6c757d'
+        };
+        return colors[colorClass] || '#6c757d';
+    }
+
+    function applyGlobalFilters() {
+        const filter = {
+            locationId: document.getElementById('globalFilterLocation').value || null,
+            districtId: document.getElementById('globalFilterDistrict').value || null,
+            metroStationIds: Array.from(document.querySelectorAll('#globalFilterMetroContainer .metro-chip.active'))
+                .map(chip => parseInt(chip.dataset.id)),
+            types: Array.from(document.querySelectorAll('#globalFilterTypesContainer .type-btn.active'))
+                .map(btn => btn.dataset.value),
+            bathroomType: document.getElementById('globalFilterBathroomType').value || null,
+            floorFrom: parseInt(document.getElementById('globalFilterFloorFrom').value) || null,
+            floorTo: parseInt(document.getElementById('globalFilterFloorTo').value) || null,
+            areaFrom: parseFloat(document.getElementById('globalFilterAreaFrom').value) || null,
+            areaTo: parseFloat(document.getElementById('globalFilterAreaTo').value) || null,
+            priceFrom: parseFloat(document.getElementById('globalFilterPriceFrom').value) || null,
+            priceTo: parseFloat(document.getElementById('globalFilterPriceTo').value) || null,
+            hasBalcony: document.getElementById('globalFilterBalcony').checked || null
+        };
+        // Remove null/undefined values
+        Object.keys(filter).forEach(key => {
+            if (filter[key] === null || filter[key] === undefined || filter[key] === '') delete filter[key];
+            if (Array.isArray(filter[key]) && filter[key].length === 0) delete filter[key];
+        });
+        showToast('🔍 Применяю фильтры...', 'success');
+        applyGlobalFiltersToComplexes(filter);
+    }
+
+    function resetGlobalFilters() {
+        document.getElementById('globalFilterLocation').value = '';
+        document.getElementById('globalFilterDistrict').value = '';
+        document.querySelectorAll('#globalFilterMetroContainer .metro-chip').forEach(chip => chip.classList.remove('active'));
+        document.querySelectorAll('#globalFilterTypesContainer .type-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('globalFilterBathroomType').value = '';
+        document.getElementById('globalFilterFloorFrom').value = '';
+        document.getElementById('globalFilterFloorTo').value = '';
+        document.getElementById('globalFilterAreaFrom').value = '';
+        document.getElementById('globalFilterAreaTo').value = '';
+        document.getElementById('globalFilterPriceFrom').value = '';
+        document.getElementById('globalFilterPriceTo').value = '';
+        document.getElementById('globalFilterBalcony').checked = false;
+        showToast('✅ Фильтры сброшены', 'success');
+        loadAllData();
+    }
+
+    function applyGlobalFiltersToComplexes(filter) {
+        showLoading(true);
+        const params = new URLSearchParams();
+        if (filter.locationId) params.append('locationId', filter.locationId);
+        if (filter.districtId) params.append('districtId', filter.districtId);
+        if (filter.metroStationIds) filter.metroStationIds.forEach(id => params.append('metroStationIds', id));
+        if (filter.types) filter.types.forEach(t => params.append('types', t));
+        if (filter.bathroomType) params.append('bathroomType', filter.bathroomType);
+        if (filter.floorFrom) params.append('floorFrom', filter.floorFrom);
+        if (filter.floorTo) params.append('floorTo', filter.floorTo);
+        if (filter.areaFrom) params.append('areaFrom', filter.areaFrom);
+        if (filter.areaTo) params.append('areaTo', filter.areaTo);
+        if (filter.priceFrom) params.append('priceFrom', filter.priceFrom);
+        if (filter.priceTo) params.append('priceTo', filter.priceTo);
+        if (filter.hasBalcony) params.append('hasBalcony', 'true');
+        params.append('size', '100');
+
+        fetch(`${API}/apartments/filter?${params.toString()}`)
+            .then(res => {
+                if (!res.ok) throw new Error('Ошибка фильтрации');
+                return res.json();
+            })
+            .then(data => {
+                const apartments = data.content || data;
+                const complexIds = [...new Set((Array.isArray(apartments) ? apartments : []).map(a => a.entrance?.building?.id))];
+                if (complexIds.length > 0) {
+                    showToast(`🔍 Найдено квартир: ${data.totalElements || apartments.length}`, 'success');
+                    loadAllData();
+                } else {
+                    showToast('🔍 Ничего не найдено по фильтрам', 'success');
+                    loadAllData();
+                }
+            })
+            .catch(err => showToast('❌ ' + err.message, 'error'))
+            .finally(() => showLoading(false));
+    }
+
+    // =============================================================
+    // РЕНДЕРИНГ КАРТОЧЕК
+    // =============================================================
+    function renderComplexes() {
+        const container = document.getElementById('complexesList');
+        const badge = document.getElementById('countBadge');
+
+        if (!cachedComplexes || cachedComplexes.length === 0) {
+            container.innerHTML = `
+                <div class="text-center py-5">
+                    <i class="bi bi-building" style="font-size: 48px; color: #dee2e6;"></i>
+                    <p class="text-muted mt-3">Нет ЖК. Создайте первый!</p>
+                    <button class="btn btn-primary btn-sm" onclick="showModal('complex')">
+                        <i class="bi bi-plus-lg"></i> Создать ЖК
+                    </button>
+                </div>
+            `;
+            badge.textContent = '0 ЖК';
+            return;
+        }
+
+        badge.textContent = cachedComplexes.length + ' ЖК';
+        let html = '';
+
+        cachedComplexes.forEach(item => {
+            let metroHtml = '';
+            if (item.metroDistances && item.metroDistances.length > 0) {
+                metroHtml = '<div class="complex-metro">';
+                item.metroDistances.forEach(metro => {
+                    const colorClass = getMetroLineColor(metro.stationName);
+                    const walkingTime = getWalkingTime(metro.distance);
+                    metroHtml += `
+                        <div class="metro-station ${colorClass}">
+                            <span class="metro-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="2" y="2" width="20" height="20" rx="3" fill="#0072BC" stroke="#005A8C" stroke-width="2"/>
+                                    <text x="12" y="18" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="white" text-anchor="middle">М</text>
+                                </svg>
+                            </span>
+                            <span class="station-name">${metro.stationName}</span>
+                            <span class="station-distance">🚶 ${walkingTime}</span>
+                        </div>
+                    `;
+                });
+                metroHtml += '</div>';
+            }
+
+            html += `
+                <div class="complex-card" onclick="navigateToComplex(${item.id})">
+                    <div class="complex-header">
+                        <div class="complex-title">
+                            <h5 class="mb-0">${item.name || 'Без названия'}</h5>
+                            <small class="text-muted">${item.address || ''}</small>
+                        </div>
+                        <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); deleteComplex(${item.id})">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                    <div class="complex-stats">
+                        <div class="stat-item">
+                            <i class="bi bi-building"></i>
+                            <span>${item.countBuildings || 0}</span>
+                            <small>корпусов</small>
+                        </div>
+                        <div class="stat-item">
+                            <i class="bi bi-door-open"></i>
+                            <span>${item.countEntrance || 0}</span>
+                            <small>секций</small>
+                        </div>
+                        <div class="stat-item">
+                            <i class="bi bi-house"></i>
+                            <span>${item.countApartment || 0}</span>
+                            <small>квартир</small>
+                        </div>
+                    </div>
+                    <div class="complex-meta">
+                        <span class="badge bg-light text-dark">🏗️ ${item.developer || '—'}</span>
+                        <span class="badge bg-light text-dark">📍 ${item.location || '—'}</span>
+                        <span class="badge bg-light text-dark">🏘️ ${item.district || '—'}</span>
+                    </div>
+                    ${metroHtml}
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+    }
+
+    // =============================================================
+    // НАВИГАЦИЯ И ДЕЙСТВИЯ
+    // =============================================================
+    function navigateToComplex(id) {
+        window.location.href = `/complex/${id}`;
+    }
+
+    async function deleteComplex(id) {
+        if (!confirm('Удалить ЖК и все связанные данные?')) return;
+        try {
+            const res = await fetch(`${API}/complexes/${id}`, { method: 'DELETE' });
+            if (!res.ok) throw new Error('Ошибка удаления');
+            showToast('✅ ЖК удалён', 'success');
+            await loadAllData();
+        } catch (err) {
+            showToast('❌ ' + err.message, 'error');
+        }
+    }
+
+    // =============================================================
+    // TOAST И ЗАГРУЗКА
+    // =============================================================
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 5000);
+    }
+
+    function showLoading(show) {
+        document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+    }
+
+    function updateTime() {
+        document.getElementById('time').textContent = new Date().toLocaleString('ru-RU');
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+
+    // =============================================================
+    // ПОДПИСКА НА СОБЫТИЯ
+    // =============================================================
+    document.getElementById('globalApplyFiltersBtn').addEventListener('click', applyGlobalFilters);
+    document.getElementById('globalResetFiltersBtn').addEventListener('click', resetGlobalFilters);
+
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closeModal();
     });
 
     // =============================================================
-    // 10. ЗАПУСК
+    // ЗАПУСК
     // =============================================================
     loadAllData();
 </script>

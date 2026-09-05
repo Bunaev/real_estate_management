@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SpecificationBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">search-service</a> &gt; <a href="index.source.html" class="el_package">com.search_service.specification</a> &gt; <span class="el_source">SpecificationBuilder.java</span></div><h1>SpecificationBuilder.java</h1><pre class="source lang-java linenums">package com.search_service.specification;
+
+import com.search_service.dto.in.FilterDTO;
+import com.search_service.entity.*;
+import jakarta.persistence.criteria.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
+@RequiredArgsConstructor
+public class SpecificationBuilder {
+
+    public Specification&lt;Apartment&gt; build(FilterDTO filter) {
+<span class="fc" id="L18">        List&lt;Specification&lt;Apartment&gt;&gt; specs = new ArrayList&lt;&gt;();</span>
+
+<span class="fc" id="L20">        specs.add(byLocationId(filter.getLocationId()));</span>
+<span class="fc" id="L21">        specs.add(byDistrictId(filter.getDistrictId()));</span>
+<span class="fc" id="L22">        specs.add(byDeveloperId(filter.getDeveloperId()));</span>
+<span class="fc" id="L23">        specs.add(byResidentialComplexId(filter.getResidentialComplexId()));</span>
+<span class="fc" id="L24">        specs.add(byBuildingId(filter.getBuildingId()));</span>
+<span class="fc" id="L25">        specs.add(byEntranceId(filter.getEntranceId()));</span>
+<span class="fc" id="L26">        specs.add(byMetroStationIds(filter.getMetroStationIds()));</span>
+<span class="fc" id="L27">        specs.add(byTypes(filter.getTypes()));</span>
+<span class="fc" id="L28">        specs.add(byBathroomType(filter.getBathroomType()));</span>
+<span class="fc" id="L29">        specs.add(byFloorRange(filter.getFloorFrom(), filter.getFloorTo()));</span>
+<span class="fc" id="L30">        specs.add(byAreaRange(filter.getAreaFrom(), filter.getAreaTo()));</span>
+<span class="fc" id="L31">        specs.add(byPriceRange(filter.getPriceFrom(), filter.getPriceTo()));</span>
+<span class="fc" id="L32">        specs.add(byHasBalcony(filter.getHasBalcony()));</span>
+<span class="fc" id="L33">        specs.add(byStatus(filter.getStatus()));</span>
+
+<span class="fc" id="L35">        Specification&lt;Apartment&gt; result = Specification.where(null);</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        for (Specification&lt;Apartment&gt; spec : specs) {</span>
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">            if (spec != null) {</span>
+<span class="fc" id="L38">                result = result.and(spec);</span>
+            }
+<span class="fc" id="L40">        }</span>
+<span class="fc" id="L41">        return result;</span>
+    }
+
+    /**
+     * Общий метод для JOIN-а всей цепочки: Apartment → Entrance → Building → ResidentialComplex.
+     * Используется фильтрами, которым нужен ResidentialComplex.
+     */
+    private Join&lt;Apartment, Entrance&gt; joinEntrance(Root&lt;Apartment&gt; root) {
+<span class="nc" id="L49">        return root.join(&quot;entrance&quot;, JoinType.LEFT);</span>
+    }
+
+    private Join&lt;Entrance, Building&gt; joinBuilding(Join&lt;Apartment, Entrance&gt; entranceJoin) {
+<span class="nc" id="L53">        return entranceJoin.join(&quot;building&quot;, JoinType.LEFT);</span>
+    }
+
+    private Join&lt;Building, ResidentialComplex&gt; joinComplex(Join&lt;Entrance, Building&gt; buildingJoin) {
+<span class="nc" id="L57">        return buildingJoin.join(&quot;residentialComplex&quot;, JoinType.LEFT);</span>
+    }
+
+    private Specification&lt;Apartment&gt; byLocationId(Long locationId) {
+<span class="fc" id="L61">        return (root, query, cb) -&gt; {</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">            if (locationId == null) return cb.conjunction();</span>
+<span class="nc" id="L63">            Join&lt;Apartment, Entrance&gt; entrance = joinEntrance(root);</span>
+<span class="nc" id="L64">            Join&lt;Entrance, Building&gt; building = joinBuilding(entrance);</span>
+<span class="nc" id="L65">            Join&lt;Building, ResidentialComplex&gt; complex = joinComplex(building);</span>
+<span class="nc" id="L66">            Join&lt;ResidentialComplex, District&gt; district = complex.join(&quot;district&quot;, JoinType.LEFT);</span>
+<span class="nc" id="L67">            query.distinct(true);</span>
+<span class="nc" id="L68">            return cb.equal(district.get(&quot;location&quot;).get(&quot;id&quot;), locationId);</span>
+        };
+    }
+
+    private Specification&lt;Apartment&gt; byDistrictId(Long districtId) {
+<span class="fc" id="L73">        return (root, query, cb) -&gt; {</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">            if (districtId == null) return cb.conjunction();</span>
+<span class="nc" id="L75">            Join&lt;Apartment, Entrance&gt; entrance = joinEntrance(root);</span>
+<span class="nc" id="L76">            Join&lt;Entrance, Building&gt; building = joinBuilding(entrance);</span>
+<span class="nc" id="L77">            Join&lt;Building, ResidentialComplex&gt; complex = joinComplex(building);</span>
+<span class="nc" id="L78">            query.distinct(true);</span>
+<span class="nc" id="L79">            return cb.equal(complex.get(&quot;district&quot;).get(&quot;id&quot;), districtId);</span>
+        };
+    }
+
+    private Specification&lt;Apartment&gt; byDeveloperId(Long developerId) {
+<span class="fc" id="L84">        return (root, query, cb) -&gt; {</span>
+<span class="nc bnc" id="L85" title="All 2 branches missed.">            if (developerId == null) return cb.conjunction();</span>
+<span class="nc" id="L86">            Join&lt;Apartment, Entrance&gt; entrance = joinEntrance(root);</span>
+<span class="nc" id="L87">            Join&lt;Entrance, Building&gt; building = joinBuilding(entrance);</span>
+<span class="nc" id="L88">            Join&lt;Building, ResidentialComplex&gt; complex = joinComplex(building);</span>
+<span class="nc" id="L89">            query.distinct(true);</span>
+<span class="nc" id="L90">            return cb.equal(complex.get(&quot;developer&quot;).get(&quot;id&quot;), developerId);</span>
+        };
+    }
+
+    private Specification&lt;Apartment&gt; byResidentialComplexId(Long residentialComplexId) {
+<span class="fc" id="L95">        return (root, query, cb) -&gt; {</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">            if (residentialComplexId == null) return cb.conjunction();</span>
+<span class="nc" id="L97">            Join&lt;Apartment, Entrance&gt; entrance = joinEntrance(root);</span>
+<span class="nc" id="L98">            Join&lt;Entrance, Building&gt; building = joinBuilding(entrance);</span>
+<span class="nc" id="L99">            query.distinct(true);</span>
+<span class="nc" id="L100">            return cb.equal(building.get(&quot;residentialComplex&quot;).get(&quot;id&quot;), residentialComplexId);</span>
+        };
+    }
+
+    private Specification&lt;Apartment&gt; byBuildingId(Long buildingId) {
+<span class="fc" id="L105">        return (root, query, cb) -&gt; {</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">            if (buildingId == null) return cb.conjunction();</span>
+<span class="nc" id="L107">            Join&lt;Apartment, Entrance&gt; entrance = joinEntrance(root);</span>
+<span class="nc" id="L108">            return cb.equal(entrance.get(&quot;building&quot;).get(&quot;id&quot;), buildingId);</span>
+        };
+    }
+
+    private Specification&lt;Apartment&gt; byEntranceId(Long entranceId) {
+<span class="fc" id="L113">        return (root, query, cb) -&gt; {</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">            if (entranceId == null) return cb.conjunction();</span>
+<span class="nc" id="L115">            return cb.equal(root.get(&quot;entrance&quot;).get(&quot;id&quot;), entranceId);</span>
+        };
+    }
+
+    private Specification&lt;Apartment&gt; byMetroStationIds(List&lt;Long&gt; metroStationIds) {
+<span class="fc" id="L120">        return (root, query, cb) -&gt; {</span>
+<span class="nc bnc" id="L121" title="All 4 branches missed.">            if (metroStationIds == null || metroStationIds.isEmpty()) return cb.conjunction();</span>
+<span class="nc" id="L122">            Join&lt;Apartment, Entrance&gt; entrance = joinEntrance(root);</span>
+<span class="nc" id="L123">            Join&lt;Entrance, Building&gt; building = joinBuilding(entrance);</span>
+<span class="nc" id="L124">            Join&lt;Building, ResidentialComplex&gt; complex = joinComplex(building);</span>
+<span class="nc" id="L125">            Join&lt;ResidentialComplex, ComplexMetroDistance&gt; metroDist = complex.join(&quot;metroDistances&quot;, JoinType.LEFT);</span>
+<span class="nc" id="L126">            query.distinct(true);</span>
+<span class="nc" id="L127">            return metroDist.get(&quot;metroStation&quot;).get(&quot;id&quot;).in(metroStationIds);</span>
+        };
+    }
+
+    private Specification&lt;Apartment&gt; byTypes(List&lt;ApartmentType&gt; types) {
+<span class="fc" id="L132">        return (root, query, cb) -&gt; {</span>
+<span class="nc bnc" id="L133" title="All 4 branches missed.">            if (types == null || types.isEmpty()) return cb.conjunction();</span>
+<span class="nc" id="L134">            CriteriaBuilder.In&lt;Object&gt; in = cb.in(root.get(&quot;type&quot;));</span>
+<span class="nc bnc" id="L135" title="All 2 branches missed.">            for (ApartmentType type : types) {</span>
+<span class="nc" id="L136">                in.value(type);</span>
+<span class="nc" id="L137">            }</span>
+<span class="nc" id="L138">            return in;</span>
+        };
+    }
+
+    private Specification&lt;Apartment&gt; byBathroomType(BathroomType bathroomType) {
+<span class="fc" id="L143">        return (root, query, cb) -&gt; {</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">            if (bathroomType == null) return cb.conjunction();</span>
+<span class="nc" id="L145">            return cb.equal(root.get(&quot;bathroomType&quot;), bathroomType);</span>
+        };
+    }
+
+    private Specification&lt;Apartment&gt; byFloorRange(Integer floorFrom, Integer floorTo) {
+<span class="fc" id="L150">        return (root, query, cb) -&gt; {</span>
+<span class="nc" id="L151">            Path&lt;Integer&gt; floorPath = root.get(&quot;floor&quot;);</span>
+<span class="nc" id="L152">            Predicate predicate = cb.conjunction();</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">            if (floorFrom != null) {</span>
+<span class="nc" id="L154">                predicate = cb.and(predicate, cb.greaterThanOrEqualTo(floorPath, floorFrom));</span>
+            }
+<span class="nc bnc" id="L156" title="All 2 branches missed.">            if (floorTo != null) {</span>
+<span class="nc" id="L157">                predicate = cb.and(predicate, cb.lessThanOrEqualTo(floorPath, floorTo));</span>
+            }
+<span class="nc" id="L159">            return predicate;</span>
+        };
+    }
+
+    private Specification&lt;Apartment&gt; byAreaRange(Double areaFrom, Double areaTo) {
+<span class="fc" id="L164">        return (root, query, cb) -&gt; {</span>
+<span class="nc" id="L165">            Path&lt;Double&gt; areaPath = root.get(&quot;area&quot;);</span>
+<span class="nc" id="L166">            Predicate predicate = cb.conjunction();</span>
+<span class="nc bnc" id="L167" title="All 2 branches missed.">            if (areaFrom != null) {</span>
+<span class="nc" id="L168">                predicate = cb.and(predicate, cb.greaterThanOrEqualTo(areaPath, areaFrom));</span>
+            }
+<span class="nc bnc" id="L170" title="All 2 branches missed.">            if (areaTo != null) {</span>
+<span class="nc" id="L171">                predicate = cb.and(predicate, cb.lessThanOrEqualTo(areaPath, areaTo));</span>
+            }
+<span class="nc" id="L173">            return predicate;</span>
+        };
+    }
+
+    private Specification&lt;Apartment&gt; byPriceRange(Double priceFrom, Double priceTo) {
+<span class="fc" id="L178">        return (root, query, cb) -&gt; {</span>
+<span class="nc" id="L179">            Path&lt;Double&gt; pricePath = root.get(&quot;price&quot;);</span>
+<span class="nc" id="L180">            Predicate predicate = cb.conjunction();</span>
+<span class="nc bnc" id="L181" title="All 2 branches missed.">            if (priceFrom != null) {</span>
+<span class="nc" id="L182">                predicate = cb.and(predicate, cb.greaterThanOrEqualTo(pricePath, priceFrom));</span>
+            }
+<span class="nc bnc" id="L184" title="All 2 branches missed.">            if (priceTo != null) {</span>
+<span class="nc" id="L185">                predicate = cb.and(predicate, cb.lessThanOrEqualTo(pricePath, priceTo));</span>
+            }
+<span class="nc" id="L187">            return predicate;</span>
+        };
+    }
+
+    private Specification&lt;Apartment&gt; byHasBalcony(Boolean hasBalcony) {
+<span class="fc" id="L192">        return (root, query, cb) -&gt; {</span>
+<span class="nc bnc" id="L193" title="All 2 branches missed.">            if (hasBalcony == null) return cb.conjunction();</span>
+<span class="nc" id="L194">            return cb.equal(root.get(&quot;hasBalcony&quot;), hasBalcony);</span>
+        };
+    }
+
+    private Specification&lt;Apartment&gt; byStatus(Status status) {
+<span class="fc" id="L199">        return (root, query, cb) -&gt; {</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">            if (status == null) return cb.conjunction();</span>
+<span class="nc" id="L201">            return cb.equal(root.get(&quot;status&quot;), status);</span>
+        };
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

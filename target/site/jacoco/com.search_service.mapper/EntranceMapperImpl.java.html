@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EntranceMapperImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">search-service</a> &gt; <a href="index.source.html" class="el_package">com.search_service.mapper</a> &gt; <span class="el_source">EntranceMapperImpl.java</span></div><h1>EntranceMapperImpl.java</h1><pre class="source lang-java linenums">package com.search_service.mapper;
+
+import com.search_service.dto.in.EntranceDTO;
+import com.search_service.dto.out.EntranceShortDTO;
+import com.search_service.entity.Entrance;
+import javax.annotation.processing.Generated;
+import org.springframework.stereotype.Component;
+
+@Generated(
+    value = &quot;org.mapstruct.ap.MappingProcessor&quot;,
+    date = &quot;2026-09-05T16:57:06+0300&quot;,
+    comments = &quot;version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (Oracle Corporation)&quot;
+)
+@Component
+<span class="nc" id="L15">public class EntranceMapperImpl implements EntranceMapper {</span>
+
+    @Override
+    public Entrance toEntity(EntranceDTO dto) {
+<span class="nc bnc" id="L19" title="All 2 branches missed.">        if ( dto == null ) {</span>
+<span class="nc" id="L20">            return null;</span>
+        }
+
+<span class="nc" id="L23">        Entrance.EntranceBuilder entrance = Entrance.builder();</span>
+
+<span class="nc" id="L25">        entrance.name( dto.getName() );</span>
+
+<span class="nc" id="L27">        return entrance.build();</span>
+    }
+
+    @Override
+    public EntranceShortDTO toDto(Entrance entrance) {
+<span class="nc bnc" id="L32" title="All 2 branches missed.">        if ( entrance == null ) {</span>
+<span class="nc" id="L33">            return null;</span>
+        }
+
+<span class="nc" id="L36">        EntranceShortDTO.EntranceShortDTOBuilder entranceShortDTO = EntranceShortDTO.builder();</span>
+
+<span class="nc" id="L38">        entranceShortDTO.id( entrance.getId() );</span>
+<span class="nc" id="L39">        entranceShortDTO.name( entrance.getName() );</span>
+
+<span class="nc" id="L41">        return entranceShortDTO.build();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
