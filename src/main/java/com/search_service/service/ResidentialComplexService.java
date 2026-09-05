@@ -1,5 +1,6 @@
 package com.search_service.service;
 
+import com.search_service.dto.in.FilterDTO;
 import com.search_service.dto.in.ResidentialComplexDTO;
 import com.search_service.dto.out.*;
 import com.search_service.entity.*;
@@ -8,8 +9,11 @@ import com.search_service.mapper.BuildingMapper;
 import com.search_service.mapper.ResidentialComplexMapper;
 import com.search_service.mapper.ResidentialComplexOutMapper;
 import com.search_service.repository.*;
+import com.search_service.specification.ResidentialComplexSpecificationBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +36,8 @@ public class ResidentialComplexService {
     private final ResidentialComplexMapper mapper;
     private final ResidentialComplexOutMapper outMapper;
     private final BuildingMapper buildingMapper;
+    private final ResidentialComplexSpecificationBuilder specificationBuilder;
+
 
     @Transactional
     public ResidentialComplexShortDTO create(ResidentialComplexDTO dto) {
@@ -90,8 +96,10 @@ public class ResidentialComplexService {
     }
 
     @Transactional(readOnly = true)
-    public List<ResidentialComplexOutDTO> findAllLightweight() {
-        List<ResidentialComplexOutDTO> dtoList = complexRepo.findAllLightweight();
+    public List<ResidentialComplexOutDTO> findAllLightweight(FilterDTO filter, Pageable page) {
+        Specification<ResidentialComplex> specification = specificationBuilder.build(filter);
+        List<ResidentialComplexOutDTO> dtoList = complexRepo.findAll(specification, page)
+                .stream().map(outMapper::toDto).toList();
         List<Long> ids = dtoList.stream()
                 .map(ResidentialComplexOutDTO::getId)
                 .toList();

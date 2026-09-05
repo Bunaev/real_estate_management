@@ -690,6 +690,28 @@
         .metro-chip.active .check-mark {
             display: inline;
         }
+        /* ===== ПАГИНАЦИЯ НА ГЛАВНОЙ ===== */
+        .pagination-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+            background: white;
+            border-top: 1px solid #f0f0f0;
+            margin-top: 16px;
+            border-radius: 0 0 10px 10px;
+        }
+        .pagination-info { color: #6c757d; font-size: 14px; }
+        .pagination-controls { display: flex; gap: 8px; align-items: center; }
+        .page-btn {
+            width: 32px; height: 32px; border: 1px solid #dee2e6; border-radius: 6px;
+            background: white; cursor: pointer; display: inline-flex; align-items: center;
+            justify-content: center; font-size: 14px; transition: 0.15s;
+        }
+        .page-btn:hover { background: #f0f2f5; border-color: #0f3460; }
+        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -907,6 +929,14 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+    // =============================================================
+    // СОСТОЯНИЕ ГЛОБАЛЬНОЙ СТРАНИЦЫ
+    // =============================================================
+    let currentPage = 0;
+    let pageSize = 12;  // Показываем по 12 ЖК на странице (3 ряда по 4)
+    let totalPages = 1;
+    let totalElements = 0;
+    let currentFilter = {};
     const API = '/api';
 
     let cachedDevelopers = [];
@@ -1727,28 +1757,159 @@
     // =============================================================
     // ЗАГРУЗКА ДАННЫХ
     // =============================================================
-    async function loadAllData() {
+    async function loadAllData(filter, page) {
         showLoading(true);
         try {
-            const [developers, locations, metro, complexes] = await Promise.all([
-                fetch(`${API}/developers`).then(r => { if (!r.ok) throw new Error('developers'); return r.json(); }),
-                fetch(`${API}/locations`).then(r => { if (!r.ok) throw new Error('locations'); return r.json(); }),
-                fetch(`${API}/metro-stations`).then(r => { if (!r.ok) throw new Error('metro'); return r.json(); }),
-                fetch(`${API}/complexes`).then(r => { if (!r.ok) throw new Error('complexes'); return r.json(); })
-            ]);
-            cachedDevelopers = Array.isArray(developers) ? developers : [];
-            cachedLocations = Array.isArray(locations) ? locations : [];
-            cachedMetro = Array.isArray(metro) ? metro : [];
-            cachedComplexes = Array.isArray(complexes) ? complexes : [];
+            // Если filter не передан — используем пустой
+            const filterDTO = filter || {};
+            const pageNum = page !== undefined ? page : currentPage;
 
-            populateGlobalFilters();
+            // Формируем параметры запроса
+            const params = new URLSearchParams();
+            params.append('page', pageNum);
+            params.append('size', pageSize);
+            params.append('sort', 'name,asc');  // сортировка по имени по умолчанию
+
+            const set = (name, value) => {
+                if (value !== null && value !== undefined && value !== '') params.append(name, value);
+            };
+            const setList = (name, list) => {
+                if (Array.isArray(list)) list.forEach(v => params.append(name, v));
+            };
+
+            // Прямые поля ЖК (география / застройщик)
+            set('locationId', filterDTO.locationId);
+            set('districtId', filterDTO.districtId);
+            set('developerId', filterDTO.developerId);
+
+            // Метро (список ID)
+            setList('metroStationIds', filterDTO.metroStationIds);
+
+            // Параметры квартир — бэкенд возвращает ЖК, в которых есть
+            // хотя бы одна квартира, подходящая под эти фильтры
+            setList('types', filterDTO.types);
+            set('bathroomType', filterDTO.bathroomType);
+            set('floorFrom', filterDTO.floorFrom);
+            set('floorTo', filterDTO.floorTo);
+            set('areaFrom', filterDTO.areaFrom);
+            set('areaTo', filterDTO.areaTo);
+            set('priceFrom', filterDTO.priceFrom);
+            set('priceTo', filterDTO.priceTo);
+            set('status', filterDTO.status);
+            if (filterDTO.hasBalcony) params.append('hasBalcony', 'true');
+
+            const url = `${API}/complexes?${params.toString()}`;
+            console.log('📡 Глобальный запрос:', url);
+
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Ошибка загрузки ЖК');
+
+            const data = await response.json();
+
+            // Обработка Page-ответа
+            if (data.content && Array.isArray(data.content)) {
+                cachedComplexes = data.content;
+                totalPages = data.totalPages || 1;
+                totalElements = data.totalElements || 0;
+                currentPage = data.number || 0;
+            } else if (Array.isArray(data)) {
+                // Если пришёл массив (без пагинации) — адаптируем
+                cachedComplexes = data;
+                totalPages = 1;
+                totalElements = data.length;
+                currentPage = 0;
+            } else {
+                cachedComplexes = [];
+                totalPages = 1;
+                totalElements = 0;
+            }
+
+            // Загружаем справочники только при первом запуске
+            if (!cachedLocations.length) {
+                const [developers, locations, metro] = await Promise.all([
+                    fetch(`${API}/developers`).then(r => r.json()),
+                    fetch(`${API}/locations`).then(r => r.json()),
+                    fetch(`${API}/metro-stations`).then(r => r.json())
+                ]);
+                cachedDevelopers = Array.isArray(developers) ? developers : [];
+                cachedLocations = Array.isArray(locations) ? locations : [];
+                cachedMetro = Array.isArray(metro) ? metro : [];
+                populateGlobalFilters();
+            }
+
             renderComplexes();
+            renderPagination();
         } catch (e) {
-            console.error(e);
+            console.error('❌ Ошибка загрузки данных:', e);
             showToast('❌ Ошибка загрузки данных. Проверьте консоль.', 'error');
         } finally {
             showLoading(false);
         }
+    }
+
+    function renderPagination() {
+        // Находим или создаём контейнер для пагинации
+        let paginationContainer = document.getElementById('paginationContainer');
+        if (!paginationContainer) {
+            const card = document.querySelector('.card');
+            paginationContainer = document.createElement('div');
+            paginationContainer.id = 'paginationContainer';
+            card.appendChild(paginationContainer);
+        }
+
+        if (totalPages <= 1) {
+            paginationContainer.innerHTML = '';
+            return;
+        }
+
+        const startItem = currentPage * pageSize + 1;
+        const endItem = Math.min(startItem + cachedComplexes.length - 1, totalElements);
+
+        paginationContainer.innerHTML = `
+        <div class="pagination-wrapper">
+            <div class="pagination-info">
+                Показано <strong>${cachedComplexes.length}</strong> из <strong>${totalElements}</strong> ЖК
+            </div>
+            <div class="pagination-controls">
+                <button class="page-btn" onclick="changePage('prev')" ${currentPage <= 0 ? 'disabled' : ''}>
+                    <i class="bi bi-chevron-left"></i>
+                </button>
+                <span style="font-size:14px;font-weight:500;">${currentPage + 1} / ${totalPages}</span>
+                <button class="page-btn" onclick="changePage('next')" ${currentPage >= totalPages - 1 ? 'disabled' : ''}>
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+                <span style="margin-left:16px;font-size:14px;color:#6c757d;">На странице:</span>
+                <select class="form-select form-select-sm" style="width:auto;display:inline-block;" onchange="changePageSize()" id="globalPageSizeSelect">
+                    <option value="8" ${pageSize === 8 ? 'selected' : ''}>8</option>
+                    <option value="12" ${pageSize === 12 ? 'selected' : ''}>12</option>
+                    <option value="24" ${pageSize === 24 ? 'selected' : ''}>24</option>
+                    <option value="48" ${pageSize === 48 ? 'selected' : ''}>48</option>
+                </select>
+            </div>
+        </div>
+    `;
+    }
+
+    // =============================================================
+    // ПАГИНАЦИЯ
+    // =============================================================
+    function changePage(direction) {
+        if (direction === 'prev' && currentPage > 0) {
+            currentPage--;
+        } else if (direction === 'next' && currentPage < totalPages - 1) {
+            currentPage++;
+        } else {
+            return;
+        }
+        loadAllData(currentFilter, currentPage);
+    }
+
+    function changePageSize() {
+        const select = document.getElementById('globalPageSizeSelect');
+        if (!select) return;
+        pageSize = parseInt(select.value);
+        currentPage = 0;
+        loadAllData(currentFilter, 0);
     }
 
     function refreshData() {
@@ -1833,7 +1994,7 @@
     }
 
     function applyGlobalFilters() {
-        const filter = {
+        currentFilter = {
             locationId: document.getElementById('globalFilterLocation').value || null,
             districtId: document.getElementById('globalFilterDistrict').value || null,
             metroStationIds: Array.from(document.querySelectorAll('#globalFilterMetroContainer .metro-chip.active'))
@@ -1849,13 +2010,16 @@
             priceTo: parseFloat(document.getElementById('globalFilterPriceTo').value) || null,
             hasBalcony: document.getElementById('globalFilterBalcony').checked || null
         };
-        // Remove null/undefined values
-        Object.keys(filter).forEach(key => {
-            if (filter[key] === null || filter[key] === undefined || filter[key] === '') delete filter[key];
-            if (Array.isArray(filter[key]) && filter[key].length === 0) delete filter[key];
+
+        // Удаляем пустые значения
+        Object.keys(currentFilter).forEach(key => {
+            if (currentFilter[key] === null || currentFilter[key] === undefined || currentFilter[key] === '') delete currentFilter[key];
+            if (Array.isArray(currentFilter[key]) && currentFilter[key].length === 0) delete currentFilter[key];
         });
+
+        currentPage = 0;
         showToast('🔍 Применяю фильтры...', 'success');
-        applyGlobalFiltersToComplexes(filter);
+        loadAllData(currentFilter, 0);
     }
 
     function resetGlobalFilters() {
@@ -1871,45 +2035,11 @@
         document.getElementById('globalFilterPriceFrom').value = '';
         document.getElementById('globalFilterPriceTo').value = '';
         document.getElementById('globalFilterBalcony').checked = false;
+
+        currentFilter = {};
+        currentPage = 0;
         showToast('✅ Фильтры сброшены', 'success');
-        loadAllData();
-    }
-
-    function applyGlobalFiltersToComplexes(filter) {
-        showLoading(true);
-        const params = new URLSearchParams();
-        if (filter.locationId) params.append('locationId', filter.locationId);
-        if (filter.districtId) params.append('districtId', filter.districtId);
-        if (filter.metroStationIds) filter.metroStationIds.forEach(id => params.append('metroStationIds', id));
-        if (filter.types) filter.types.forEach(t => params.append('types', t));
-        if (filter.bathroomType) params.append('bathroomType', filter.bathroomType);
-        if (filter.floorFrom) params.append('floorFrom', filter.floorFrom);
-        if (filter.floorTo) params.append('floorTo', filter.floorTo);
-        if (filter.areaFrom) params.append('areaFrom', filter.areaFrom);
-        if (filter.areaTo) params.append('areaTo', filter.areaTo);
-        if (filter.priceFrom) params.append('priceFrom', filter.priceFrom);
-        if (filter.priceTo) params.append('priceTo', filter.priceTo);
-        if (filter.hasBalcony) params.append('hasBalcony', 'true');
-        params.append('size', '100');
-
-        fetch(`${API}/apartments/filter?${params.toString()}`)
-            .then(res => {
-                if (!res.ok) throw new Error('Ошибка фильтрации');
-                return res.json();
-            })
-            .then(data => {
-                const apartments = data.content || data;
-                const complexIds = [...new Set((Array.isArray(apartments) ? apartments : []).map(a => a.entrance?.building?.id))];
-                if (complexIds.length > 0) {
-                    showToast(`🔍 Найдено квартир: ${data.totalElements || apartments.length}`, 'success');
-                    loadAllData();
-                } else {
-                    showToast('🔍 Ничего не найдено по фильтрам', 'success');
-                    loadAllData();
-                }
-            })
-            .catch(err => showToast('❌ ' + err.message, 'error'))
-            .finally(() => showLoading(false));
+        loadAllData({}, 0);
     }
 
     // =============================================================
@@ -2054,7 +2184,7 @@
     // =============================================================
     // ЗАПУСК
     // =============================================================
-    loadAllData();
+    loadAllData({}, 0);
 </script>
 
 </body>
