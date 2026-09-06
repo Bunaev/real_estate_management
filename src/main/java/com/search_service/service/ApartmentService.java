@@ -48,7 +48,7 @@ public class ApartmentService {
 
     @Transactional(readOnly = true)
     public List<ApartmentDTO> findByComplexId(Long complexId) {
-        return mapper.toListDtoList(apartmentRepo.findByEntrance_Building_ResidentialComplex_Id(complexId));
+        return mapper.toDtoList(apartmentRepo.findByEntrance_Building_ResidentialComplex_Id(complexId));
     }
 
     @Transactional

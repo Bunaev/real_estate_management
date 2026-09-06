@@ -38,6 +38,7 @@
             flex-wrap: wrap;
             gap: 10px;
             position: relative;
+            min-height: 80px;
         }
         .header-left {
             display: flex;
@@ -45,24 +46,21 @@
             gap: 16px;
         }
         .header .logo {
-            font-size: 24px;
-            font-weight: 700;
-            letter-spacing: 1px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            max-width: 300px;
             display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 10px;
         }
-        .header .logo .logo-icon {
-            font-size: 28px;
-            background: rgba(255,255,255,0.15);
-            border-radius: 8px;
-            padding: 4px 8px;
-        }
-        .header .logo .logo-sub {
-            font-size: 12px;
-            font-weight: 400;
-            opacity: 0.6;
-            letter-spacing: 2px;
+        .header .logo img {
+            height: 60px;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
         }
         .header .time {
             font-size: 14px;
@@ -319,309 +317,6 @@
             user-select: none;
         }
 
-        /* ===== КНОПКИ ТИПОВ КВАРТИР ===== */
-        .type-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-        .type-btn {
-            flex: 1 0 calc(14.28% - 6px);
-            min-width: 38px;
-            max-width: 48px;
-            padding: 8px 2px;
-            border: 2px solid #dee2e6;
-            border-radius: 8px;
-            background: white;
-            color: #495057;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            text-align: center;
-            user-select: none;
-            line-height: 1.2;
-        }
-        .type-btn:hover {
-            border-color: #adb5bd;
-            background: #f8f9fa;
-        }
-        .type-btn.active {
-            background: #0f3460;
-            border-color: #0f3460;
-            color: white;
-            box-shadow: 0 2px 8px rgba(15, 52, 96, 0.3);
-        }
-        .type-btn.active:hover {
-            background: #1a1a2e;
-            border-color: #1a1a2e;
-        }
-        .type-btn .btn-sub {
-            display: block;
-            font-size: 8px;
-            font-weight: 400;
-            opacity: 0.6;
-            text-transform: uppercase;
-        }
-        .type-btn.active .btn-sub { opacity: 0.8; }
-
-        /* ===== КАРТОЧКИ ЖК ===== */
-        .card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .card h5 {
-            margin-left: 8px;
-            margin-top: 4px;
-            font-weight: 600;
-            color: #1a1a2e;
-        }
-
-        .complex-card {
-            background: white;
-            border-radius: 12px;
-            padding: 16px 20px;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            transition: all 0.2s ease;
-            cursor: pointer;
-            border: 1px solid transparent;
-        }
-        .complex-card:hover {
-            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-            border-color: #0f3460;
-            transform: translateY(-2px);
-        }
-        .complex-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-        }
-        .complex-title h5 {
-            color: #1a1a2e;
-            font-weight: 600;
-        }
-        .complex-title small {
-            display: block;
-            font-size: 13px;
-        }
-        .complex-stats {
-            display: flex;
-            gap: 24px;
-            margin-bottom: 12px;
-        }
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 14px;
-        }
-        .stat-item i {
-            color: #0f3460;
-            font-size: 18px;
-        }
-        .stat-item span {
-            font-weight: 600;
-            color: #1a1a2e;
-        }
-        .stat-item small {
-            color: #6c757d;
-            font-size: 12px;
-        }
-        .complex-meta {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .complex-meta .badge {
-            font-weight: 400;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-        }
-        .complex-metro {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid #f0f0f0;
-        }
-        .metro-station {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: #f8f9fa;
-            padding: 4px 12px 4px 8px;
-            border-radius: 20px;
-            font-size: 13px;
-        }
-        .metro-station .metro-icon { font-size: 16px; line-height: 1; }
-        .metro-station .station-name {
-            font-weight: 600;
-            transition: color 0.2s;
-        }
-        .metro-station .station-distance {
-            color: #6c757d;
-            font-size: 11px;
-            margin-left: 4px;
-            background: #e9ecef;
-            padding: 0 8px;
-            border-radius: 10px;
-        }
-        .metro-line-spb-red .station-name { color: #E31E24; }
-        .metro-line-spb-blue .station-name { color: #0039A6; }
-        .metro-line-spb-green .station-name { color: #009B3A; }
-        .metro-line-spb-orange .station-name { color: #F47B20; }
-        .metro-line-spb-purple .station-name { color: #8B4794; }
-        .metro-line-spb-yellow .station-name { color: #D4A800; }
-        .metro-line-spb-default .station-name { color: #6c757d; }
-        .metro-station:hover .station-name { text-shadow: 0 0 8px rgba(0,0,0,0.1); }
-        .metro-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            width: 20px;
-            height: 20px;
-        }
-        .metro-icon svg {
-            display: block;
-            width: 20px;
-            height: 20px;
-        }
-
-        .badge-count {
-            background: #e9ecef;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6c757d;
-        }
-        .empty-state i { font-size: 48px; color: #dee2e6; }
-
-        /* ===== МОДАЛКИ ===== */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 750px;
-            width: 95%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .modal-content h4 { margin-top: 0; }
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 20px;
-            border-top: 1px solid #dee2e6;
-            padding-top: 15px;
-        }
-        .form-control, .form-select {
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-        .inline-group {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .inline-group .form-control {
-            flex: 1;
-            min-width: 100px;
-        }
-        .sub-block {
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 10px;
-            background: #f8f9fa;
-        }
-        .sub-block .sub-header {
-            font-weight: 600;
-            color: #0f3460;
-            margin-bottom: 10px;
-        }
-        .delete-btn {
-            color: #dc3545;
-            cursor: pointer;
-            font-size: 18px;
-            margin-left: 5px;
-        }
-        .delete-btn:hover { color: #c82333; }
-
-        /* ===== ЗАГРУЗКА ===== */
-        .loading-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.3);
-            z-index: 9998;
-            justify-content: center;
-            align-items: center;
-        }
-        .loading-spinner {
-            background: white;
-            padding: 20px 40px;
-            border-radius: 12px;
-            box-shadow: 0 5px 30px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .toast-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 9999;
-        }
-        .toast {
-            background: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-            margin-bottom: 10px;
-            border-left: 4px solid;
-        }
-        .toast.success { border-color: #28a745; }
-        .toast.error { border-color: #dc3545; }
-
-        @media (max-width: 768px) {
-            .header { flex-direction: column; align-items: flex-start; }
-            .offcanvas { width: 100% !important; max-width: 380px !important; }
-            .filter-toggle-btn.shifted { right: 100%; }
-            .complex-stats { flex-wrap: wrap; gap: 12px; }
-            .admin-menu-dropdown {
-                left: -10px;
-                min-width: 200px;
-            }
-        }
         /* ===== МЕТРО ФИЛЬТР ===== */
         .metro-filter {
             display: flex;
@@ -691,68 +386,422 @@
         .metro-chip.active .check-mark {
             display: inline;
         }
-        /* ===== ПАГИНАЦИЯ НА ГЛАВНОЙ ===== */
-        .pagination-wrapper {
+
+        /* ===== КНОПКИ ТИПОВ КВАРТИР ===== */
+        .type-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .type-btn {
+            flex: 1 0 calc(14.28% - 6px);
+            min-width: 38px;
+            max-width: 48px;
+            padding: 8px 2px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            background: white;
+            color: #495057;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-align: center;
+            user-select: none;
+            line-height: 1.2;
+        }
+        .type-btn:hover {
+            border-color: #adb5bd;
+            background: #f8f9fa;
+        }
+        .type-btn.active {
+            background: #0f3460;
+            border-color: #0f3460;
+            color: white;
+            box-shadow: 0 2px 8px rgba(15, 52, 96, 0.3);
+        }
+        .type-btn.active:hover {
+            background: #1a1a2e;
+            border-color: #1a1a2e;
+        }
+        .type-btn .btn-sub {
+            display: block;
+            font-size: 8px;
+            font-weight: 400;
+            opacity: 0.6;
+            text-transform: uppercase;
+        }
+        .type-btn.active .btn-sub { opacity: 0.8; }
+
+        /* ===== КАРТОЧКИ ЖК ===== */
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* ===== ЗАГОЛОВОК С ПАГИНАЦИЕЙ ===== */
+        .card-header-wrapper {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 20px;
             flex-wrap: wrap;
             gap: 12px;
-            background: white;
-            border-top: 1px solid #f0f0f0;
-            margin-top: 16px;
-            border-radius: 0 0 10px 10px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0f0f0;
         }
-        .pagination-info { color: #6c757d; font-size: 14px; }
-        .pagination-controls { display: flex; gap: 8px; align-items: center; }
-        .page-btn {
-            width: 32px; height: 32px; border: 1px solid #dee2e6; border-radius: 6px;
-            background: white; cursor: pointer; display: inline-flex; align-items: center;
-            justify-content: center; font-size: 14px; transition: 0.15s;
-        }
-        .page-btn:hover { background: #f0f2f5; border-color: #0f3460; }
-        .page-btn:disabled { opacity: 0.4; cursor: not-allowed;
-        }
-        .header {
-            position: relative; /* Важно! Чтобы логотип позиционировался относительно шапки */
-        }
-
-        .header .logo {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%); /* Сдвигает логотип ровно на половину его ширины влево */
-            top: 50%;
-            transform: translate(-50%, -50%); /* Центрирует и по вертикали, и по горизонтали */
-        }
-        /* Обязательно добавьте это к классу .header */
-        .header {
-            position: relative;
-            min-height: 80px; /* Добавляем минимальную высоту шапке, чтобы она не была слишком низкой */
-            padding: 20px 30px; /* Сохраняем отступы */
-        }
-
-        /* Логотип по центру */
-        .header .logo {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%); /* Центрируем идеально */
-
-            /* ВАЖНО: Добавляем ширину, чтобы блок был широким */
-            width: 100%;
-            max-width: 300px; /* Ограничиваем максимальную ширину, чтобы не наезжал на края */
+        .card-header-wrapper .title-section {
             display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .card-header-wrapper .title-section h5 {
+            margin: 0;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        .card-header-wrapper .title-section .badge-count {
+            background: #e9ecef;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        /* ===== ПАГИНАЦИЯ В ШАПКЕ ===== */
+        .pagination-top {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .pagination-top .pagination-info {
+            color: #6c757d;
+            font-size: 13px;
+            margin-right: 4px;
+        }
+        .pagination-top .page-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            transition: 0.15s;
+        }
+        .pagination-top .page-btn:hover {
+            background: #f0f2f5;
+            border-color: #0f3460;
+        }
+        .pagination-top .page-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .pagination-top .page-btn.active {
+            background: #0f3460;
+            color: white;
+            border-color: #0f3460;
+        }
+        .pagination-top .page-size-select {
+            padding: 2px 6px;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+            font-size: 13px;
+            background: white;
+            margin-left: 4px;
+        }
+
+        .complex-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .complex-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            border-color: #0f3460;
+            transform: translateY(-2px);
+        }
+        .complex-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+        .complex-title h5 {
+            color: #1a1a2e;
+            font-weight: 600;
+        }
+        .complex-title small {
+            display: block;
+            font-size: 13px;
+        }
+        .complex-actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .complex-actions button {
+            border: none;
+            background: transparent;
+            padding: 4px 6px;
+            border-radius: 6px;
+            transition: 0.2s;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .complex-actions .edit-btn {
+            color: #0f3460;
+        }
+        .complex-actions .edit-btn:hover {
+            background: #e9ecef;
+        }
+        .complex-actions .delete-btn {
+            color: #dc3545;
+        }
+        .complex-actions .delete-btn:hover {
+            background: #f8d7da;
+        }
+
+        .complex-stats {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 12px;
+        }
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+        .stat-item i {
+            color: #0f3460;
+            font-size: 18px;
+        }
+        .stat-item span {
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        .stat-item small {
+            color: #6c757d;
+            font-size: 12px;
+        }
+        .complex-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .complex-meta .badge {
+            font-weight: 400;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .complex-metro {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .metro-station {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f8f9fa;
+            padding: 4px 12px 4px 8px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+        .metro-station .metro-icon { font-size: 16px; line-height: 1; }
+        .metro-station .station-name {
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .metro-station .station-distance {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #6c757d;
+            font-size: 11px;
+            margin-left: 4px;
+            background: #e9ecef;
+            padding: 0 8px;
+            border-radius: 10px;
+        }
+        .metro-station .station-distance i {
+            font-size: 12px;
+        }
+        .metro-line-spb-red .station-name { color: #E31E24; }
+        .metro-line-spb-blue .station-name { color: #0039A6; }
+        .metro-line-spb-green .station-name { color: #009B3A; }
+        .metro-line-spb-orange .station-name { color: #F47B20; }
+        .metro-line-spb-purple .station-name { color: #8B4794; }
+        .metro-line-spb-yellow .station-name { color: #D4A800; }
+        .metro-line-spb-default .station-name { color: #6c757d; }
+        .metro-station:hover .station-name { text-shadow: 0 0 8px rgba(0,0,0,0.1); }
+        .metro-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+        }
+        .metro-icon svg {
+            display: block;
+            width: 20px;
+            height: 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+        }
+        .empty-state i { font-size: 48px; color: #dee2e6; }
+
+        /* ===== МОДАЛКИ ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
             justify-content: center;
             align-items: center;
         }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 750px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-content h4 { margin-top: 0; }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            border-top: 1px solid #dee2e6;
+            padding-top: 15px;
+        }
+        .form-control, .form-select {
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .inline-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .inline-group .form-control {
+            flex: 1;
+            min-width: 100px;
+        }
+        .sub-block {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            background: #f8f9fa;
+        }
+        .sub-block .sub-header {
+            font-weight: 600;
+            color: #0f3460;
+            margin-bottom: 10px;
+        }
+        .sub-block .sub-header .badge.bg-secondary {
+            font-size: 10px;
+            padding: 2px 8px;
+        }
+        .delete-btn {
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 18px;
+            margin-left: 5px;
+        }
+        .delete-btn:hover { color: #c82333; }
 
-        /* Сам логотип (картинка) */
-        .header .logo img {
-            height: 60px;
-            width: auto;
-            max-width: 100%; /* Чтобы не вылезал за пределы блока */
-            object-fit: contain; /* Сохраняет пропорции */
+        /* ===== ЗАГРУЗКА ===== */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+        }
+        .loading-spinner {
+            background: white;
+            padding: 20px 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        .toast {
+            background: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            margin-bottom: 10px;
+            border-left: 4px solid;
+        }
+        .toast.success { border-color: #28a745; }
+        .toast.error { border-color: #dc3545; }
+
+        @media (max-width: 768px) {
+            .header { flex-direction: column; align-items: flex-start; }
+            .offcanvas { width: 100% !important; max-width: 380px !important; }
+            .filter-toggle-btn.shifted { right: 100%; }
+            .complex-stats { flex-wrap: wrap; gap: 12px; }
+            .admin-menu-dropdown {
+                left: -10px;
+                min-width: 200px;
+            }
+            .card-header-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .pagination-top {
+                justify-content: center;
+            }
+            .complex-header {
+                flex-wrap: wrap;
+            }
+            .complex-actions {
+                margin-left: auto;
+            }
         }
     </style>
 </head>
@@ -946,12 +995,78 @@
 
     <!-- СПИСОК ЖК -->
     <div class="card">
-        <h5><i class="bi bi-building me-2"></i>Жилые комплексы <span id="countBadge" class="badge-count"></span></h5>
+        <!-- ЗАГОЛОВОК + ПАГИНАЦИЯ СВЕРХУ -->
+        <div class="card-header-wrapper" id="cardHeaderWrapper">
+            <div class="title-section">
+                <h5><i class="bi bi-building me-2"></i>Жилые комплексы</h5>
+                <span id="countBadge" class="badge-count"></span>
+            </div>
+            <div class="pagination-top" id="paginationTop"></div>
+        </div>
+
         <div id="complexesList"><div class="text-center py-4 text-muted">Загрузка...</div></div>
     </div>
 </div>
 
-<!-- МОДАЛКА -->
+<!-- МОДАЛКА РЕДАКТИРОВАНИЯ -->
+<div class="modal-overlay" id="editComplexModal">
+    <div class="modal-content">
+        <h4 id="editModalTitle">Редактирование ЖК</h4>
+        <form id="editComplexForm">
+            <input type="hidden" id="editComplexId">
+            <div class="mb-2">
+                <label class="form-label fw-bold">Название ЖК</label>
+                <input type="text" class="form-control" id="editComplexName" placeholder="Например: Невский парк">
+            </div>
+            <div class="mb-2">
+                <label class="form-label fw-bold">Адрес</label>
+                <input type="text" class="form-control" id="editComplexAddress" placeholder="ул. Невская, 1">
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Локация</label>
+                    <select class="form-control" id="editComplexLocation" onchange="onEditLocationChange(this.value)">
+                        <option value="">Выберите локацию</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Район</label>
+                    <select class="form-control" id="editComplexDistrict">
+                        <option value="">Сначала выберите локацию</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mb-2">
+                <label class="form-label fw-bold">Застройщик</label>
+                <select class="form-control" id="editComplexDeveloper">
+                    <option value="">Выберите застройщика</option>
+                </select>
+            </div>
+            <hr>
+            <div class="fw-bold">🚇 Станции метро</div>
+            <div id="editMetroContainer">
+                <div class="inline-group metro-row">
+                    <select class="form-control metro-station-select">
+                        <option value="">Станция</option>
+                    </select>
+                    <input type="number" class="form-control metro-distance-input" placeholder="Расстояние (м)" style="width:120px">
+                    <span class="delete-btn" onclick="this.parentElement.remove()">✖</span>
+                </div>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-primary mt-1" onclick="addEditMetroRow()"><i class="bi bi-plus-lg"></i> Добавить метро</button>
+            <hr>
+            <div class="fw-bold">🏢 Корпуса</div>
+            <div id="editBuildingsContainer"></div>
+            <button type="button" class="btn btn-sm btn-outline-primary mt-1" onclick="addEditBuildingRow()"><i class="bi bi-plus-lg"></i> Добавить корпус</button>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Отмена</button>
+                <button type="button" class="btn btn-primary" id="editModalSubmitBtn" onclick="submitEditComplex()">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- МОДАЛКА СОЗДАНИЯ (для админ-меню) -->
 <div class="modal-overlay" id="createModal">
     <div class="modal-content">
         <h4 id="modalTitle">Создание</h4>
@@ -971,17 +1086,19 @@
     // СОСТОЯНИЕ ГЛОБАЛЬНОЙ СТРАНИЦЫ
     // =============================================================
     let currentPage = 0;
-    let pageSize = 12;  // Показываем по 12 ЖК на странице (3 ряда по 4)
+    let pageSize = 10;
     let totalPages = 1;
     let totalElements = 0;
     let currentFilter = {};
     const API = '/api';
+    const PAGE_SIZES = [10, 20, 30];
 
     let cachedDevelopers = [];
     let cachedLocations = [];
     let cachedMetro = [];
     let cachedComplexes = [];
     let cachedBuildings = {};
+    let cachedDistricts = {};
 
     // =============================================================
     // МЕНЮ АДМИНА
@@ -1051,16 +1168,18 @@
     });
 
     // =============================================================
-    // МЕТРО
+    // МЕТРО — ПОЛНЫЙ СПИСОК ЦВЕТОВ
     // =============================================================
     function getMetroLineColor(stationName) {
-        // Приводим к нижнему регистру для сравнения
         const name = stationName.toLowerCase().trim();
 
         const lines = {
-            // === КРАСНАЯ ВЕТКА (Кировско-Выборгская) ===
             'девяткино': 'metro-line-spb-red',
             'гражданская': 'metro-line-spb-red',
+            'академическая': 'metro-line-spb-red',
+            'политехническая': 'metro-line-spb-red',
+            'площадь мужества': 'metro-line-spb-red',
+            'лесная': 'metro-line-spb-red',
             'выборгская': 'metro-line-spb-red',
             'площадь ленина': 'metro-line-spb-red',
             'чернышевская': 'metro-line-spb-red',
@@ -1075,26 +1194,63 @@
             'ленинский проспект': 'metro-line-spb-red',
             'проспект ветеранов': 'metro-line-spb-red',
 
-            // === СИНЯЯ ВЕТКА (Московско-Петроградская) ===
-            'московская': 'metro-line-spb-blue',
-            'звездная': 'metro-line-spb-blue',
-            'парк победы': 'metro-line-spb-blue',
+            'парнас': 'metro-line-spb-blue',
+            'проспект просвещения': 'metro-line-spb-blue',
+            'озерки': 'metro-line-spb-blue',
+            'удельная': 'metro-line-spb-blue',
+            'пионерская': 'metro-line-spb-blue',
+            'чёрная речка': 'metro-line-spb-blue',
+            'петроградская': 'metro-line-spb-blue',
+            'горьковская': 'metro-line-spb-blue',
+            'невский проспект': 'metro-line-spb-blue',
+            'сенная площадь': 'metro-line-spb-blue',
             'фрунзенская': 'metro-line-spb-blue',
+            'московские ворота': 'metro-line-spb-blue',
+            'электросила': 'metro-line-spb-blue',
+            'парк победы': 'metro-line-spb-blue',
+            'московская': 'metro-line-spb-blue',
+            'звёздная': 'metro-line-spb-blue',
             'купчино': 'metro-line-spb-blue',
 
-            // === ЗЕЛЁНАЯ ВЕТКА (Невско-Василеостровская) ===
             'приморская': 'metro-line-spb-green',
+            'василеостровская': 'metro-line-spb-green',
+            'гостиный двор': 'metro-line-spb-green',
+            'маяковская': 'metro-line-spb-green',
+            'площадь александра невского': 'metro-line-spb-green',
+            'елизаровская': 'metro-line-spb-green',
+            'ломоносовская': 'metro-line-spb-green',
+            'пролетарская': 'metro-line-spb-green',
+            'обухово': 'metro-line-spb-green',
+            'рыбацкое': 'metro-line-spb-green',
 
-            // === ОРАНЖЕВАЯ ВЕТКА (Правобережная) ===
+            'спасская': 'metro-line-spb-orange',
+            'достоевская': 'metro-line-spb-orange',
+            'лиговский проспект': 'metro-line-spb-orange',
+            'новочеркасская': 'metro-line-spb-orange',
+            'ладожская': 'metro-line-spb-orange',
             'проспект большевиков': 'metro-line-spb-orange',
             'улица дыбенко': 'metro-line-spb-orange',
             'кудрово': 'metro-line-spb-orange',
 
-            // === ФИОЛЕТОВАЯ ВЕТКА (Фрунзенско-Приморская) ===
             'комендантский проспект': 'metro-line-spb-purple',
-            'шушары': 'metro-line-spb-purple',
+            'старая деревня': 'metro-line-spb-purple',
+            'крестовский остров': 'metro-line-spb-purple',
+            'чкаловская': 'metro-line-spb-purple',
+            'спортивная': 'metro-line-spb-purple',
             'адмиралтейская': 'metro-line-spb-purple',
-            'невский проспект': 'metro-line-spb-purple',
+            'садовая': 'metro-line-spb-purple',
+            'звенигородская': 'metro-line-spb-purple',
+            'обводный канал': 'metro-line-spb-purple',
+            'волковская': 'metro-line-spb-purple',
+            'бухарестская': 'metro-line-spb-purple',
+            'международная': 'metro-line-spb-purple',
+            'проспект славы': 'metro-line-spb-purple',
+            'дунайская': 'metro-line-spb-purple',
+            'шушары': 'metro-line-spb-purple',
+
+            'горный институт': 'metro-line-spb-purple',
+            'путиловская': 'metro-line-spb-orange',
+            'юго-западная': 'metro-line-spb-red',
         };
 
         return lines[name] || 'metro-line-spb-default';
@@ -1111,8 +1267,20 @@
         return rem === 0 ? hours + ' ч' : hours + ' ч ' + rem + ' мин';
     }
 
+    function getBusTime(distanceMeters) {
+        if (!distanceMeters || distanceMeters === 0) return '0 мин';
+        // Скорость автобуса 45 км/ч = 750 м/мин
+        const minutes = Math.round(distanceMeters / 750);
+        if (minutes < 1) return '< 1 мин';
+        if (minutes === 1) return '1 мин';
+        if (minutes < 60) return minutes + ' мин';
+        const hours = Math.floor(minutes / 60);
+        const rem = minutes % 60;
+        return rem === 0 ? hours + ' ч' : hours + ' ч ' + rem + ' мин';
+    }
+
     // =============================================================
-    // ФУНКЦИИ МОДАЛОК
+    // ФУНКЦИИ ДЛЯ МОДАЛКИ СОЗДАНИЯ (админ-меню)
     // =============================================================
     function closeModal() {
         document.getElementById('createModal').style.display = 'none';
@@ -1153,7 +1321,7 @@
     }
 
     // =============================================================
-    // МОДАЛ КОНФИГИ (ПОЛНЫЙ)
+    // МОДАЛ КОНФИГИ (для админ-меню)
     // =============================================================
     const modalConfigs = {
         complex: {
@@ -1583,18 +1751,40 @@
             return;
         }
         districtSelect.innerHTML = '<option value="">Загрузка районов...</option>';
+        fetchDistricts(locationId, districtSelect);
+    }
+
+    function onEditLocationChange(locationId) {
+        const districtSelect = document.getElementById('editComplexDistrict');
+        if (!locationId) {
+            districtSelect.innerHTML = '<option value="">Сначала выберите локацию</option>';
+            return;
+        }
+        districtSelect.innerHTML = '<option value="">Загрузка районов...</option>';
+        fetchDistricts(locationId, districtSelect);
+    }
+
+    function fetchDistricts(locationId, selectElement) {
+        if (cachedDistricts[locationId]) {
+            fillDistrictSelect(selectElement, cachedDistricts[locationId]);
+            return;
+        }
         fetch(`${API}/districts/by-location/${locationId}`)
             .then(r => r.json())
             .then(data => {
-                const districts = Array.isArray(data) ? data : [];
-                districtSelect.innerHTML = '<option value="">Выберите район</option>';
-                districts.forEach(d => {
-                    districtSelect.innerHTML += `<option value="${d.id}">${d.name}</option>`;
-                });
+                cachedDistricts[locationId] = Array.isArray(data) ? data : [];
+                fillDistrictSelect(selectElement, cachedDistricts[locationId]);
             })
             .catch(() => {
-                districtSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
+                selectElement.innerHTML = '<option value="">Ошибка загрузки</option>';
             });
+    }
+
+    function fillDistrictSelect(select, districts) {
+        select.innerHTML = '<option value="">Выберите район</option>';
+        districts.forEach(d => {
+            select.innerHTML += `<option value="${d.id}">${d.name}</option>`;
+        });
     }
 
     function onEntranceComplexChange(complexId) {
@@ -1718,7 +1908,7 @@
     }
 
     // =============================================================
-    // ДИНАМИЧЕСКИЕ БЛОКИ
+    // ДИНАМИЧЕСКИЕ БЛОКИ ДЛЯ СОЗДАНИЯ
     // =============================================================
     function addMetroRow() {
         const container = document.getElementById('metroContainer');
@@ -1793,20 +1983,346 @@
     }
 
     // =============================================================
+    // ДИНАМИЧЕСКИЕ БЛОКИ ДЛЯ РЕДАКТИРОВАНИЯ
+    // =============================================================
+    function addEditMetroRow() {
+        const container = document.getElementById('editMetroContainer');
+        const options = cachedMetro.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+        const html = `
+            <div class="inline-group metro-row mt-1">
+                <select class="form-control metro-station-select"><option value="">Станция</option>${options}</select>
+                <input type="number" class="form-control metro-distance-input" placeholder="Расстояние (м)" style="width:120px">
+                <span class="delete-btn" onclick="this.parentElement.remove()">✖</span>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+    }
+
+    function addEditBuildingRow() {
+        const container = document.getElementById('editBuildingsContainer');
+        const html = `
+            <div class="sub-block building-block">
+                <div class="d-flex justify-content-between">
+                    <span class="sub-header">🏢 Корпус <span class="badge bg-secondary">новый</span></span>
+                    <span class="delete-btn" onclick="this.closest('.building-block').remove()">✖</span>
+                </div>
+                <input type="text" class="form-control building-name-input" placeholder="Название корпуса">
+                <div class="row">
+                    <div class="col-6">
+                        <label class="form-label small">Дата сдачи</label>
+                        <input type="date" class="form-control building-completion-input">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label small">Дата выдачи ключей</label>
+                        <input type="date" class="form-control building-handover-input">
+                    </div>
+                </div>
+                <div class="entrances-container mt-2">
+                    <div class="fw-bold small">🚪 Секции</div>
+                    <div class="entrance-block inline-group">
+                        <input type="text" class="form-control entrance-name-input" placeholder="Название секции" style="flex:2">
+                        <input type="number" class="form-control entrance-floor-input" placeholder="Макс. этажей" style="width:120px">
+                        <input type="file" class="form-control entrance-file-input" accept=".xlsx" style="width:150px">
+                        <span class="delete-btn" onclick="this.parentElement.remove()">✖</span>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-info mt-1" onclick="addEditEntranceRow(this)"><i class="bi bi-plus-lg"></i> Добавить секцию</button>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+    }
+
+    function addEditEntranceRow(btn) {
+        const container = btn.closest('.building-block').querySelector('.entrances-container');
+        const html = `
+            <div class="entrance-block inline-group mt-1">
+                <input type="text" class="form-control entrance-name-input" placeholder="Название секции" style="flex:2">
+                <input type="number" class="form-control entrance-floor-input" placeholder="Макс. этажей" style="width:120px">
+                <input type="file" class="form-control entrance-file-input" accept=".xlsx" style="width:150px">
+                <span class="delete-btn" onclick="this.parentElement.remove()">✖</span>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', html);
+    }
+
+    // =============================================================
+    // РЕДАКТИРОВАНИЕ ЖК
+    // =============================================================
+    function closeEditModal() {
+        document.getElementById('editComplexModal').style.display = 'none';
+    }
+
+    function openEditModal(complexId) {
+        showLoading(true);
+
+        fetch(`${API}/complexes/${complexId}/edit`)  // ← новый эндпоинт
+            .then(res => {
+                if (!res.ok) throw new Error('Ошибка загрузки данных ЖК');
+                return res.json();
+            })
+            .then(data => {
+                console.log('📦 Данные для редактирования:', data);
+                fillEditForm(data);
+                document.getElementById('editComplexModal').style.display = 'flex';
+                document.getElementById('editModalTitle').textContent = '✏️ Редактирование ЖК: ' + data.name;
+            })
+            .catch(err => {
+                showToast('❌ ' + err.message, 'error');
+            })
+            .finally(() => showLoading(false));
+    }
+
+    function fillEditForm(data) {
+        // 1. Основные поля
+        document.getElementById('editComplexId').value = data.id;
+        document.getElementById('editComplexName').value = data.name || '';
+        document.getElementById('editComplexAddress').value = data.address || '';
+
+        // 2. Застройщик
+        const devSelect = document.getElementById('editComplexDeveloper');
+        devSelect.innerHTML = '<option value="">Выберите застройщика</option>';
+        cachedDevelopers.forEach(d => {
+            devSelect.innerHTML += `<option value="${d.id}" ${d.id === data.developerId ? 'selected' : ''}>${d.name}</option>`;
+        });
+
+        // 3. Локация
+        const locSelect = document.getElementById('editComplexLocation');
+        locSelect.innerHTML = '<option value="">Выберите локацию</option>';
+        cachedLocations.forEach(l => {
+            locSelect.innerHTML += `<option value="${l.id}" ${l.id === data.locationId ? 'selected' : ''}>${l.name}</option>`;
+        });
+
+        // 4. Район — загружаем асинхронно и выставляем selected
+        const distSelect = document.getElementById('editComplexDistrict');
+        if (data.locationId) {
+            // Если районы уже закэшированы
+            if (cachedDistricts[data.locationId]) {
+                fillDistrictSelect(distSelect, cachedDistricts[data.locationId]);
+                // Выставляем выбранный район
+                if (data.districtId) {
+                    for (let opt of distSelect.options) {
+                        if (opt.value == data.districtId) {
+                            opt.selected = true;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                // Загружаем районы с сервера
+                distSelect.innerHTML = '<option value="">Загрузка районов...</option>';
+                fetch(`${API}/districts/by-location/${data.locationId}`)
+                    .then(r => r.json())
+                    .then(districts => {
+                        cachedDistricts[data.locationId] = Array.isArray(districts) ? districts : [];
+                        fillDistrictSelect(distSelect, cachedDistricts[data.locationId]);
+                        // Выставляем выбранный район
+                        if (data.districtId) {
+                            for (let opt of distSelect.options) {
+                                if (opt.value == data.districtId) {
+                                    opt.selected = true;
+                                    break;
+                                }
+                            }
+                        }
+                    })
+                    .catch(() => {
+                        distSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
+                    });
+            }
+        } else {
+            distSelect.innerHTML = '<option value="">Сначала выберите локацию</option>';
+        }
+
+        // 5. Метро
+        const metroContainer = document.getElementById('editMetroContainer');
+        metroContainer.innerHTML = '';
+        const metroOptions = cachedMetro.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+
+        if (data.metroDistances && data.metroDistances.length > 0) {
+            data.metroDistances.forEach(m => {
+                const row = document.createElement('div');
+                row.className = 'inline-group metro-row mt-1';
+                row.innerHTML = `
+                    <select class="form-control metro-station-select">
+                        <option value="">Станция</option>
+                        ${cachedMetro.map(s => `<option value="${s.id}" ${s.id === m.metroStationId ? 'selected' : ''}>${s.name}</option>`).join('')}
+                    </select>
+                    <input type="number" class="form-control metro-distance-input" placeholder="Расстояние (м)" value="${m.distance || ''}" style="width:120px">
+                    <span class="delete-btn" onclick="this.parentElement.remove()">✖</span>
+                `;
+                metroContainer.appendChild(row);
+            });
+        } else {
+            // Пустая строка по умолчанию
+            metroContainer.innerHTML = `
+                <div class="inline-group metro-row">
+                    <select class="form-control metro-station-select"><option value="">Станция</option>${metroOptions}</select>
+                    <input type="number" class="form-control metro-distance-input" placeholder="Расстояние (м)" style="width:120px">
+                    <span class="delete-btn" onclick="this.parentElement.remove()">✖</span>
+                </div>
+            `;
+        }
+
+        // 6. Корпуса
+        const buildingsContainer = document.getElementById('editBuildingsContainer');
+        buildingsContainer.innerHTML = '';
+
+        if (data.buildings && data.buildings.length > 0) {
+            data.buildings.forEach(b => {
+                const block = document.createElement('div');
+                block.className = 'sub-block building-block';
+                block.innerHTML = `
+                    <div class="d-flex justify-content-between">
+                        <span class="sub-header">🏢 Корпус: ${b.name || 'Без названия'} <span class="badge bg-secondary">ID: ${b.id || 'новый'}</span></span>
+                        <div>
+                            <span class="delete-btn" onclick="if(confirm('Удалить корпус?')) this.closest('.building-block').remove()" title="Удалить корпус">✖</span>
+                        </div>
+                    </div>
+                    <input type="hidden" class="building-id-input" value="${b.id || ''}">
+                    <input type="text" class="form-control building-name-input" value="${b.name || ''}" placeholder="Название корпуса">
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="form-label small">Дата сдачи</label>
+                            <input type="date" class="form-control building-completion-input" value="${b.completionDate || ''}">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small">Дата выдачи ключей</label>
+                            <input type="date" class="form-control building-handover-input" value="${b.keyHandoverDate || ''}">
+                        </div>
+                    </div>
+                    <div class="entrances-container mt-2">
+                        <div class="fw-bold small">🚪 Секции</div>
+                        ${(b.entrances || []).map(e => `
+                            <div class="entrance-block inline-group mt-1">
+                                <input type="hidden" class="entrance-id-input" value="${e.id || ''}">
+                                <input type="text" class="form-control entrance-name-input" value="${e.name || ''}" placeholder="Название секции" style="flex:2">
+                                <input type="number" class="form-control entrance-floor-input" value="${e.maxFloor || ''}" placeholder="Макс. этажей" style="width:120px">
+                                <input type="file" class="form-control entrance-file-input" accept=".xlsx" style="width:150px">
+                                <span class="delete-btn" onclick="if(confirm('Удалить секцию?')) this.parentElement.remove()">✖</span>
+                            </div>
+                        `).join('')}
+                        <div class="entrance-block-placeholder"></div>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-info mt-1" onclick="addEditEntranceRow(this)"><i class="bi bi-plus-lg"></i> Добавить секцию</button>
+                `;
+                buildingsContainer.appendChild(block);
+            });
+        } else {
+            // Пустой блок для добавления корпуса
+            addEditBuildingRow();
+        }
+    }
+
+    function submitEditComplex() {
+        const id = document.getElementById('editComplexId').value;
+        if (!id) {
+            showToast('Ошибка: ID ЖК не найден', 'error');
+            return;
+        }
+
+        const dto = {
+            id: parseInt(id),
+            name: document.getElementById('editComplexName').value.trim(),
+            address: document.getElementById('editComplexAddress').value.trim(),
+            districtId: parseInt(document.getElementById('editComplexDistrict').value),
+            developerId: parseInt(document.getElementById('editComplexDeveloper').value),
+            metroStations: [],
+            buildings: []
+        };
+
+        if (!dto.name || !dto.address || !dto.districtId || !dto.developerId) {
+            showToast('Заполните все основные поля', 'error');
+            return;
+        }
+
+        // Собираем метро
+        document.querySelectorAll('#editMetroContainer .metro-row').forEach(row => {
+            const sel = row.querySelector('.metro-station-select');
+            const dist = row.querySelector('.metro-distance-input');
+            if (sel.value && dist.value) {
+                dto.metroStations.push({
+                    metroStationId: parseInt(sel.value),
+                    distance: parseInt(dist.value)
+                });
+            }
+        });
+
+        // Собираем корпуса
+        let hasError = false;
+        document.querySelectorAll('#editBuildingsContainer .building-block').forEach(block => {
+            const bId = block.querySelector('.building-id-input')?.value || null;
+            const bName = block.querySelector('.building-name-input').value.trim();
+            const completion = block.querySelector('.building-completion-input').value;
+            const handover = block.querySelector('.building-handover-input').value;
+
+            if (!bName || !completion || !handover) {
+                showToast('Заполните даты для всех корпусов', 'error');
+                hasError = true;
+                return;
+            }
+
+            const building = {
+                id: bId ? parseInt(bId) : null,
+                name: bName,
+                completionDate: completion,
+                keyHandoverDate: handover,
+                entrances: []
+            };
+
+            block.querySelectorAll('.entrance-block').forEach(eb => {
+                const eId = eb.querySelector('.entrance-id-input')?.value || null;
+                const eName = eb.querySelector('.entrance-name-input').value.trim();
+                const eFloor = eb.querySelector('.entrance-floor-input').value;
+                if (eName && eFloor) {
+                    building.entrances.push({
+                        id: eId ? parseInt(eId) : null,
+                        name: eName,
+                        maxFloor: parseInt(eFloor)
+                    });
+                }
+            });
+
+            dto.buildings.push(building);
+        });
+
+        if (hasError) return;
+
+        console.log('📤 Отправляем DTO на сервер:', dto);
+
+        showLoading(true);
+        fetch(`${API}/complexes/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dto)
+        })
+            .then(res => {
+                if (!res.ok) return res.text().then(text => { throw new Error(text); });
+                return res.json();
+            })
+            .then(() => {
+                showToast('✅ ЖК обновлён!', 'success');
+                closeEditModal();
+                loadAllData();
+            })
+            .catch(err => {
+                showToast('❌ ' + err.message, 'error');
+            })
+            .finally(() => showLoading(false));
+    }
+
+    // =============================================================
     // ЗАГРУЗКА ДАННЫХ
     // =============================================================
     async function loadAllData(filter, page) {
         showLoading(true);
         try {
-            // Если filter не передан — используем пустой
             const filterDTO = filter || {};
             const pageNum = page !== undefined ? page : currentPage;
 
-            // Формируем параметры запроса
             const params = new URLSearchParams();
             params.append('page', pageNum);
             params.append('size', pageSize);
-            params.append('sort', 'name,asc');  // сортировка по имени по умолчанию
+            params.append('sort', 'name,asc');
 
             const set = (name, value) => {
                 if (value !== null && value !== undefined && value !== '') params.append(name, value);
@@ -1815,16 +2331,10 @@
                 if (Array.isArray(list)) list.forEach(v => params.append(name, v));
             };
 
-            // Прямые поля ЖК (география / застройщик)
             set('locationId', filterDTO.locationId);
             set('districtId', filterDTO.districtId);
             set('developerId', filterDTO.developerId);
-
-            // Метро (список ID)
             setList('metroStationIds', filterDTO.metroStationIds);
-
-            // Параметры квартир — бэкенд возвращает ЖК, в которых есть
-            // хотя бы одна квартира, подходящая под эти фильтры
             setList('types', filterDTO.types);
             set('bathroomType', filterDTO.bathroomType);
             set('floorFrom', filterDTO.floorFrom);
@@ -1844,14 +2354,12 @@
 
             const data = await response.json();
 
-            // Обработка Page-ответа
             if (data.content && Array.isArray(data.content)) {
                 cachedComplexes = data.content;
                 totalPages = data.totalPages || 1;
                 totalElements = data.totalElements || 0;
                 currentPage = data.number || 0;
             } else if (Array.isArray(data)) {
-                // Если пришёл массив (без пагинации) — адаптируем
                 cachedComplexes = data;
                 totalPages = 1;
                 totalElements = data.length;
@@ -1862,7 +2370,6 @@
                 totalElements = 0;
             }
 
-            // Загружаем справочники только при первом запуске
             if (!cachedLocations.length) {
                 const [developers, locations, metro] = await Promise.all([
                     fetch(`${API}/developers`).then(r => r.json()),
@@ -1873,10 +2380,11 @@
                 cachedLocations = Array.isArray(locations) ? locations : [];
                 cachedMetro = Array.isArray(metro) ? metro : [];
                 populateGlobalFilters();
+                fillEditSelects();
             }
 
             renderComplexes();
-            renderPagination();
+            renderPaginationTop();
         } catch (e) {
             console.error('❌ Ошибка загрузки данных:', e);
             showToast('❌ Ошибка загрузки данных. Проверьте консоль.', 'error');
@@ -1885,52 +2393,83 @@
         }
     }
 
-    function renderPagination() {
-        // Находим или создаём контейнер для пагинации
-        let paginationContainer = document.getElementById('paginationContainer');
-        if (!paginationContainer) {
-            const card = document.querySelector('.card');
-            paginationContainer = document.createElement('div');
-            paginationContainer.id = 'paginationContainer';
-            card.appendChild(paginationContainer);
-        }
+    function fillEditSelects() {
+        // Заполняем селекты в модалке редактирования
+        const devSelect = document.getElementById('editComplexDeveloper');
+        devSelect.innerHTML = '<option value="">Выберите застройщика</option>';
+        cachedDevelopers.forEach(d => {
+            devSelect.innerHTML += `<option value="${d.id}">${d.name}</option>`;
+        });
 
-        if (totalPages <= 1) {
-            paginationContainer.innerHTML = '';
-            return;
-        }
+        const locSelect = document.getElementById('editComplexLocation');
+        locSelect.innerHTML = '<option value="">Выберите локацию</option>';
+        cachedLocations.forEach(l => {
+            locSelect.innerHTML += `<option value="${l.id}">${l.name}</option>`;
+        });
 
-        const startItem = currentPage * pageSize + 1;
-        const endItem = Math.min(startItem + cachedComplexes.length - 1, totalElements);
-
-        paginationContainer.innerHTML = `
-        <div class="pagination-wrapper">
-            <div class="pagination-info">
-                Показано <strong>${cachedComplexes.length}</strong> из <strong>${totalElements}</strong> ЖК
-            </div>
-            <div class="pagination-controls">
-                <button class="page-btn" onclick="changePage('prev')" ${currentPage <= 0 ? 'disabled' : ''}>
-                    <i class="bi bi-chevron-left"></i>
-                </button>
-                <span style="font-size:14px;font-weight:500;">${currentPage + 1} / ${totalPages}</span>
-                <button class="page-btn" onclick="changePage('next')" ${currentPage >= totalPages - 1 ? 'disabled' : ''}>
-                    <i class="bi bi-chevron-right"></i>
-                </button>
-                <span style="margin-left:16px;font-size:14px;color:#6c757d;">На странице:</span>
-                <select class="form-select form-select-sm" style="width:auto;display:inline-block;" onchange="changePageSize()" id="globalPageSizeSelect">
-                    <option value="8" ${pageSize === 8 ? 'selected' : ''}>8</option>
-                    <option value="12" ${pageSize === 12 ? 'selected' : ''}>12</option>
-                    <option value="24" ${pageSize === 24 ? 'selected' : ''}>24</option>
-                    <option value="48" ${pageSize === 48 ? 'selected' : ''}>48</option>
-                </select>
-            </div>
-        </div>
-    `;
+        // Обновляем метро в модалке
+        const metroContainer = document.getElementById('editMetroContainer');
+        const options = cachedMetro.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+        metroContainer.querySelectorAll('.metro-station-select').forEach(sel => {
+            const currentVal = sel.value;
+            sel.innerHTML = `<option value="">Станция</option>${options}`;
+            if (currentVal) sel.value = currentVal;
+        });
     }
 
     // =============================================================
-    // ПАГИНАЦИЯ
+    // ПАГИНАЦИЯ СВЕРХУ
     // =============================================================
+    function renderPaginationTop() {
+        const container = document.getElementById('paginationTop');
+        if (!container) return;
+
+        if (totalPages <= 1) {
+            container.innerHTML = '';
+            return;
+        }
+
+        let startPage = Math.max(0, currentPage - 2);
+        let endPage = Math.min(totalPages - 1, currentPage + 2);
+        if (endPage - startPage < 4) {
+            if (startPage === 0) endPage = Math.min(totalPages - 1, 4);
+            else if (endPage === totalPages - 1) startPage = Math.max(0, totalPages - 5);
+        }
+
+        let pagesHtml = '';
+        if (startPage > 0) {
+            pagesHtml += `<button class="page-btn" onclick="goToPage(0)">1</button>`;
+            if (startPage > 1) pagesHtml += `<button class="page-btn" disabled>…</button>`;
+        }
+        for (let i = startPage; i <= endPage; i++) {
+            pagesHtml += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i + 1}</button>`;
+        }
+        if (endPage < totalPages - 1) {
+            if (endPage < totalPages - 2) pagesHtml += `<button class="page-btn" disabled>…</button>`;
+            pagesHtml += `<button class="page-btn" onclick="goToPage(${totalPages - 1})">${totalPages}</button>`;
+        }
+
+        container.innerHTML = `
+            <span class="pagination-info">${cachedComplexes.length} из ${totalElements}</span>
+            <button class="page-btn" onclick="changePage('prev')" ${currentPage <= 0 ? 'disabled' : ''}>
+                <i class="bi bi-chevron-left"></i>
+            </button>
+            ${pagesHtml}
+            <button class="page-btn" onclick="changePage('next')" ${currentPage >= totalPages - 1 ? 'disabled' : ''}>
+                <i class="bi bi-chevron-right"></i>
+            </button>
+            <select class="page-size-select" onchange="changePageSize()" id="globalPageSizeSelect">
+                ${PAGE_SIZES.map(s => `<option value="${s}" ${pageSize === s ? 'selected' : ''}>${s}</option>`).join('')}
+            </select>
+        `;
+    }
+
+    function goToPage(page) {
+        if (page < 0 || page >= totalPages || page === currentPage) return;
+        currentPage = page;
+        loadAllData(currentFilter, currentPage);
+    }
+
     function changePage(direction) {
         if (direction === 'prev' && currentPage > 0) {
             currentPage--;
@@ -1950,11 +2489,6 @@
         loadAllData(currentFilter, 0);
     }
 
-    function refreshData() {
-        loadAllData();
-        showToast('✅ Данные обновлены', 'success');
-    }
-
     // =============================================================
     // ГЛОБАЛЬНЫЕ ФИЛЬТРЫ
     // =============================================================
@@ -1970,22 +2504,10 @@
             const districtSelect = document.getElementById('globalFilterDistrict');
             districtSelect.innerHTML = '<option value="">Все</option>';
             if (locationId) {
-                fetch(`${API}/districts/by-location/${locationId}`)
-                    .then(r => r.json())
-                    .then(data => {
-                        if (Array.isArray(data)) {
-                            data.forEach(d => {
-                                districtSelect.innerHTML += `<option value="${d.id}">${d.name}</option>`;
-                            });
-                        }
-                    })
-                    .catch(() => {
-                        districtSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
-                    });
+                fetchDistricts(locationId, districtSelect);
             }
         });
 
-        // ===== МЕТРО — КРАСИВЫЕ ЧИПСЫ =====
         const metroContainer = document.getElementById('globalFilterMetroContainer');
         metroContainer.className = 'metro-filter';
         metroContainer.innerHTML = '';
@@ -1994,14 +2516,14 @@
             const color = getMetroLineColor(m.name);
             const hexColor = getColorHex(color);
             const div = document.createElement('div');
-            div.className = 'metro-chip';  // ← УБРАЛ 'active'
+            div.className = 'metro-chip';
             div.dataset.id = m.id;
             div.dataset.name = m.name;
             div.innerHTML = `
-        <span class="metro-badge" style="background: ${hexColor};">М</span>
-        <span class="metro-name">${m.name}</span>
-        <span class="check-mark">✓</span>
-    `;
+                <span class="metro-badge" style="background: ${hexColor};">М</span>
+                <span class="metro-name">${m.name}</span>
+                <span class="check-mark">✓</span>
+            `;
             div.addEventListener('click', function(e) {
                 e.stopPropagation();
                 this.classList.toggle('active');
@@ -2009,7 +2531,6 @@
             metroContainer.appendChild(div);
         });
 
-        // Кнопки типов квартир
         document.querySelectorAll('#globalFilterTypesContainer .type-btn').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -2049,7 +2570,6 @@
             hasBalcony: document.getElementById('globalFilterBalcony').checked || null
         };
 
-        // Удаляем пустые значения
         Object.keys(currentFilter).forEach(key => {
             if (currentFilter[key] === null || currentFilter[key] === undefined || currentFilter[key] === '') delete currentFilter[key];
             if (Array.isArray(currentFilter[key]) && currentFilter[key].length === 0) delete currentFilter[key];
@@ -2087,6 +2607,8 @@
         const container = document.getElementById('complexesList');
         const badge = document.getElementById('countBadge');
 
+        badge.textContent = totalElements + ' ЖК';
+
         if (!cachedComplexes || cachedComplexes.length === 0) {
             container.innerHTML = `
                 <div class="text-center py-5">
@@ -2097,20 +2619,18 @@
                     </button>
                 </div>
             `;
-            badge.textContent = '0 ЖК';
             return;
         }
 
-        badge.textContent = cachedComplexes.length + ' ЖК';
         let html = '';
-
         cachedComplexes.forEach(item => {
             let metroHtml = '';
             if (item.metroDistances && item.metroDistances.length > 0) {
                 metroHtml = '<div class="complex-metro">';
                 item.metroDistances.forEach(metro => {
                     const colorClass = getMetroLineColor(metro.stationName);
-                    const walkingTime = getWalkingTime(metro.distance);
+                    const walkTime = getWalkingTime(metro.distance);
+                    const busTime = getBusTime(metro.distance);
                     metroHtml += `
                         <div class="metro-station ${colorClass}">
                             <span class="metro-icon">
@@ -2120,7 +2640,10 @@
                                 </svg>
                             </span>
                             <span class="station-name">${metro.stationName}</span>
-                            <span class="station-distance">🚶 ${walkingTime}</span>
+                            <span class="station-distance">
+                                <i class="bi bi-person-walking"></i> ${walkTime}
+                                <i class="bi bi-bus-front ms-1"></i> ${busTime}
+                            </span>
                         </div>
                     `;
                 });
@@ -2134,9 +2657,14 @@
                             <h5 class="mb-0">${item.name || 'Без названия'}</h5>
                             <small class="text-muted">${item.address || ''}</small>
                         </div>
-                        <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); deleteComplex(${item.id})">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                        <div class="complex-actions" onclick="event.stopPropagation();">
+                            <button class="edit-btn" onclick="openEditModal(${item.id})" title="Редактировать">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            <button class="delete-btn" onclick="deleteComplex(${item.id})" title="Удалить">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="complex-stats">
                         <div class="stat-item">
@@ -2216,7 +2744,18 @@
     document.getElementById('globalResetFiltersBtn').addEventListener('click', resetGlobalFilters);
 
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') closeModal();
+        if (e.key === 'Escape') {
+            closeModal();
+            closeEditModal();
+        }
+    });
+
+    // Закрытие модалки по клику на оверлей
+    document.getElementById('editComplexModal').addEventListener('click', function(e) {
+        if (e.target === this) closeEditModal();
+    });
+    document.getElementById('createModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
     });
 
     // =============================================================

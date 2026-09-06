@@ -25,7 +25,7 @@ public class Building {
     @JoinColumn(name = "residential_complex_id")
     @JsonIgnore
     private ResidentialComplex residentialComplex;
-    @OneToMany(mappedBy = "building", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "building", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JsonIgnore
     private List<Entrance> entrances;
     @Column(name = "completion_date")

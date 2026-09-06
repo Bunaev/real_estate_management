@@ -4,7 +4,6 @@ import com.search_service.dto.in.EntranceDTO;
 import com.search_service.entity.Building;
 import com.search_service.entity.Entrance;
 import com.search_service.exception.EntityNotFoundException;
-import com.search_service.mapper.EntranceMapper;
 import com.search_service.repository.BuildingRepo;
 import com.search_service.repository.EntranceRepo;
 import org.junit.jupiter.api.Test;

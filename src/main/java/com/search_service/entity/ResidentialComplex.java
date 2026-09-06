@@ -30,7 +30,7 @@ public class ResidentialComplex {
     @OneToMany(mappedBy = "residentialComplex", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JsonIgnore
     private List<ComplexMetroDistance> metroDistances;
-    @OneToMany(mappedBy = "residentialComplex", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "residentialComplex", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<Building> buildings;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "developer_id")

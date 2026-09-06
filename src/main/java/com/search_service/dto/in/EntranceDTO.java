@@ -15,6 +15,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EntranceDTO {
 
+    private Long id;
+
     @NotBlank(message = "Название секции обязательно")
     @Size(max = 255, message = "Название секции не должно превышать 255 символов")
     private String name;

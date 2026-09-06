@@ -1,6 +1,7 @@
 package com.search_service.service;
 
 import com.search_service.dto.in.BuildingDTO;
+import com.search_service.dto.out.BuildingShortDTO;
 import com.search_service.entity.Building;
 import com.search_service.entity.Entrance;
 import com.search_service.entity.ResidentialComplex;
@@ -25,7 +26,7 @@ public class BuildingService {
     private final ResidentialComplexRepo complexRepo;
 
     @Transactional
-    public Building create(BuildingDTO buildingDTO, Long residentialComplexId) {
+    public BuildingShortDTO create(BuildingDTO buildingDTO, Long residentialComplexId) {
         ResidentialComplex complex = complexRepo.findById(residentialComplexId)
                 .orElseThrow(() -> new EntityNotFoundException("ЖК", residentialComplexId));
 
@@ -40,11 +41,11 @@ public class BuildingService {
             }
             building.setEntrances(entrances);
         }
-        return buildingRepo.save(building);
+        return buildingMapper.toShortDto(buildingRepo.save(building));
     }
 
     @Transactional(readOnly = true)
-    public List<Building> findByComplexId(Long complexId) {
-        return buildingRepo.findByResidentialComplex_Id(complexId);
+    public List<BuildingShortDTO> findByComplexId(Long complexId) {
+        return buildingMapper.toShortDtoList(buildingRepo.findByResidentialComplex_Id(complexId));
     }
 }

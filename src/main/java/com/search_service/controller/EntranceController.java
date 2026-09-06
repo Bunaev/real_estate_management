@@ -19,17 +19,15 @@ import java.util.List;
 public class EntranceController {
 
     private final EntranceService entranceService;
-    private final EntranceMapper entranceMapper;
 
     @PostMapping
     public ResponseEntity<EntranceShortDTO> createEntrance(@RequestParam Long buildingId, @Valid @RequestBody EntranceDTO entranceDTO) {
-        Entrance entrance = entranceService.create(buildingId, entranceDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(entranceMapper.toDto(entrance));
+        EntranceShortDTO entrance = entranceService.create(buildingId, entranceDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(entrance);
     }
 
     @GetMapping("by-building/{buildingId}")
     public List<EntranceShortDTO> getEntrancesByBuilding(@PathVariable Long buildingId) {
-        return entranceService.findByBuildingId(buildingId).stream()
-                .map(entranceMapper::toDto).toList();
+        return entranceService.findByBuildingId(buildingId);
     }
 }

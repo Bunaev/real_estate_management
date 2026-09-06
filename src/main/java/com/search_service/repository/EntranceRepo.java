@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface EntranceRepo extends JpaRepository<Entrance, Long> {
     List<Entrance> findByBuilding_Id(Long buildingId);
+    void deleteByBuildingId(Long buildingId);
 }

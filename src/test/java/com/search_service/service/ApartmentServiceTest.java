@@ -82,7 +82,7 @@ class ApartmentServiceTest {
     void findByComplexId_shouldReturnDtos() {
         when(apartmentRepo.findByEntrance_Building_ResidentialComplex_Id(1L))
                 .thenReturn(List.of(apartment));
-        when(mapper.toListDtoList(anyList())).thenReturn(List.of(apartmentDto));
+        when(mapper.toDtoList(anyList())).thenReturn(List.of(apartmentDto));
 
         List<ApartmentDTO> result = apartmentService.findByComplexId(1L);
 

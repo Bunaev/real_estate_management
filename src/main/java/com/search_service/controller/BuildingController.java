@@ -19,18 +19,17 @@ import java.util.List;
 public class BuildingController {
 
     private final BuildingService buildingService;
-    private final BuildingMapper buildingMapper;
 
     @GetMapping("by-complex/{complexId}")
     public List<BuildingShortDTO> getBuildingsByComplex(@PathVariable Long complexId) {
-        return buildingMapper.toListDTO(buildingService.findByComplexId(complexId));
+        return buildingService.findByComplexId(complexId);
     }
 
     @PostMapping
     public ResponseEntity<BuildingShortDTO> createBuilding(
             @RequestParam Long residentialComplexId,
             @Valid @RequestBody BuildingDTO buildingDTO) {
-        Building building = buildingService.create(buildingDTO, residentialComplexId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(buildingMapper.toListDTO(List.of(building)).get(0));
+        BuildingShortDTO building = buildingService.create(buildingDTO, residentialComplexId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(List.of(building).get(0));
     }
 }

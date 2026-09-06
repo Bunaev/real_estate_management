@@ -3846,6 +3846,7 @@ INSERT INTO apartment (entrance_id, price, floor, area, has_balcony, number, sta
                                                                                                               ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 2' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Новые Лаврики'))),
                                                                                                                8600000, 19, 45.0, true, 53, 'AVAILABLE', 'SEPARATE', 'THREE_ROOM');
 
+
 INSERT INTO apartment (entrance_id, price, floor, area, has_balcony, number, status, bathroom_type, type) VALUES
                                                                                                               ((SELECT id FROM entrance WHERE name = 'Секция 2' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 2' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Новые Лаврики'))),
                                                                                                                5800000, 1, 25.5, true, 54, 'AVAILABLE', 'COMBINED', 'STUDIO'),
@@ -4034,39 +4035,36 @@ INSERT INTO apartment (entrance_id, price, floor, area, has_balcony, number, sta
                                                                                                               ((SELECT id FROM entrance WHERE name = 'Секция 2' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 1' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
                                                                                                                8100000, 14, 41.0, false, 28, 'AVAILABLE', 'SEPARATE', 'TWO_ROOM');
 
-INSERT INTO apartment (entrance_id, price, floor, area, has_balcony, number, status, bathroom_type, type) VALUES
-                                                                                                              ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 2' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
-                                                                                                               5600000, 1, 25.0, true, 29, 'AVAILABLE', 'COMBINED', 'STUDIO'),
-                                                                                                              ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 2' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
-                                                                                                               7300000, 2, 35.0, false, 30, 'AVAILABLE', 'SEPARATE', 'ONE_ROOM'),
-                                                                                                              ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 2' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
-                                                                                                               8500000, 3, 43.0, true, 31, 'RESERVED', 'SEPARATE', 'TWO_ROOM_EURO'),
-                                                                                                              ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 2' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
-                                                                                                               8100000, 4, 41.0, true, 32, 'AVAILABLE', 'SEPARATE', 'TWO_ROOM'),
-                                                                                                              ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 2' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
-                                                                                                               9400000, 5, 48.0, false, 33, 'SOLD', 'SEPARATE', 'THREE_ROOM_EURO'),
-                                                                                                              ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 2' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
-                                                                                                               9000000, 6, 46.0, true, 34, 'AVAILABLE', 'SEPARATE', 'THREE_ROOM'),
-                                                                                                              ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 2' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
-                                                                                                               6700000, 7, 29.0, true, 35, 'AVAILABLE', 'COMBINED', 'ONE_ROOM'),
-                                                                                                              ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 2' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
-                                                                                                               8400000, 8, 42.0, false, 36, 'RESERVED', 'SEPARATE', 'TWO_ROOM_EURO'),
-                                                                                                              ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 2' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
-                                                                                                               8900000, 9, 45.0, true, 37, 'AVAILABLE', 'SEPARATE', 'TWO_ROOM'),
-                                                                                                              ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 2' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
-                                                                                                               10000000, 10, 53.0, true, 38, 'AVAILABLE', 'SEPARATE', 'THREE_ROOM_EURO'),
-                                                                                                              ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 2' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
-                                                                                                               9500000, 11, 50.0, false, 39, 'AVAILABLE', 'SEPARATE', 'THREE_ROOM'),
-                                                                                                              ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 2' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
-                                                                                                               6900000, 12, 30.0, true, 40, 'AVAILABLE', 'COMBINED', 'ONE_ROOM'),
-                                                                                                              ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 2' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
-                                                                                                               8600000, 13, 43.5, true, 41, 'AVAILABLE', 'SEPARATE', 'TWO_ROOM_EURO'),
-                                                                                                              ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 2' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
-                                                                                                               8200000, 14, 41.5, false, 42, 'AVAILABLE', 'SEPARATE', 'TWO_ROOM'),
-                                                                                                              ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 2' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
-                                                                                                               9200000, 15, 48.5, true, 43, 'AVAILABLE', 'SEPARATE', 'THREE_ROOM_EURO'),
-                                                                                                              ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 2' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
-                                                                                                               8800000, 16, 46.5, true, 44, 'AVAILABLE', 'SEPARATE', 'THREE_ROOM');
+INSERT INTO apartment (entrance_id, price, floor, area, has_balcony, number, status, bathroom_type, type)
+VALUES
+    ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 1' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
+     5400000, 1, 24.0, true, 1, 'AVAILABLE', 'COMBINED', 'STUDIO'),
+    ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 1' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
+     7100000, 2, 34.0, false, 2, 'AVAILABLE', 'SEPARATE', 'ONE_ROOM'),
+    ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 1' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
+     8300000, 3, 42.0, true, 3, 'RESERVED', 'SEPARATE', 'TWO_ROOM_EURO'),
+    ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 1' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
+     7900000, 4, 40.0, true, 4, 'AVAILABLE', 'SEPARATE', 'TWO_ROOM'),
+    ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 1' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
+     9200000, 5, 47.0, false, 5, 'SOLD', 'SEPARATE', 'THREE_ROOM_EURO'),
+    ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 1' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
+     8800000, 6, 45.0, true, 6, 'AVAILABLE', 'SEPARATE', 'THREE_ROOM'),
+    ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 1' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
+     6500000, 7, 28.0, true, 7, 'AVAILABLE', 'COMBINED', 'ONE_ROOM'),
+    ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 1' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
+     8200000, 8, 41.0, false, 8, 'RESERVED', 'SEPARATE', 'TWO_ROOM_EURO'),
+    ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 1' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
+     8700000, 9, 44.0, true, 9, 'AVAILABLE', 'SEPARATE', 'TWO_ROOM'),
+    ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 1' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
+     9800000, 10, 52.0, true, 10, 'AVAILABLE', 'SEPARATE', 'THREE_ROOM_EURO'),
+    ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 1' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
+     9300000, 11, 49.0, false, 11, 'AVAILABLE', 'SEPARATE', 'THREE_ROOM'),
+    ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 1' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
+     6700000, 12, 29.0, true, 12, 'AVAILABLE', 'COMBINED', 'ONE_ROOM'),
+    ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 1' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
+     8400000, 13, 42.5, true, 13, 'AVAILABLE', 'SEPARATE', 'TWO_ROOM_EURO'),
+    ((SELECT id FROM entrance WHERE name = 'Секция 1' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 1' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),
+     8000000, 14, 40.5, false, 14, 'AVAILABLE', 'SEPARATE', 'TWO_ROOM');
 
 INSERT INTO apartment (entrance_id, price, floor, area, has_balcony, number, status, bathroom_type, type) VALUES
                                                                                                               ((SELECT id FROM entrance WHERE name = 'Секция 2' AND building_id = (SELECT id FROM building WHERE name = 'Корпус 2' AND residential_complex_id = (SELECT id FROM residential_complex WHERE name = 'Аквилон Янино'))),

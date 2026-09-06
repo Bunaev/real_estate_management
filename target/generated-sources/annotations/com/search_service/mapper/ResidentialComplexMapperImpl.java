@@ -1,23 +1,32 @@
 package com.search_service.mapper;
 
-import com.search_service.dto.in.BuildingDTO;
-import com.search_service.dto.in.EntranceDTO;
 import com.search_service.dto.in.ResidentialComplexDTO;
-import com.search_service.entity.Building;
-import com.search_service.entity.Entrance;
+import com.search_service.dto.out.ResidentialComplexDetailDTO;
+import com.search_service.dto.out.ResidentialComplexEditDTO;
+import com.search_service.dto.out.ResidentialComplexOutDTO;
+import com.search_service.dto.out.ResidentialComplexShortDTO;
+import com.search_service.entity.Developer;
+import com.search_service.entity.District;
+import com.search_service.entity.Location;
 import com.search_service.entity.ResidentialComplex;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-09-05T21:41:57+0300",
+    date = "2026-09-07T02:23:48+0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.2 (Oracle Corporation)"
 )
 @Component
 public class ResidentialComplexMapperImpl implements ResidentialComplexMapper {
+
+    @Autowired
+    private BuildingMapper buildingMapper;
+    @Autowired
+    private MetroDistanceMapper metroDistanceMapper;
 
     @Override
     public ResidentialComplex toEntity(ResidentialComplexDTO dto) {
@@ -34,70 +43,196 @@ public class ResidentialComplexMapperImpl implements ResidentialComplexMapper {
     }
 
     @Override
-    public ResidentialComplexDTO toDTO(ResidentialComplex entity) {
-        if ( entity == null ) {
+    public ResidentialComplexOutDTO toOutDto(ResidentialComplex complex) {
+        if ( complex == null ) {
             return null;
         }
 
-        ResidentialComplexDTO.ResidentialComplexDTOBuilder residentialComplexDTO = ResidentialComplexDTO.builder();
+        ResidentialComplexOutDTO.ResidentialComplexOutDTOBuilder residentialComplexOutDTO = ResidentialComplexOutDTO.builder();
 
-        residentialComplexDTO.name( entity.getName() );
-        residentialComplexDTO.address( entity.getAddress() );
-        residentialComplexDTO.buildings( buildingListToBuildingDTOList( entity.getBuildings() ) );
+        residentialComplexOutDTO.developer( complexDeveloperName( complex ) );
+        residentialComplexOutDTO.location( complexDistrictLocationName( complex ) );
+        residentialComplexOutDTO.district( complexDistrictName( complex ) );
+        residentialComplexOutDTO.metroDistances( metroDistanceMapper.toOutDtoList( complex.getMetroDistances() ) );
+        residentialComplexOutDTO.id( complex.getId() );
+        residentialComplexOutDTO.name( complex.getName() );
+        residentialComplexOutDTO.address( complex.getAddress() );
 
-        return residentialComplexDTO.build();
+        residentialComplexOutDTO.countBuildings( complex.getBuildings() != null ? complex.getBuildings().size() : 0 );
+        residentialComplexOutDTO.countEntrance( calculateEntranceCount(complex) );
+        residentialComplexOutDTO.countApartment( calculateApartmentCount(complex) );
+
+        return residentialComplexOutDTO.build();
     }
 
-    protected EntranceDTO entranceToEntranceDTO(Entrance entrance) {
-        if ( entrance == null ) {
+    @Override
+    public List<ResidentialComplexOutDTO> toOutDtoList(List<ResidentialComplex> complexes) {
+        if ( complexes == null ) {
             return null;
         }
 
-        EntranceDTO.EntranceDTOBuilder entranceDTO = EntranceDTO.builder();
+        List<ResidentialComplexOutDTO> list = new ArrayList<ResidentialComplexOutDTO>( complexes.size() );
+        for ( ResidentialComplex residentialComplex : complexes ) {
+            list.add( toOutDto( residentialComplex ) );
+        }
 
-        entranceDTO.name( entrance.getName() );
-
-        return entranceDTO.build();
+        return list;
     }
 
-    protected List<EntranceDTO> entranceListToEntranceDTOList(List<Entrance> list) {
-        if ( list == null ) {
+    @Override
+    public ResidentialComplexShortDTO toShortDto(ResidentialComplex complex) {
+        if ( complex == null ) {
             return null;
         }
 
-        List<EntranceDTO> list1 = new ArrayList<EntranceDTO>( list.size() );
-        for ( Entrance entrance : list ) {
-            list1.add( entranceToEntranceDTO( entrance ) );
-        }
+        ResidentialComplexShortDTO.ResidentialComplexShortDTOBuilder residentialComplexShortDTO = ResidentialComplexShortDTO.builder();
 
-        return list1;
+        residentialComplexShortDTO.developer( complexDeveloperName( complex ) );
+        residentialComplexShortDTO.id( complex.getId() );
+        residentialComplexShortDTO.name( complex.getName() );
+
+        residentialComplexShortDTO.fullAddress( buildFullAddress(complex) );
+
+        return residentialComplexShortDTO.build();
     }
 
-    protected BuildingDTO buildingToBuildingDTO(Building building) {
-        if ( building == null ) {
+    @Override
+    public ResidentialComplexDetailDTO toDetailDto(ResidentialComplex complex) {
+        if ( complex == null ) {
             return null;
         }
 
-        BuildingDTO.BuildingDTOBuilder buildingDTO = BuildingDTO.builder();
+        ResidentialComplexDetailDTO.ResidentialComplexDetailDTOBuilder residentialComplexDetailDTO = ResidentialComplexDetailDTO.builder();
 
-        buildingDTO.name( building.getName() );
-        buildingDTO.completionDate( building.getCompletionDate() );
-        buildingDTO.keyHandoverDate( building.getKeyHandoverDate() );
-        buildingDTO.entrances( entranceListToEntranceDTOList( building.getEntrances() ) );
+        residentialComplexDetailDTO.developer( complexDeveloperName( complex ) );
+        residentialComplexDetailDTO.district( complexDistrictName( complex ) );
+        residentialComplexDetailDTO.location( complexDistrictLocationName( complex ) );
+        residentialComplexDetailDTO.buildings( buildingMapper.toShortDtoList( complex.getBuildings() ) );
+        residentialComplexDetailDTO.id( complex.getId() );
+        residentialComplexDetailDTO.name( complex.getName() );
+        residentialComplexDetailDTO.address( complex.getAddress() );
 
-        return buildingDTO.build();
+        return residentialComplexDetailDTO.build();
     }
 
-    protected List<BuildingDTO> buildingListToBuildingDTOList(List<Building> list) {
-        if ( list == null ) {
+    @Override
+    public ResidentialComplexEditDTO toEditDto(ResidentialComplex complex) {
+        if ( complex == null ) {
             return null;
         }
 
-        List<BuildingDTO> list1 = new ArrayList<BuildingDTO>( list.size() );
-        for ( Building building : list ) {
-            list1.add( buildingToBuildingDTO( building ) );
-        }
+        ResidentialComplexEditDTO.ResidentialComplexEditDTOBuilder residentialComplexEditDTO = ResidentialComplexEditDTO.builder();
 
-        return list1;
+        residentialComplexEditDTO.locationId( complexDistrictLocationId( complex ) );
+        residentialComplexEditDTO.districtId( complexDistrictId( complex ) );
+        residentialComplexEditDTO.developerId( complexDeveloperId( complex ) );
+        residentialComplexEditDTO.locationName( complexDistrictLocationName( complex ) );
+        residentialComplexEditDTO.districtName( complexDistrictName( complex ) );
+        residentialComplexEditDTO.developerName( complexDeveloperName( complex ) );
+        residentialComplexEditDTO.metroDistances( metroDistanceMapper.toEditDtoList( complex.getMetroDistances() ) );
+        residentialComplexEditDTO.buildings( buildingMapper.toEditDtoList( complex.getBuildings() ) );
+        residentialComplexEditDTO.id( complex.getId() );
+        residentialComplexEditDTO.name( complex.getName() );
+        residentialComplexEditDTO.address( complex.getAddress() );
+
+        return residentialComplexEditDTO.build();
+    }
+
+    private String complexDeveloperName(ResidentialComplex residentialComplex) {
+        if ( residentialComplex == null ) {
+            return null;
+        }
+        Developer developer = residentialComplex.getDeveloper();
+        if ( developer == null ) {
+            return null;
+        }
+        String name = developer.getName();
+        if ( name == null ) {
+            return null;
+        }
+        return name;
+    }
+
+    private String complexDistrictLocationName(ResidentialComplex residentialComplex) {
+        if ( residentialComplex == null ) {
+            return null;
+        }
+        District district = residentialComplex.getDistrict();
+        if ( district == null ) {
+            return null;
+        }
+        Location location = district.getLocation();
+        if ( location == null ) {
+            return null;
+        }
+        String name = location.getName();
+        if ( name == null ) {
+            return null;
+        }
+        return name;
+    }
+
+    private String complexDistrictName(ResidentialComplex residentialComplex) {
+        if ( residentialComplex == null ) {
+            return null;
+        }
+        District district = residentialComplex.getDistrict();
+        if ( district == null ) {
+            return null;
+        }
+        String name = district.getName();
+        if ( name == null ) {
+            return null;
+        }
+        return name;
+    }
+
+    private Long complexDistrictLocationId(ResidentialComplex residentialComplex) {
+        if ( residentialComplex == null ) {
+            return null;
+        }
+        District district = residentialComplex.getDistrict();
+        if ( district == null ) {
+            return null;
+        }
+        Location location = district.getLocation();
+        if ( location == null ) {
+            return null;
+        }
+        Long id = location.getId();
+        if ( id == null ) {
+            return null;
+        }
+        return id;
+    }
+
+    private Long complexDistrictId(ResidentialComplex residentialComplex) {
+        if ( residentialComplex == null ) {
+            return null;
+        }
+        District district = residentialComplex.getDistrict();
+        if ( district == null ) {
+            return null;
+        }
+        Long id = district.getId();
+        if ( id == null ) {
+            return null;
+        }
+        return id;
+    }
+
+    private Long complexDeveloperId(ResidentialComplex residentialComplex) {
+        if ( residentialComplex == null ) {
+            return null;
+        }
+        Developer developer = residentialComplex.getDeveloper();
+        if ( developer == null ) {
+            return null;
+        }
+        Long id = developer.getId();
+        if ( id == null ) {
+            return null;
+        }
+        return id;
     }
 }

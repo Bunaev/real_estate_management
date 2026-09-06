@@ -18,6 +18,9 @@ import java.util.List;
 @AllArgsConstructor
 public class ResidentialComplexDTO {
 
+    @NotNull
+    private Long id;
+
     @NotBlank(message = "Название ЖК обязательно")
     @Size(max = 255, message = "Название не должно превышать 255 символов")
     private String name;

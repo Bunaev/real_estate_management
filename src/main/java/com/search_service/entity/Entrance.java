@@ -22,7 +22,7 @@ public class Entrance {
     private Long id;
     @Column(name = "name")
     private String name;
-    @OneToMany(mappedBy = "entrance", cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "entrance", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JsonIgnore
     private List<Apartment> apartments = new ArrayList<>();
     @ManyToOne
