@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <!-- ========================================================= -->
+    <!-- ДОБАВЛЕНИЕ НЕДОСТАЮЩИХ РАЙОНОВ (district)                  -->
+    <!-- ========================================================= -->
+    <changeSet id="add-missing-districts" author="bunaev">
+        <sql>
+            INSERT INTO district (name, location_id)
+            SELECT 'Адмиралтейский', id FROM location WHERE name = 'Санкт-Петербург'
+                                                        AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Адмиралтейский' AND location_id = (SELECT id FROM location WHERE name = 'Санкт-Петербург'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Василеостровский', id FROM location WHERE name = 'Санкт-Петербург'
+                                                          AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Василеостровский' AND location_id = (SELECT id FROM location WHERE name = 'Санкт-Петербург'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Выборгский', id FROM location WHERE name = 'Санкт-Петербург'
+                                                    AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Выборгский' AND location_id = (SELECT id FROM location WHERE name = 'Санкт-Петербург'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Калининский', id FROM location WHERE name = 'Санкт-Петербург'
+                                                     AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Калининский' AND location_id = (SELECT id FROM location WHERE name = 'Санкт-Петербург'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Кировский', id FROM location WHERE name = 'Санкт-Петербург'
+                                                   AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Кировский' AND location_id = (SELECT id FROM location WHERE name = 'Санкт-Петербург'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Колпинский', id FROM location WHERE name = 'Санкт-Петербург'
+                                                    AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Колпинский' AND location_id = (SELECT id FROM location WHERE name = 'Санкт-Петербург'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Красногвардейский', id FROM location WHERE name = 'Санкт-Петербург'
+                                                           AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Красногвардейский' AND location_id = (SELECT id FROM location WHERE name = 'Санкт-Петербург'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Красносельский', id FROM location WHERE name = 'Санкт-Петербург'
+                                                        AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Красносельский' AND location_id = (SELECT id FROM location WHERE name = 'Санкт-Петербург'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Кронштадтский', id FROM location WHERE name = 'Санкт-Петербург'
+                                                       AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Кронштадтский' AND location_id = (SELECT id FROM location WHERE name = 'Санкт-Петербург'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Курортный', id FROM location WHERE name = 'Санкт-Петербург'
+                                                   AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Курортный' AND location_id = (SELECT id FROM location WHERE name = 'Санкт-Петербург'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Московский', id FROM location WHERE name = 'Санкт-Петербург'
+                                                    AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Московский' AND location_id = (SELECT id FROM location WHERE name = 'Санкт-Петербург'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Невский', id FROM location WHERE name = 'Санкт-Петербург'
+                                                 AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Невский' AND location_id = (SELECT id FROM location WHERE name = 'Санкт-Петербург'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Петроградский', id FROM location WHERE name = 'Санкт-Петербург'
+                                                       AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Петроградский' AND location_id = (SELECT id FROM location WHERE name = 'Санкт-Петербург'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Петродворцовый', id FROM location WHERE name = 'Санкт-Петербург'
+                                                        AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Петродворцовый' AND location_id = (SELECT id FROM location WHERE name = 'Санкт-Петербург'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Приморский', id FROM location WHERE name = 'Санкт-Петербург'
+                                                    AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Приморский' AND location_id = (SELECT id FROM location WHERE name = 'Санкт-Петербург'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Пушкинский', id FROM location WHERE name = 'Санкт-Петербург'
+                                                    AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Пушкинский' AND location_id = (SELECT id FROM location WHERE name = 'Санкт-Петербург'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Фрунзенский', id FROM location WHERE name = 'Санкт-Петербург'
+                                                     AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Фрунзенский' AND location_id = (SELECT id FROM location WHERE name = 'Санкт-Петербург'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Центральный', id FROM location WHERE name = 'Санкт-Петербург'
+                                                     AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Центральный' AND location_id = (SELECT id FROM location WHERE name = 'Санкт-Петербург'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Бокситогорский', id FROM location WHERE name = 'Ленинградская область'
+                                                        AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Бокситогорский' AND location_id = (SELECT id FROM location WHERE name = 'Ленинградская область'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Волосовский', id FROM location WHERE name = 'Ленинградская область'
+                                                     AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Волосовский' AND location_id = (SELECT id FROM location WHERE name = 'Ленинградская область'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Волховский', id FROM location WHERE name = 'Ленинградская область'
+                                                    AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Волховский' AND location_id = (SELECT id FROM location WHERE name = 'Ленинградская область'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Всеволожский', id FROM location WHERE name = 'Ленинградская область'
+                                                      AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Всеволожский' AND location_id = (SELECT id FROM location WHERE name = 'Ленинградская область'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Выборгский', id FROM location WHERE name = 'Ленинградская область'
+                                                    AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Выборгский' AND location_id = (SELECT id FROM location WHERE name = 'Ленинградская область'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Гатчинский', id FROM location WHERE name = 'Ленинградская область'
+                                                    AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Гатчинский' AND location_id = (SELECT id FROM location WHERE name = 'Ленинградская область'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Кингисеппский', id FROM location WHERE name = 'Ленинградская область'
+                                                       AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Кингисеппский' AND location_id = (SELECT id FROM location WHERE name = 'Ленинградская область'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Киришский', id FROM location WHERE name = 'Ленинградская область'
+                                                   AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Киришский' AND location_id = (SELECT id FROM location WHERE name = 'Ленинградская область'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Кировский', id FROM location WHERE name = 'Ленинградская область'
+                                                   AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Кировский' AND location_id = (SELECT id FROM location WHERE name = 'Ленинградская область'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Лодейнопольский', id FROM location WHERE name = 'Ленинградская область'
+                                                         AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Лодейнопольский' AND location_id = (SELECT id FROM location WHERE name = 'Ленинградская область'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Ломоносовский', id FROM location WHERE name = 'Ленинградская область'
+                                                       AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Ломоносовский' AND location_id = (SELECT id FROM location WHERE name = 'Ленинградская область'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Лужский', id FROM location WHERE name = 'Ленинградская область'
+                                                 AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Лужский' AND location_id = (SELECT id FROM location WHERE name = 'Ленинградская область'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Подпорожский', id FROM location WHERE name = 'Ленинградская область'
+                                                      AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Подпорожский' AND location_id = (SELECT id FROM location WHERE name = 'Ленинградская область'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Приозерский', id FROM location WHERE name = 'Ленинградская область'
+                                                     AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Приозерский' AND location_id = (SELECT id FROM location WHERE name = 'Ленинградская область'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Сланцевский', id FROM location WHERE name = 'Ленинградская область'
+                                                     AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Сланцевский' AND location_id = (SELECT id FROM location WHERE name = 'Ленинградская область'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Тихвинский', id FROM location WHERE name = 'Ленинградская область'
+                                                    AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Тихвинский' AND location_id = (SELECT id FROM location WHERE name = 'Ленинградская область'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Тосненский', id FROM location WHERE name = 'Ленинградская область'
+                                                    AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Тосненский' AND location_id = (SELECT id FROM location WHERE name = 'Ленинградская область'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Сертолово', id FROM location WHERE name = 'Ленинградская область'
+                                                   AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Сертолово' AND location_id = (SELECT id FROM location WHERE name = 'Ленинградская область'));
+
+            INSERT INTO district (name, location_id)
+            SELECT 'Сосновый Бор', id FROM location WHERE name = 'Ленинградская область'
+                                                      AND NOT EXISTS (SELECT 1 FROM district WHERE name = 'Сосновый Бор' AND location_id = (SELECT id FROM location WHERE name = 'Ленинградская область'));
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM district WHERE name IN ('Адмиралтейский', 'Василеостровский', 'Выборгский', 'Калининский', 'Кировский', 'Колпинский', 'Красногвардейский', 'Красносельский', 'Кронштадтский', 'Курортный', 'Московский', 'Невский', 'Петроградский', 'Петродворцовый', 'Приморский', 'Пушкинский', 'Фрунзенский', 'Центральный', 'Бокситогорский', 'Волосовский', 'Волховский', 'Всеволожский', 'Выборгский', 'Гатчинский', 'Кингисеппский', 'Киришский', 'Кировский', 'Лодейнопольский', 'Ломоносовский', 'Лужский', 'Подпорожский', 'Приозерский', 'Сланцевский', 'Тихвинский', 'Тосненский', 'Сертолово', 'Сосновый Бор');
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <!-- ========================================================= -->
+    <!-- ДОБАВЛЕНИЕ НЕДОСТАЮЩИХ СТАНЦИЙ МЕТРО (metro_station)      -->
+    <!-- ========================================================= -->
+    <changeSet id="add-missing-metro-stations" author="bunaev">
+        <sql>
+            INSERT INTO metro_station (name)
+            SELECT 'Гражданская'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Гражданская');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Академическая'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Академическая');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Политехническая'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Политехническая');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Площадь Мужества'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Площадь Мужества');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Лесная'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Лесная');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Парнас'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Парнас');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Проспект Просвещения'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Проспект Просвещения');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Озерки'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Озерки');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Удельная'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Удельная');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Пионерская'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Пионерская');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Черная речка'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Черная речка');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Петроградская'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Петроградская');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Горьковская'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Горьковская');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Сенная площадь'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Сенная площадь');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Московские ворота'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Московские ворота');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Электросила'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Электросила');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Приморская'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Приморская');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Василеостровская'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Василеостровская');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Гостиный двор'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Гостиный двор');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Маяковская'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Маяковская');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Площадь Александра Невского'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Площадь Александра Невского');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Елизаровская'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Елизаровская');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Ломоносовская'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Ломоносовская');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Обухово'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Обухово');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Рыбацкое'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Рыбацкое');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Спасская'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Спасская');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Достоевская'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Достоевская');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Лиговский проспект'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Лиговский проспект');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Новочеркасская'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Новочеркасская');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Ладожская'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Ладожская');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Старая Деревня'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Старая Деревня');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Крестовский остров'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Крестовский остров');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Чкаловская'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Чкаловская');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Спортивная'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Спортивная');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Садовая'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Садовая');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Звенигородская'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Звенигородская');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Обводный канал'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Обводный канал');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Волковская'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Волковская');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Бухарестская'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Бухарестская');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Международная'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Международная');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Проспект Славы'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Проспект Славы');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Дунайская'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Дунайская');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Горный институт'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Горный институт');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Путиловская'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Путиловская');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Юго-Западная'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Юго-Западная');
+
+            INSERT INTO metro_station (name)
+            SELECT 'Кудрово'
+                WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Кудрово');
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM metro_station WHERE name IN ('Гражданская', 'Академическая', 'Политехническая', 'Площадь Мужества', 'Лесная', 'Парнас', 'Проспект Просвещения', 'Озерки', 'Удельная', 'Пионерская', 'Черная речка', 'Петроградская', 'Горьковская', 'Сенная площадь', 'Московские ворота', 'Электросила', 'Приморская', 'Василеостровская', 'Гостиный двор', 'Маяковская', 'Площадь Александра Невского', 'Елизаровская', 'Ломоносовская', 'Обухово', 'Рыбацкое', 'Спасская', 'Достоевская', 'Лиговский проспект', 'Новочеркасская', 'Ладожская', 'Старая Деревня', 'Крестовский остров', 'Чкаловская', 'Спортивная', 'Садовая', 'Звенигородская', 'Обводный канал', 'Волковская', 'Бухарестская', 'Международная', 'Проспект Славы', 'Дунайская', 'Горный институт', 'Путиловская', 'Юго-Западная', 'Кудрово');
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <!-- ========================================================= -->
+    <!-- ДОБАВЛЕНИЕ ЗАСТРОЙЩИКОВ (developer)                       -->
+    <!-- ========================================================= -->
+    <changeSet id="add-developers" author="bunaev">
+        <sql>
+            INSERT INTO developer (name)
+            SELECT 'Setl Group'
+                WHERE NOT EXISTS (SELECT 1 FROM developer WHERE name = 'Setl Group');
+
+            INSERT INTO developer (name)
+            SELECT 'Группа ЛСР'
+                WHERE NOT EXISTS (SELECT 1 FROM developer WHERE name = 'Группа ЛСР');
+
+            INSERT INTO developer (name)
+            SELECT 'ГК ПСК'
+                WHERE NOT EXISTS (SELECT 1 FROM developer WHERE name = 'ГК ПСК');
+
+            INSERT INTO developer (name)
+            SELECT 'LEGENDA Intelligent Development'
+                WHERE NOT EXISTS (SELECT 1 FROM developer WHERE name = 'LEGENDA Intelligent Development');
+
+            INSERT INTO developer (name)
+            SELECT 'ГК «КВС»'
+                WHERE NOT EXISTS (SELECT 1 FROM developer WHERE name = 'ГК «КВС»');
+
+            INSERT INTO developer (name)
+            SELECT 'Группа RBI'
+                WHERE NOT EXISTS (SELECT 1 FROM developer WHERE name = 'Группа RBI');
+
+            INSERT INTO developer (name)
+            SELECT 'Группа Аквилон'
+                WHERE NOT EXISTS (SELECT 1 FROM developer WHERE name = 'Группа Аквилон');
+
+            INSERT INTO developer (name)
+            SELECT 'Лидер Групп'
+                WHERE NOT EXISTS (SELECT 1 FROM developer WHERE name = 'Лидер Групп');
+
+            INSERT INTO developer (name)
+            SELECT 'ГК «Самолет»'
+                WHERE NOT EXISTS (SELECT 1 FROM developer WHERE name = 'ГК «Самолет»');
+
+            INSERT INTO developer (name)
+            SELECT 'ИСГ «Мавис»'
+                WHERE NOT EXISTS (SELECT 1 FROM developer WHERE name = 'ИСГ «Мавис»');
+
+            INSERT INTO developer (name)
+            SELECT 'ГК Едино'
+                WHERE NOT EXISTS (SELECT 1 FROM developer WHERE name = 'ГК Едино');
+
+            INSERT INTO developer (name)
+            SELECT 'Главстрой СПб'
+                WHERE NOT EXISTS (SELECT 1 FROM developer WHERE name = 'Главстрой СПб');
+
+            INSERT INTO developer (name)
+            SELECT 'Группа ЦДС'
+                WHERE NOT EXISTS (SELECT 1 FROM developer WHERE name = 'Группа ЦДС');
+
+            INSERT INTO developer (name)
+            SELECT 'РГ-Девелопмент'
+                WHERE NOT EXISTS (SELECT 1 FROM developer WHERE name = 'РГ-Девелопмент');
+
+            INSERT INTO developer (name)
+            SELECT 'ФСК Северо-Запад'
+                WHERE NOT EXISTS (SELECT 1 FROM developer WHERE name = 'ФСК Северо-Запад');
+
+            INSERT INTO developer (name)
+            SELECT 'Еврострой'
+                WHERE NOT EXISTS (SELECT 1 FROM developer WHERE name = 'Еврострой');
+
+            INSERT INTO developer (name)
+            SELECT 'ГК Стоун'
+                WHERE NOT EXISTS (SELECT 1 FROM developer WHERE name = 'ГК Стоун');
+
+            INSERT INTO developer (name)
+            SELECT 'ЕвроИнвест Девелопмент'
+                WHERE NOT EXISTS (SELECT 1 FROM developer WHERE name = 'ЕвроИнвест Девелопмент');
+
+            INSERT INTO developer (name)
+            SELECT 'Терминал-ресурс'
+                WHERE NOT EXISTS (SELECT 1 FROM developer WHERE name = 'Терминал-ресурс');
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM developer WHERE name IN ('Setl Group', 'Группа ЛСР', 'ГК ПСК', 'LEGENDA Intelligent Development', 'ГК «КВС»', 'Группа RBI', 'Группа Аквилон', 'Лидер Групп', 'ГК «Самолет»', 'ИСГ «Мавис»', 'ГК Едино', 'Главстрой СПб', 'Группа ЦДС', 'РГ-Девелопмент', 'ФСК Северо-Запад', 'Еврострой', 'ГК Стоун', 'ЕвроИнвест Девелопмент', 'Терминал-ресурс');
+            </sql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

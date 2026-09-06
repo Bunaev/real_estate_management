@@ -20,7 +20,7 @@ public class SynonymResolver {
     }
 
     public static <T> String resolveField(LocalCacheContext<T> context, String cellValue) {
-        String normalized = cellValue.trim().toLowerCase();
+        String normalized = cellValue.trim().toLowerCase().replaceAll("\\s+", "");
         Map<String, List<String>> synonyms = context.getFieldSynonyms();
         for (Map.Entry<String, List<String>> entry : synonyms.entrySet()) {
             if (entry.getValue().contains(normalized)) {

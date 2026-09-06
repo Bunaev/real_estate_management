@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Getter
@@ -94,8 +95,13 @@ public class LocalCacheContext<T> {
     }
 
     private static Map<String, List<String>> readSynonymFields(List<Field> fields) {
-        return fields.stream().collect(java.util.stream.Collectors.toMap(Field::getName, field ->
-                Arrays.stream(field.getAnnotation(ExcelColumn.class).synonyms()).map(String::toLowerCase).toList()));
+        return fields.stream().collect(Collectors.toMap(
+                Field::getName,
+                field -> Arrays.stream(field.getAnnotation(ExcelColumn.class).synonyms())
+                        .map(synonym -> synonym.replaceAll("\\s+", ""))
+                        .map(String::toLowerCase)
+                        .toList()
+        ));
     }
 
     private static Map<String, Class<?>> readFieldTypes(List<Field> fields) {

@@ -155,7 +155,14 @@ public class ExcelUtils {
         if (type == String.class) return (T) resultValue;
         if (type == Double.class || type == double.class) return (T) Double.valueOf(Double.parseDouble(resultValue));
         if (type == Float.class || type == float.class) return (T) Float.valueOf(Float.parseFloat(resultValue));
-        if (type == Integer.class || type == int.class) return (T) Integer.valueOf(Integer.parseInt(resultValue));
+        if (type == Integer.class || type == int.class) {
+            String cleaned = resultValue.replace(".0", "");
+            return (T) Integer.valueOf(cleaned);
+        }
+        if (type == Long.class || type == long.class) {
+            String cleaned = resultValue.replace(".0", "");
+            return (T) Long.valueOf(cleaned);
+        }
         if (type == Boolean.class || type == boolean.class) return (T) Boolean.valueOf(Boolean.parseBoolean(resultValue));
         if (type.isEnum()) {
             try {

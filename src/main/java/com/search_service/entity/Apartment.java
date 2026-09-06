@@ -39,7 +39,7 @@ public class Apartment {
     @ExcelColumn(synonyms = {"area", "площадь", "s"}, columnName = "Площадь")
     private Double area;
     @Column(name = "has_balcony")
-    @ExcelColumn(synonyms = {"наличие балкона", "балкон", "has balcony"}, columnName = "Балкон")
+    @ExcelColumn(synonyms = {"наличие балкона", "балкон", "hasBalcony"}, columnName = "Балкон")
     private Boolean hasBalcony;
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
@@ -47,7 +47,7 @@ public class Apartment {
     private Status status;
     @Column(name = "bathroom_type")
     @Enumerated(EnumType.STRING)
-    @ExcelColumn(synonyms = {"тип санузла", "санузел", "bathroom", "bathroom type"}, columnName = "Тип санузла")
+    @ExcelColumn(synonyms = {"тип санузла", "санузел", "bathroom", "bathroomType"}, columnName = "Тип санузла")
     private BathroomType bathroomType;
 
 }
