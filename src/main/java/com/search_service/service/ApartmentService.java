@@ -76,7 +76,7 @@ public class ApartmentService {
 
     @Transactional(readOnly = true)
     public Page<ApartmentDTO> getFilteredApartment(FilterDTO filter, Pageable pageable) {
-        Specification<Apartment> specification = specificationBuilder.build(filter);
+        Specification<Apartment> specification = specificationBuilder.buildApartments(filter);
         return apartmentRepo.findAll(specification, pageable).map(mapper::toDto);
     }
 }

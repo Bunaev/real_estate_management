@@ -6,7 +6,7 @@ import com.search_service.entity.*;
 import com.search_service.exception.EntityNotFoundException;
 import com.search_service.mapper.*;
 import com.search_service.repository.*;
-import com.search_service.specification.ResidentialComplexSpecificationBuilder;
+import com.search_service.specification.SpecificationBuilder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +32,7 @@ public class ResidentialComplexService {
     private final MetroStationRepo metroRepo;
     private final ResidentialComplexMapper mapper;
     private final BuildingMapper buildingMapper;
-    private final ResidentialComplexSpecificationBuilder specificationBuilder;
+    private final SpecificationBuilder specificationBuilder;
 
 
     @Transactional
@@ -90,7 +90,7 @@ public class ResidentialComplexService {
 
     @Transactional(readOnly = true)
     public Page<ResidentialComplexOutDTO> findAllLightweight(FilterDTO filter, Pageable page) {
-        Specification<ResidentialComplex> specification = specificationBuilder.build(filter);
+        Specification<ResidentialComplex> specification = specificationBuilder.buildComplexes(filter);
 
         // Получаем Page напрямую, не конвертируя в List
         Page<ResidentialComplex> complexPage = complexRepo.findAll(specification, page);
