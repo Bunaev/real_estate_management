@@ -22,6 +22,7 @@ public class ComplexDocumentMapper {
                 .developer(complex.getDeveloper().getName())
                 .metroStation(complex.getMetroDistances().stream()
                         .map(m -> m.getMetroStation().getName()).toList())
+                .metroStationId(complex.getMetroDistances().stream().map(metro -> metro.getMetroStation().getId()).toList())
                 .build();
     }
 }

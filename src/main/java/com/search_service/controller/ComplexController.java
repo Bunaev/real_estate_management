@@ -35,7 +35,7 @@ public class ComplexController {
 
     @GetMapping("/suggest")
     public List<SearchSuggestionDTO> suggest(@RequestParam("q") String query,
-                                             @RequestParam(defaultValue = "4") int limit) {
+                                             @RequestParam(defaultValue = "5") int limit) {
         return complexService.suggest(query, limit);
     }
 
@@ -67,10 +67,6 @@ public class ComplexController {
         ResidentialComplexOutDTO updated = complexService.update(dto);
         return ResponseEntity.status(HttpStatus.OK).body(updated);
     }
+//    curl -X DELETE "localhost:9200/complexes"
 
-//    @PostMapping("/reindex")
-//    public ResponseEntity<Void> reindex () {
-//        complexService.reindexAllComplex();
-//        return ResponseEntity.noContent().build();
-//    }
 }

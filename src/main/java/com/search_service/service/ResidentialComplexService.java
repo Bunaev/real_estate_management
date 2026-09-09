@@ -31,10 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -112,19 +109,15 @@ public class ResidentialComplexService {
     public Page<ResidentialComplexOutDTO> findAllLightweight(FilterDTO filter, Pageable page) {
         Specification<ResidentialComplex> specification = specificationBuilder.buildComplexes(filter);
 
-        // Получаем Page напрямую, не конвертируя в List
         Page<ResidentialComplex> complexPage = complexRepo.findAll(specification, page);
-        // Конвертируем содержимое Page в DTO
         List<ResidentialComplexOutDTO> dtoList = complexPage.getContent().stream()
                 .map(mapper::toOutDto)
                 .collect(Collectors.toList());
 
-        // Получаем ID для метро
         List<Long> ids = dtoList.stream()
                 .map(ResidentialComplexOutDTO::getId)
                 .collect(Collectors.toList());
 
-        // Загружаем метро только если есть ID
         if (!ids.isEmpty()) {
             List<Object[]> metroData = complexRepo.findMetroDistancesByComplexIds(ids);
 
@@ -140,13 +133,10 @@ public class ResidentialComplexService {
                             )
                     ));
 
-            // Добавляем метро к каждому DTO
             dtoList.forEach(dto ->
                     dto.setMetroDistances(metroMap.getOrDefault(dto.getId(), List.of()))
             );
         }
-
-        // Возвращаем новый Page с теми же данными пагинации
         return new PageImpl<>(dtoList, complexPage.getPageable(), complexPage.getTotalElements());
     }
 
@@ -348,21 +338,76 @@ public class ResidentialComplexService {
         LinkedHashMap<String, SearchSuggestionDTO> suggestions = new LinkedHashMap<>();
         for (ComplexDocument doc : docs) {
             if (doc == null) continue;
-            addIfNotNull(suggestions, doc.getLocationId(), doc.getLocation(), "Локация");
-            addIfNotNull(suggestions, doc.getDistrictId(), doc.getDistrict(), "Район");
-            addIfNotNull(suggestions, doc.getDeveloperId(), doc.getDeveloper(), "Застройщик");
-            addIfNotNull(suggestions, doc.getId(), doc.getName(), "ЖК");
-            addIfNotNull(suggestions, doc.getId(), doc.getName(), "Метро");
+            addIfNotNull(suggestions, doc.getLocationId(), doc.getLocation(), "Локация", query);
+            addIfNotNull(suggestions, doc.getDistrictId(), doc.getDistrict(), "Район", query);
+            addIfNotNull(suggestions, doc.getDeveloperId(), doc.getDeveloper(), "Застройщик", query);
+            addIfNotNull(suggestions, doc.getId(), doc.getName(), "ЖК", query);
+            addIfNotNullMetroStations(suggestions, doc.getMetroStationId(), doc.getMetroStation(), "Метро", query);
             if (suggestions.size() >= limit) break;
         }
         return new ArrayList<>(suggestions.values()).stream().limit(limit).toList();
     }
 
     private void addIfNotNull(LinkedHashMap<String, SearchSuggestionDTO> map,
-                              Long id, String text, String type) {
+                               Long id, String text, String type, String query) {
         if (id == null || text == null || text.isBlank()) return;
         String key = type + "|" + text;
-        map.putIfAbsent(key, SearchSuggestionDTO.builder()
-                .entityId(id).text(text).entityType(type).build());
+        if (comparison(text, query)) {
+            map.putIfAbsent(key, SearchSuggestionDTO.builder()
+                    .entityId(id).text(text).entityType(type).build());
+        }
+    }
+
+    private boolean comparison(String text, String query) {
+        if (text == null || query == null) return false;
+
+        String normalized = text.toLowerCase();
+        String q = query.toLowerCase();
+        List<String> variants = KeyboardLayoutConverter.getSearchVariants(q);
+        for (String variant : variants) {
+            if (normalized.contains(variant)) {
+                return true;
+            }
+        }
+        for (String variant : variants) {
+            if (variant.isEmpty()) continue;
+            List<Integer> positions = new ArrayList<>();
+            for (int i = 0; i < variant.length(); i++) {
+                positions.add(normalized.indexOf(variant.charAt(i)));
+            }
+            positions.removeIf(n -> n == -1);
+            if (positions.size() < variant.length() * 0.5) continue;
+            List<Integer> uniquePositions = positions.stream()
+                    .distinct().toList();
+
+            if (!isSorted(uniquePositions)) continue;
+            if (uniquePositions.size() >= variant.length() - 1) {
+                return true;
+            }
+            if (uniquePositions.size() >= normalized.length() * 0.5) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean isSorted(List<Integer> list) {
+        if (list == null || list.size() <= 1) return true;
+        for (int i = 0; i < list.size() - 1; i++) {
+            if (list.get(i) > list.get(i + 1)) return false;
+        }
+        return true;
+    }
+
+    private void addIfNotNullMetroStations(LinkedHashMap<String, SearchSuggestionDTO> map,
+                              List<Long> id, List<String> text, String type, String query) {
+        if (id == null || text == null || text.isEmpty()) return;
+        for (int i = 0; i < id.size(); i++) {
+            if (comparison(text.get(i), query)) {
+                map.putIfAbsent(type, SearchSuggestionDTO.builder()
+                        .entityId(id.get(i)).text(text.get(i)).entityType(type).build());
+            }
+        }
     }
 }

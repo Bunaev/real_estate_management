@@ -9,12 +9,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-    /**
-     * TODO: Перед развёртыванием в production необходимо:
-     * 1. Включить CSRF-защиту
-     * 2. Настроить аутентификацию (OAuth2/JWT)
-     * 3. Настроить ролевую модель доступа к эндпоинтам
-     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())

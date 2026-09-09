@@ -7,20 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Converts text between the Russian (ЙЦУКЕН) and Latin (QWERTY) keyboard layouts.
- *
- * <p>This is not a dictionary: it uses only the physical keyboard mapping, so a user
- * who typed Russian words with the English layout active (for example "vjcrjd"
- * instead of "москов") can still be found by the search.</p>
- */
 public final class KeyboardLayoutConverter {
 
     private static final Map<Character, Character> EN_TO_RU = new LinkedHashMap<>();
     private static final Map<Character, Character> RU_TO_EN = new LinkedHashMap<>();
 
     static {
-        // Lowercase QWERTY -> ЙЦУКЕН (Russian layout on the same physical keys)
         putEnRu('a', 'ф');
         putEnRu('b', 'и');
         putEnRu('c', 'с');
@@ -47,8 +39,6 @@ public final class KeyboardLayoutConverter {
         putEnRu('x', 'ч');
         putEnRu('y', 'н');
         putEnRu('z', 'я');
-
-        // Russian layout punctuation that can appear in words/queries
         putEnRu('[', 'х');
         putEnRu(']', 'ъ');
         putEnRu(';', 'ж');
@@ -57,8 +47,6 @@ public final class KeyboardLayoutConverter {
         putEnRu('.', 'ю');
         putEnRu('`', 'ё');
 
-
-        // ЙЦУКЕН -> QWERTY (reverse mapping)
         putRuEn('ф', 'a');
         putRuEn('и', 'b');
         putRuEn('с', 'c');
@@ -99,10 +87,7 @@ public final class KeyboardLayoutConverter {
         RU_TO_EN.put(ru, en);
     }
 
-    /**
-     * Converts Latin letters to their Russian keyboard-layout equivalents.
-     * Cyrillic letters and all other characters remain unchanged.
-     */
+
     public static String toRussianLayout(String text) {
         if (text == null || text.isEmpty()) {
             return text;
@@ -120,10 +105,7 @@ public final class KeyboardLayoutConverter {
         return result.toString();
     }
 
-    /**
-     * Converts Cyrillic letters to their Latin keyboard-layout equivalents.
-     * Latin letters and all other characters remain unchanged.
-     */
+
     public static String toEnglishLayout(String text) {
         if (text == null || text.isEmpty()) {
             return text;
@@ -141,10 +123,6 @@ public final class KeyboardLayoutConverter {
         return result.toString();
     }
 
-    /**
-     * Returns search variants for a raw user query: the original query plus
-     * keyboard-layout variants for Latin and Cyrillic words.
-     */
     public static List<String> getSearchVariants(String query) {
         if (query == null || query.isBlank()) {
             return List.of();

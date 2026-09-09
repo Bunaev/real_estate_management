@@ -13,11 +13,11 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.util.List;
 
-@Data                              // Генерирует геттеры, сеттеры, toString, equals, hashCode
-@Builder                           // Паттерн Builder для удобного создания объектов
-@NoArgsConstructor                 // Конструктор без параметров (нужен Spring)
-@AllArgsConstructor                // Конструктор со всеми параметрами
-@Document(indexName = "complexes") // ГОВОРИМ ES: создай индекс с именем "complexes"
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Document(indexName = "complexes")
 @Setting(settingPath = "/elastic/settings.json")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ComplexDocument {
@@ -31,6 +31,9 @@ public class ComplexDocument {
     private Long districtId;
     @Field(type = FieldType.Long)
     private Long developerId;
+    @Field(type = FieldType.Long)
+    private List<Long> metroStationId;
+
 
     @Field(type = FieldType.Text, analyzer = "russian_search", searchAnalyzer = "fuzzy_analyzer")
     private String location;

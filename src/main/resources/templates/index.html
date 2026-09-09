@@ -2840,7 +2840,7 @@ const devFilter = document.getElementById('globalFilterDevelopers');
     }
     async function fetchSuggestions(query) {
         try {
-            const res = await fetch(`${API}/complexes/suggest?q=${encodeURIComponent(query)}&limit=4`);
+            const res = await fetch(`${API}/complexes/suggest?q=${encodeURIComponent(query)}&limit=5`);
             if (!res.ok) return;
             const data = await res.json();
             renderSuggestions(data);
@@ -2861,6 +2861,7 @@ const devFilter = document.getElementById('globalFilterDevelopers');
             if (item.entityType === 'Локация') icon = '📍';
             else if (item.entityType === 'Район') icon = '🏘️';
             else if (item.entityType === 'Застройщик') icon = '🏗️';
+            else if (item.entityType === 'Метро') icon = '🚇';
 
             div.innerHTML = `
             <span class="suggestion-text">${icon} ${item.text}</span>
@@ -2891,6 +2892,11 @@ const devFilter = document.getElementById('globalFilterDevelopers');
                 break;
             case 'Застройщик':
                 filterDTO.developerIds = [item.entityId];
+                filterDTO.locationId = null;
+                filterDTO.districtId = null;
+                break;
+            case 'Метро':
+                filterDTO.metroStationIds = [item.entityId];
                 filterDTO.locationId = null;
                 filterDTO.districtId = null;
                 break;

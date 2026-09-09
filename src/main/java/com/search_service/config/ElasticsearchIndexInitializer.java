@@ -11,13 +11,6 @@ import org.springframework.data.elasticsearch.core.IndexOperations;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Component;
 
-/**
- * Creates the Elasticsearch index automatically when it is absent.
- *
- * <p>The initial full reindex is performed only once: when the index has just been
- * created or exists but is empty. It is not run on every page load or on every
- * application start if the index already contains documents.</p>
- */
 @Component
 @RequiredArgsConstructor
 @Slf4j
