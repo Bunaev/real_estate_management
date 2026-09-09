@@ -18,6 +18,7 @@ public class FilterDTO {
     private Long locationId;
     private Long districtId;
     private Long developerId;
+    private List<Long> developerIds;
     private Long residentialComplexId;
     private Long buildingId;
     private Long entranceId;

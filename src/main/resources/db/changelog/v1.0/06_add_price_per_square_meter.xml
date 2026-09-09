@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <!-- Adds the price_per_square_meter column and recalculates price = area * ppsm.-->
+    <changeSet id="06-add-price-per-square-meter" author="bunaev">
+        <addColumn tableName="apartment">
+            <column name="price_per_square_meter" type="NUMERIC(15, 2)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <sql>
+            UPDATE apartment
+            SET price_per_square_meter = ROUND((price / area)::NUMERIC, 2)
+            WHERE area IS NOT NULL AND area > 0 AND price IS NOT NULL;
+        </sql>
+
+        <sql>
+            UPDATE apartment
+            SET price = ROUND((area * price_per_square_meter)::NUMERIC, 0)
+            WHERE price_per_square_meter IS NOT NULL;
+        </sql>
+
+        <rollback>
+            <dropColumn tableName="apartment" columnName="price_per_square_meter"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

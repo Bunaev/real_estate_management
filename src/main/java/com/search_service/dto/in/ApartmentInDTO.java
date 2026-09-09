@@ -39,6 +39,10 @@ public class ApartmentInDTO {
     @DecimalMax(value = "9999999999.0", message = "Цена не должна превышать 10 миллиардов")
     private Double price;
 
+    @DecimalMin(value = "0.0", message = "Цена за м² не может быть отрицательной")
+    @DecimalMax(value = "9999999999.0", message = "Цена за м² не должна превышать 10 миллиардов")
+    private Double pricePerSquareMeter;
+
     @NotNull(message = "Тип квартиры обязателен")
     private ApartmentType type;
 

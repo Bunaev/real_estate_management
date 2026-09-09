@@ -16,14 +16,14 @@ class SpecificationBuilderTest {
 
     @Test
     void build_shouldReturnNonNullSpecificationForEmptyFilter() {
-        var spec = specificationBuilder.build(FilterDTO.builder().build());
+        var spec = specificationBuilder.buildApartments(FilterDTO.builder().build());
         assertThat(spec).isNotNull();
     }
 
     @Test
     void build_withResidentialComplexId_shouldCreateNonNullSpec() {
         FilterDTO filter = FilterDTO.builder().residentialComplexId(1L).build();
-        var spec = specificationBuilder.build(filter);
+        var spec = specificationBuilder.buildApartments(filter);
         assertThat(spec).isNotNull();
     }
 
@@ -39,14 +39,14 @@ class SpecificationBuilderTest {
                 .types(List.of(ApartmentType.ONE_ROOM, ApartmentType.TWO_ROOM))
                 .build();
 
-        var spec = specificationBuilder.build(filter);
+        var spec = specificationBuilder.buildApartments(filter);
         assertThat(spec).isNotNull();
     }
 
     @Test
     void build_withAllNulls_shouldReturnConjunction() {
         FilterDTO filter = FilterDTO.builder().build();
-        var spec = specificationBuilder.build(filter);
+        var spec = specificationBuilder.buildApartments(filter);
         assertThat(spec).isNotNull();
     }
 
@@ -62,7 +62,7 @@ class SpecificationBuilderTest {
                 .metroStationIds(List.of(1L, 2L))
                 .build();
 
-        var spec = specificationBuilder.build(filter);
+        var spec = specificationBuilder.buildApartments(filter);
         assertThat(spec).isNotNull();
     }
 
@@ -76,7 +76,7 @@ class SpecificationBuilderTest {
                 .priceTo(10000000.0)
                 .build();
 
-        var spec = specificationBuilder.build(filter);
+        var spec = specificationBuilder.buildApartments(filter);
         assertThat(spec).isNotNull();
     }
 }
