@@ -1,12 +1,25 @@
 package com.search_service.service;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.SortOptions;
+import co.elastic.clients.elasticsearch._types.SortOrder;
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.MatchBoolPrefixQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
+import co.elastic.clients.elasticsearch.core.SearchRequest;
+import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.elasticsearch.core.search.Hit;
+import com.search_service.documents.ComplexDocument;
 import com.search_service.dto.in.*;
 import com.search_service.dto.out.*;
 import com.search_service.entity.*;
 import com.search_service.exception.EntityNotFoundException;
+import com.search_service.exception.GeneralFormatException;
+import com.search_service.exception.TypeError;
 import com.search_service.mapper.*;
 import com.search_service.repository.*;
 import com.search_service.specification.SpecificationBuilder;
+import com.search_service.util.KeyboardLayoutConverter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +30,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,6 +48,10 @@ public class ResidentialComplexService {
     private final ResidentialComplexMapper mapper;
     private final BuildingMapper buildingMapper;
     private final SpecificationBuilder specificationBuilder;
+    private final ElasticsearchClient esClient;
+    private final ComplexDocumentMapper documentMapper;
+    private static final String ANALYZER = "fuzzy_analyzer";
+    private static final String INDEX_NAME = "complexes";
 
 
     @Transactional
@@ -85,6 +104,7 @@ public class ResidentialComplexService {
 
         // 5. ОДИН save — всё остальное через каскады!
         ResidentialComplex saved = complexRepo.save(complex);
+        indexComplex(saved);
         return mapper.toShortDto(saved);
     }
 
@@ -94,7 +114,6 @@ public class ResidentialComplexService {
 
         // Получаем Page напрямую, не конвертируя в List
         Page<ResidentialComplex> complexPage = complexRepo.findAll(specification, page);
-
         // Конвертируем содержимое Page в DTO
         List<ResidentialComplexOutDTO> dtoList = complexPage.getContent().stream()
                 .map(mapper::toOutDto)
@@ -136,7 +155,15 @@ public class ResidentialComplexService {
         if (!complexRepo.existsById(id)) {
             throw new EntityNotFoundException("ЖК", id);
         }
-        complexRepo.deleteById(id);
+        try {
+            esClient.delete(d -> d
+                    .index(INDEX_NAME)
+                    .id(String.valueOf(id))
+            );
+            log.info("ЖК с ID {} удален из ES", id);
+        } catch (Exception e) {
+            log.error("Ошибка удаления из ES: {}", e.getMessage());
+        }
     }
 
     @Transactional(readOnly = true)
@@ -174,6 +201,7 @@ public class ResidentialComplexService {
 
         // 5. ОДИН save — всё остальное через каскады!
         ResidentialComplex saved = complexRepo.save(complex);
+        indexComplex(saved);
         return mapper.toOutDto(saved);
     }
 
@@ -224,5 +252,117 @@ public class ResidentialComplexService {
 
             complex.getMetroDistances().addAll(metroDistances);
         }
+    }
+
+     private void indexComplex(ResidentialComplex complex) {
+        try {
+            ComplexDocument document = documentMapper.toDocument(complex);
+            esClient.index(i -> i
+                    .index(INDEX_NAME)
+                    .id(String.valueOf(document.getId()))
+                    .document(document)
+            );
+            log.info("Жилой комплекс {} загружен в ES.", document.getName());
+        } catch (Exception exception) {
+            log.info("Ошибка сохранения/индексации ЖК: {}", complex.getName());
+            throw new GeneralFormatException(TypeError.ELASTIC_ERROR);
+        }
+     }
+
+     @Transactional(readOnly = true)
+    public void reindexAllComplex() {
+        List<ResidentialComplex> complexes = complexRepo.findAll();
+        int successCount = 0;
+        int errorCount = 0;
+        for (ResidentialComplex complex : complexes) {
+            try {
+                esClient.index(i -> i
+                        .index(INDEX_NAME)
+                        .id(String.valueOf(complex.getId()))
+                        .document(documentMapper.toDocument(complex))
+                );
+                successCount++;
+            } catch (Exception exception) {
+                errorCount++;
+                log.warn("Ошибка реиндексации ЖК {}: {}", complex.getName(), exception.toString());
+            }
+        }
+        try {
+            esClient.indices().refresh(r -> r.index(INDEX_NAME));
+        } catch (Exception exception) {
+            log.warn("Не удалось обновить индекс Elasticsearch после реиндексации: {}", exception.toString());
+        }
+
+        log.info("Всего переиндексировано {} ЖК. Успешно: {}; С ошибкой: {}", complexes.size(), successCount, errorCount);
+     }
+
+
+    public List<ComplexDocument> fuzzySearch(String query, int from, int size) {
+        if (query == null || query.trim().length() < 2) return List.of();
+        BoolQuery.Builder boolBuilder = new BoolQuery.Builder();
+        String q = query.trim();
+        List<String> queryVariants = KeyboardLayoutConverter.getSearchVariants(q);
+
+        for (String field : List.of("location", "district", "name", "developer", "metroStation")) {
+            for (String queryVariant : queryVariants) {
+                MatchQuery mq = new MatchQuery.Builder()
+                        .field(field)
+                        .query(queryVariant)
+                        .fuzziness("AUTO")
+                        .analyzer(ANALYZER)
+                        .maxExpansions(50)
+                        .build();
+                boolBuilder.should(mq._toQuery());
+
+                MatchBoolPrefixQuery prefixQuery = new MatchBoolPrefixQuery.Builder()
+                        .field(field)
+                        .query(queryVariant)
+                        .fuzziness("AUTO")
+                        .analyzer(ANALYZER)
+                        .maxExpansions(50)
+                        .build();
+                boolBuilder.should(prefixQuery._toQuery());
+            }
+        }
+
+        SearchRequest request = new SearchRequest.Builder()
+                .index(INDEX_NAME)
+                .query(b -> b.bool(boolBuilder.minimumShouldMatch("1").build()))
+                .from(from)
+                .size(size)
+                .build();
+        try {
+            SearchResponse<ComplexDocument> response = esClient.search(request, ComplexDocument.class);
+            return response.hits().hits().stream()
+                    .map(Hit::source)
+                    .toList();
+        } catch (IOException e) {
+            log.error("ES search failed", e);
+            return List.of();
+        }
+    }
+
+    public List<SearchSuggestionDTO> suggest(String query, int limit) {
+        if (query == null || query.trim().length() < 2) return List.of();
+        List<ComplexDocument> docs = fuzzySearch(query, 0, Math.max(limit * 3, 20));
+        LinkedHashMap<String, SearchSuggestionDTO> suggestions = new LinkedHashMap<>();
+        for (ComplexDocument doc : docs) {
+            if (doc == null) continue;
+            addIfNotNull(suggestions, doc.getLocationId(), doc.getLocation(), "Локация");
+            addIfNotNull(suggestions, doc.getDistrictId(), doc.getDistrict(), "Район");
+            addIfNotNull(suggestions, doc.getDeveloperId(), doc.getDeveloper(), "Застройщик");
+            addIfNotNull(suggestions, doc.getId(), doc.getName(), "ЖК");
+            addIfNotNull(suggestions, doc.getId(), doc.getName(), "Метро");
+            if (suggestions.size() >= limit) break;
+        }
+        return new ArrayList<>(suggestions.values()).stream().limit(limit).toList();
+    }
+
+    private void addIfNotNull(LinkedHashMap<String, SearchSuggestionDTO> map,
+                              Long id, String text, String type) {
+        if (id == null || text == null || text.isBlank()) return;
+        String key = type + "|" + text;
+        map.putIfAbsent(key, SearchSuggestionDTO.builder()
+                .entityId(id).text(text).entityType(type).build());
     }
 }

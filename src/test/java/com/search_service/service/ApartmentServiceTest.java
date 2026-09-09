@@ -143,7 +143,7 @@ class ApartmentServiceTest {
     void getFilteredApartment_shouldReturnPage() {
         FilterDTO filter = FilterDTO.builder().residentialComplexId(1L).build();
         Specification<Apartment> spec = Specification.where(null);
-        when(specificationBuilder.build(any(FilterDTO.class))).thenReturn(spec);
+        when(specificationBuilder.buildApartments(any(FilterDTO.class))).thenReturn(spec);
         when(mapper.toDto(any(Apartment.class))).thenReturn(apartmentDto);
         when(apartmentRepo.findAll(any(Specification.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of(apartment)));

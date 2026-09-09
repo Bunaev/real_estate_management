@@ -3,6 +3,7 @@ package com.search_service.controller;
 import com.search_service.dto.in.FilterDTO;
 import com.search_service.dto.in.ResidentialComplexDTO;
 import com.search_service.dto.out.ResidentialComplexDetailDTO;
+import com.search_service.dto.out.SearchSuggestionDTO;
 import com.search_service.dto.out.ResidentialComplexEditDTO;
 import com.search_service.dto.out.ResidentialComplexOutDTO;
 import com.search_service.dto.out.ResidentialComplexShortDTO;
@@ -17,6 +18,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/complexes")
@@ -28,6 +31,12 @@ public class ComplexController {
             FilterDTO filter,
             @PageableDefault(size = 50, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         return complexService.findAllLightweight(filter, pageable);
+    }
+
+    @GetMapping("/suggest")
+    public List<SearchSuggestionDTO> suggest(@RequestParam("q") String query,
+                                             @RequestParam(defaultValue = "4") int limit) {
+        return complexService.suggest(query, limit);
     }
 
     @PostMapping
@@ -58,4 +67,10 @@ public class ComplexController {
         ResidentialComplexOutDTO updated = complexService.update(dto);
         return ResponseEntity.status(HttpStatus.OK).body(updated);
     }
+
+//    @PostMapping("/reindex")
+//    public ResponseEntity<Void> reindex () {
+//        complexService.reindexAllComplex();
+//        return ResponseEntity.noContent().build();
+//    }
 }

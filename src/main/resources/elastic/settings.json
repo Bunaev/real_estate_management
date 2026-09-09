@@ -1,0 +1,47 @@
+{
+  "index": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0
+  },
+  "analysis": {
+    "analyzer": {
+      "fuzzy_analyzer": {
+        "type": "custom",
+        "tokenizer": "standard",
+        "filter": [
+          "lowercase",
+          "russian_morphology"
+        ]
+      },
+      "russian": {
+        "type": "custom",
+        "tokenizer": "standard",
+        "filter": [
+          "lowercase",
+          "russian_morphology"
+        ]
+      },
+      "russian_search": {
+        "type": "custom",
+        "tokenizer": "standard",
+        "filter": [
+          "lowercase",
+          "russian_morphology",
+          "russian_edge_ngram"
+        ]
+      }
+    },
+    "filter": {
+      "russian_morphology": {
+        "type": "stemmer",
+        "name": "russian"
+      },
+      "russian_edge_ngram": {
+        "type": "edge_ngram",
+        "min_gram": 3,
+        "max_gram": 30
+      }
+    }
+  }
+}
+

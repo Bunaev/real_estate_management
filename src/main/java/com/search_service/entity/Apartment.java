@@ -32,6 +32,9 @@ public class Apartment {
     @Column(name = "price")
     @ExcelColumn(synonyms = {"цена", "price", "стоимость"}, columnName = "Цена")
     private Double price;
+    @Column(name = "price_per_square_meter")
+    @ExcelColumn(synonyms = {"цена за м²", "цена квм", "price per m²", "PPSM"}, columnName = "Цена за м²")
+    private Double pricePerSquareMeter;
     @Column(name = "floor")
     @ExcelColumn(synonyms = {"этаж", "floor"}, columnName = "Этаж")
     private Integer floor;

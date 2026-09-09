@@ -42,3 +42,7 @@ spring:
           batch_size: 20
           order_inserts: true
           order_updates: true
+  elasticsearch:
+    uris: http://localhost:9200
+    connection-timeout: 5s
+    socket-timeout: 30s

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <changeSet id="04b-add-proletarskaya-metro-station" author="bunaev">
+        <sql>
+            INSERT INTO metro_station (name)
+            SELECT 'Пролетарская'
+            WHERE NOT EXISTS (SELECT 1 FROM metro_station WHERE name = 'Пролетарская');
+        </sql>
+        <rollback>
+            <sql>
+                DELETE FROM metro_station WHERE name = 'Пролетарская';
+            </sql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

@@ -46,7 +46,9 @@ public class SpecificationBuilder {
             if (filter.getDistrictId() != null) {
                 predicates.add(cb.equal(root.get("district").get("id"), filter.getDistrictId()));
             }
-            if (filter.getDeveloperId() != null) {
+            if (hasValues(filter.getDeveloperIds())) {
+                predicates.add(root.get("developer").get("id").in(filter.getDeveloperIds()));
+            } else if (filter.getDeveloperId() != null) {
                 predicates.add(cb.equal(root.get("developer").get("id"), filter.getDeveloperId()));
             }
             if (filter.getResidentialComplexId() != null) {
@@ -138,7 +140,10 @@ public class SpecificationBuilder {
         if (filter.getLocationId() != null) {
             predicates.add(cb.equal(complex.get("district").get("location").get("id"), filter.getLocationId()));
         }
-        if (filter.getDeveloperId() != null) {
+        if (hasValues(filter.getDeveloperIds())) {
+            predicates.add(complex.get("developer").get("id").in(filter.getDeveloperIds()));
+            needsDistinct = true;
+        } else if (filter.getDeveloperId() != null) {
             predicates.add(cb.equal(complex.get("developer").get("id"), filter.getDeveloperId()));
         }
         if (hasValues(filter.getMetroStationIds())) {
@@ -193,7 +198,7 @@ public class SpecificationBuilder {
                 case "residentialComplexId" -> { if (filter.getResidentialComplexId() != null) return true; }
                 case "districtId" -> { if (filter.getDistrictId() != null) return true; }
                 case "locationId" -> { if (filter.getLocationId() != null) return true; }
-                case "developerId" -> { if (filter.getDeveloperId() != null) return true; }
+                case "developerId" -> { if (filter.getDeveloperId() != null || hasValues(filter.getDeveloperIds())) return true; }
                 case "metroStationIds" -> { if (hasValues(filter.getMetroStationIds())) return true; }
                 default -> { }
             }

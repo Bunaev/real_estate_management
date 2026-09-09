@@ -13,7 +13,9 @@ public enum TypeError {
     FIELDS_NOT_MATCH("Поля не совпадают. "),
     INVALID_FILE_FORMAT("Неверный формат файла. "),
     FILE_IS_EMPTY("Файл пустой. "),
-    CELL_CREATE("Ошибка создания ячейки. ");
+    CELL_CREATE("Ошибка создания ячейки. "),
+    ELASTIC_ERROR("Ошибка индексации ES");
+
 
     private final String message;
 

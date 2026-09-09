@@ -170,6 +170,44 @@
             box-shadow: 0 0 0 3px rgba(15, 52, 96, 0.1);
         }
 
+        .suggestions-wrapper { position: relative; }
+        .suggestions-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(255,255,255,0.97);
+            backdrop-filter: blur(10px);
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            z-index: 1000;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+        .suggestions-dropdown.show { display: block; }
+        .suggestion-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: 0.15s;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .suggestion-item:last-child { border-bottom: none; }
+        .suggestion-item:hover { background: #f0f2f5; }
+        .suggestion-text { font-weight: 600; font-size: 14px; color: #1a1a2e; }
+        .entity-type-tag {
+            font-size: 11px;
+            color: #666;
+            background: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+            margin-left: 8px;
+        }
+
         /* ===== СЛАЙДЕР ===== */
         .promo-slider {
             background: white;
@@ -869,11 +907,11 @@
 
     <!-- ПОИСК -->
     <div class="search-bar">
-        <input type="text" id="searchInput" class="form-control" placeholder="🔍 Поиск по каталогу (скоро Elasticsearch)..."
-               onkeyup="if(event.key==='Enter') showToast('🔍 Поиск: ' + this.value + ' (функция в разработке)', 'success')">
+        <div class="suggestions-wrapper">
+            <input type="text" id="searchInput" class="form-control" placeholder="Начните вводить запрос..." autocomplete="off">
+            <div class="suggestions-dropdown" id="suggestionsDropdown"></div>
+        </div>
     </div>
-
-    <!-- СЛАЙДЕР -->
     <div class="promo-slider" id="promoSlider">
         <div class="slide active">
             <div class="slide-content">
@@ -926,6 +964,12 @@
                 <div class="filter-group">
                     <label>Район</label>
                     <select class="form-select" id="globalFilterDistrict">
+                        <option value="">Все</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Застройщик (несколько)</label>
+                    <select multiple class="form-select" id="globalFilterDevelopers" style="height:100px">
                         <option value="">Все</option>
                     </select>
                 </div>
@@ -1092,6 +1136,7 @@
     let currentFilter = {};
     const API = '/api';
     const PAGE_SIZES = [10, 20, 30];
+    let filterDTO = {};
 
     let cachedDevelopers = [];
     let cachedLocations = [];
@@ -2334,6 +2379,7 @@
             set('locationId', filterDTO.locationId);
             set('districtId', filterDTO.districtId);
             set('developerId', filterDTO.developerId);
+setList('developerIds', filterDTO.developerIds);
             setList('metroStationIds', filterDTO.metroStationIds);
             setList('types', filterDTO.types);
             set('bathroomType', filterDTO.bathroomType);
@@ -2377,6 +2423,13 @@
                     fetch(`${API}/metro-stations`).then(r => r.json())
                 ]);
                 cachedDevelopers = Array.isArray(developers) ? developers : [];
+const devFilter = document.getElementById('globalFilterDevelopers');
+                if (devFilter) {
+                    devFilter.innerHTML = '<option value="">Все</option>';
+                    cachedDevelopers.forEach(d => {
+                        devFilter.innerHTML += `<option value="${d.id}">${d.name}</option>`;
+                    });
+                }
                 cachedLocations = Array.isArray(locations) ? locations : [];
                 cachedMetro = Array.isArray(metro) ? metro : [];
                 populateGlobalFilters();
@@ -2556,6 +2609,7 @@
         currentFilter = {
             locationId: document.getElementById('globalFilterLocation').value || null,
             districtId: document.getElementById('globalFilterDistrict').value || null,
+developerIds: Array.from(document.getElementById('globalFilterDevelopers').selectedOptions).map(o => parseInt(o.value)).filter(v => v),
             metroStationIds: Array.from(document.querySelectorAll('#globalFilterMetroContainer .metro-chip.active'))
                 .map(chip => parseInt(chip.dataset.id)),
             types: Array.from(document.querySelectorAll('#globalFilterTypesContainer .type-btn.active'))
@@ -2593,6 +2647,8 @@
         document.getElementById('globalFilterPriceFrom').value = '';
         document.getElementById('globalFilterPriceTo').value = '';
         document.getElementById('globalFilterBalcony').checked = false;
+const devFilter = document.getElementById('globalFilterDevelopers');
+        if (devFilter) devFilter.selectedIndex = -1;
 
         currentFilter = {};
         currentPage = 0;
@@ -2762,6 +2818,90 @@
     // ЗАПУСК
     // =============================================================
     loadAllData({}, 0);
+// =============================================================
+    // ПОИСК С ПОДСКАЗКАМИ
+    // =============================================================
+    let searchTimeout;
+    const searchInput = document.getElementById('searchInput');
+    const suggestionsDropdown = document.getElementById('suggestionsDropdown');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const val = this.value.trim();
+            if (val.length < 2) { suggestionsDropdown.classList.remove('show'); return; }
+            searchTimeout = setTimeout(() => fetchSuggestions(val), 300);
+        });
+        searchInput.addEventListener('blur', function() {
+            setTimeout(() => suggestionsDropdown.classList.remove('show'), 200);
+        });
+        searchInput.addEventListener('focus', function() {
+            if (this.value.trim().length >= 2) suggestionsDropdown.classList.add('show');
+        });
+    }
+    async function fetchSuggestions(query) {
+        try {
+            const res = await fetch(`${API}/complexes/suggest?q=${encodeURIComponent(query)}&limit=4`);
+            if (!res.ok) return;
+            const data = await res.json();
+            renderSuggestions(data);
+        } catch (e) { console.error('Search error', e); }
+    }
+    function renderSuggestions(items) {
+        suggestionsDropdown.innerHTML = '';
+        if (!items || items.length === 0) {
+            suggestionsDropdown.classList.remove('show');
+            return;
+        }
+        items.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'suggestion-item';
+
+            // Добавляем иконку в зависимости от типа
+            let icon = '🏢';
+            if (item.entityType === 'Локация') icon = '📍';
+            else if (item.entityType === 'Район') icon = '🏘️';
+            else if (item.entityType === 'Застройщик') icon = '🏗️';
+
+            div.innerHTML = `
+            <span class="suggestion-text">${icon} ${item.text}</span>
+            <span class="entity-type-tag">${item.entityType}</span>
+        `;
+            div.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+                selectSuggestion(item);
+            });
+            suggestionsDropdown.appendChild(div);
+        });
+        suggestionsDropdown.classList.add('show');
+    }
+    function selectSuggestion(item) {
+        suggestionsDropdown.classList.remove('show');
+        searchInput.value = item.text;
+        filterDTO = {};
+        switch (item.entityType) {
+            case 'Локация':
+                filterDTO.locationId = item.entityId;
+                filterDTO.districtId = null;
+                filterDTO.developerIds = null;
+                break;
+            case 'Район':
+                filterDTO.districtId = item.entityId;
+                filterDTO.locationId = null;
+                filterDTO.developerIds = null;
+                break;
+            case 'Застройщик':
+                filterDTO.developerIds = [item.entityId];
+                filterDTO.locationId = null;
+                filterDTO.districtId = null;
+                break;
+            case 'ЖК':
+                window.location = '/complex/' + item.entityId;
+                return;
+            default:
+                return;
+        }
+        loadAllData(filterDTO, 0);
+    }
 </script>
 
 </body>

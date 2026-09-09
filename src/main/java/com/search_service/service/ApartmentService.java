@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +37,10 @@ public class ApartmentService {
         List<Apartment> apartments = ExcelUtils.readExcelFile(file, Apartment.class);
         for (Apartment apartment : apartments) {
             apartment.setEntrance(entrance);
+            // Price = area * pricePerSquareMeter (if set), otherwise keep existing price
+            if (apartment.getPricePerSquareMeter() != null && apartment.getArea() != null) {
+                apartment.setPrice(apartment.getArea() * apartment.getPricePerSquareMeter());
+            }
         }
         return apartmentRepo.saveAll(apartments);
     }
@@ -69,7 +74,13 @@ public class ApartmentService {
         apartment.setHasBalcony(dto.getHasBalcony());
         apartment.setStatus(dto.getStatus());
         apartment.setType(dto.getType());
-        apartment.setPrice(dto.getPrice());
+        // Price = area * pricePerSquareMeter; if pricePerSquareMeter not set, keep old price
+        if (dto.getPricePerSquareMeter() != null) {
+            apartment.setPricePerSquareMeter(dto.getPricePerSquareMeter());
+            apartment.setPrice(apartment.getArea() * dto.getPricePerSquareMeter());
+        } else {
+            apartment.setPrice(dto.getPrice());
+        }
         apartment.setBathroomType(dto.getBathroomType());
         return mapper.toDto(apartmentRepo.save(apartment));
     }
@@ -80,3 +91,5 @@ public class ApartmentService {
         return apartmentRepo.findAll(specification, pageable).map(mapper::toDto);
     }
 }
+
+

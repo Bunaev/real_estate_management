@@ -1,9 +1,11 @@
 package com.search_service.service;
 
 import com.search_service.dto.in.EntranceDTO;
+import com.search_service.dto.out.EntranceShortDTO;
 import com.search_service.entity.Building;
 import com.search_service.entity.Entrance;
 import com.search_service.exception.EntityNotFoundException;
+import com.search_service.mapper.EntranceMapper;
 import com.search_service.repository.BuildingRepo;
 import com.search_service.repository.EntranceRepo;
 import org.junit.jupiter.api.Test;
@@ -37,12 +39,15 @@ class EntranceServiceTest {
         Building building = Building.builder().id(1L).name("Корпус 1").build();
         EntranceDTO dto = EntranceDTO.builder().name("Секция А").maxFloor(20).build();
         Entrance entrance = Entrance.builder().id(1L).name("Секция А").building(building).build();
+        EntranceShortDTO shortDto = EntranceShortDTO.builder().id(1L).name("Секция А").build();
 
         when(buildingRepo.findById(1L)).thenReturn(Optional.of(building));
         when(entranceMapper.toEntity(any(EntranceDTO.class))).thenReturn(entrance);
         when(entranceRepo.save(any(Entrance.class))).thenReturn(entrance);
+        when(entranceMapper.toShortDto(any(Entrance.class))).thenReturn(shortDto);
 
-        Entrance result = entranceService.create(1L, dto);
+        EntranceShortDTO result = entranceService.create(1L, dto);
+
         assertThat(result.getName()).isEqualTo("Секция А");
     }
 
