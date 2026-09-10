@@ -19,4 +19,6 @@ public class ResidentialComplexDetailDTO {
     private String district;
     private String location;
     private List<BuildingShortDTO> buildings;
+    private Double latitude;
+    private Double longitude;
 }

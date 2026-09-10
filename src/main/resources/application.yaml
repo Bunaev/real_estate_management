@@ -1,10 +1,6 @@
 server:
   port: 8080
 spring:
-  elasticsearch:
-    uris: http://localhost:9200
-    connection-timeout: 5s
-    socket-timeout: 30s
   servlet:
     multipart:
       enabled: true
@@ -50,3 +46,5 @@ spring:
     uris: http://localhost:9200
     connection-timeout: 5s
     socket-timeout: 30s
+storage:
+  path: C:/Users/bunae/OneDrive/Projects/rem_files/

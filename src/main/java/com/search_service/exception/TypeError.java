@@ -14,7 +14,8 @@ public enum TypeError {
     INVALID_FILE_FORMAT("Неверный формат файла. "),
     FILE_IS_EMPTY("Файл пустой. "),
     CELL_CREATE("Ошибка создания ячейки. "),
-    ELASTIC_ERROR("Ошибка индексации ES");
+    ELASTIC_ERROR("Ошибка индексации ES"),
+    SAVE_FILE("Ошибка сохранения файла");
 
 
     private final String message;

@@ -1,5 +1,6 @@
 package com.search_service.dto.out;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,5 +24,7 @@ public class ResidentialComplexOutDTO {
     private Integer countBuildings;
     private Integer countEntrance;
     private Integer countApartment;
+    private Double latitude;
+    private Double longitude;
 
 }

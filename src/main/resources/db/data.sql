@@ -1,154 +1,154 @@
 -- 1. Vertical Московская (Московский район, СПб) [citation:6]
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('Vertical Московская', 'Московский, Орджоникидзе ул, д.44а',
      (SELECT id FROM district WHERE name = 'Московский' AND location_id = 1),
-     (SELECT id FROM developer WHERE name = 'Setl Group'));
+     (SELECT id FROM developer WHERE name = 'Setl Group'), 'complexes/101/vertical.jpg');
 
 -- 2. Пейзажный квартал (Красногвардейский район, СПб) [citation:6]
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('Пейзажный квартал', 'Красногвардейский, Ручьи, Муринская дор',
      (SELECT id FROM district WHERE name = 'Красногвардейский' AND location_id = 1),
-     (SELECT id FROM developer WHERE name = 'Группа ЛСР'));
+     (SELECT id FROM developer WHERE name = 'Группа ЛСР'), 'complexes/102/Пейзажный квартал.jpg');
 
 -- 3. Zoom на Неве (Невский район, СПб) [citation:6]
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('Zoom на Неве', 'Невский, Весёлый Поселок, Октябрьская наб, д.40',
      (SELECT id FROM district WHERE name = 'Невский' AND location_id = 1),
-     (SELECT id FROM developer WHERE name = 'ФСК Северо-Запад'));
+     (SELECT id FROM developer WHERE name = 'ФСК Северо-Запад'), 'complexes/103/Zoom на Неве.jpg');
 
 -- 4. PLUS Пулковский (Московский район, СПб) [citation:6]
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('PLUS Пулковский', 'Московский, Пулковское шоссе',
      (SELECT id FROM district WHERE name = 'Московский' AND location_id = 1),
-     (SELECT id FROM developer WHERE name = 'Главстрой СПб'));
+     (SELECT id FROM developer WHERE name = 'Главстрой СПб'), 'complexes/104/Plus Пулковский.jpg');
 
 -- 5. Образцовый квартал 17 (Пушкинский район, СПб) [citation:6]
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('Образцовый квартал 17', 'Пушкинский, Шушары п., Кокколевская ул.',
      (SELECT id FROM district WHERE name = 'Пушкинский' AND location_id = 1),
-     (SELECT id FROM developer WHERE name = 'Терминал-ресурс'));
+     (SELECT id FROM developer WHERE name = 'Терминал-ресурс'), 'complexes/105/Образцовый квартал.jpg');
 
 -- 6. Квартал «Б15» (Выборгский район, СПб) [citation:8]
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('Квартал «Б15»', 'пр. Маршала Блюхера, 15',
      (SELECT id FROM district WHERE name = 'Выборгский' AND location_id = 1),
-     (SELECT id FROM developer WHERE name = 'ГК «КВС»'));
+     (SELECT id FROM developer WHERE name = 'ГК «КВС»'), 'complexes/106/Квартал Б15.jpg');
 
 -- 7. ЖК «Любоград» (Петродворцовый район, СПб) [citation:8]
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('ЖК Любоград', 'Стрельна, Санкт-Петербургское ш. / Будённого пр.',
      (SELECT id FROM district WHERE name = 'Петродворцовый' AND location_id = 1),
-     (SELECT id FROM developer WHERE name = 'ГК «КВС»'));
+     (SELECT id FROM developer WHERE name = 'ГК «КВС»'),'complexes/107/Любоград.jpg');
 
 -- 8. ЖК «ЮгТаун. Олимпийские кварталы» (Пушкинский район, СПб) [citation:8]
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('ЮгТаун. Олимпийские кварталы', 'пос. Шушары, Пулковское ш. / Волхонское ш.',
      (SELECT id FROM district WHERE name = 'Пушкинский' AND location_id = 1),
-     (SELECT id FROM developer WHERE name = 'ГК ПСК'));
+     (SELECT id FROM developer WHERE name = 'ГК ПСК'), 'complexes/108/Югтаун.jpg');
 
 -- 9. ЖК «Сампсониевский 32» (Выборгский район, СПб)
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('Сампсониевский 32', 'Большой Сампсониевский пр.',
      (SELECT id FROM district WHERE name = 'Выборгский' AND location_id = 1),
-     (SELECT id FROM developer WHERE name = 'Главстрой СПб'));
+     (SELECT id FROM developer WHERE name = 'Главстрой СПб'), 'complexes/109/Сампсониевский 32.jpg');
 
 -- 10. Аквилон Ливз (Московский район, СПб)
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('Аквилон Ливз', 'ш. Пулковское / ул. Среднерогатская',
      (SELECT id FROM district WHERE name = 'Московский' AND location_id = 1),
-     (SELECT id FROM developer WHERE name = 'Группа Аквилон'));
+     (SELECT id FROM developer WHERE name = 'Группа Аквилон'), 'complexes/110/Аквилон Ливз.jpg');
 
 -- 11. ЖК «Dreamline» (Приморский район, СПб) [citation:6]
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('Dreamline', 'Парашютная ул.',
      (SELECT id FROM district WHERE name = 'Приморский' AND location_id = 1),
-     (SELECT id FROM developer WHERE name = 'Setl Group'));
+     (SELECT id FROM developer WHERE name = 'Setl Group'), 'complexes/111/dreamline.jpg');
 
 -- 12. ЖК «Огни Залива» (Красносельский район, СПб)
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('Огни Залива', 'Ленинский пр., уч. 269, 270',
      (SELECT id FROM district WHERE name = 'Красносельский' AND location_id = 1),
-     (SELECT id FROM developer WHERE name = 'Группа ЛСР'));
+     (SELECT id FROM developer WHERE name = 'Группа ЛСР'), 'complexes/112/ogni_zaliva.jpg');
 
 -- ЛО (location_id = 2)
 
 -- 13. ЖК «Аквилон РИВА» (Мурино, Всеволожский район, ЛО) [citation:10]
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('Аквилон РИВА', 'г. Мурино',
      (SELECT id FROM district WHERE name = 'Всеволожский' AND location_id = 2),
-     (SELECT id FROM developer WHERE name = 'Группа Аквилон'));
+     (SELECT id FROM developer WHERE name = 'Группа Аквилон'), 'complexes/113/Аквилон Рива.jpg');
 
 -- 14. ЖК «Аквилон Верба» (Янино, Всеволожский район, ЛО) [citation:10]
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('Аквилон Верба', 'пос. Янино-1',
      (SELECT id FROM district WHERE name = 'Всеволожский' AND location_id = 2),
-     (SELECT id FROM developer WHERE name = 'Группа Аквилон'));
+     (SELECT id FROM developer WHERE name = 'Группа Аквилон'), 'complexes/114/Аквилон Верба.jpg');
 
 -- 15. ЖК «Аквилон РекаПарк» (Новосергиевка, Всеволожский район, ЛО) [citation:10]
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('Аквилон РекаПарк', 'пос. Новосергиевка',
      (SELECT id FROM district WHERE name = 'Всеволожский' AND location_id = 2),
-     (SELECT id FROM developer WHERE name = 'Группа Аквилон'));
+     (SELECT id FROM developer WHERE name = 'Группа Аквилон'), 'complexes/115/Аквилон РекаПарк.jpg');
 
 -- 16. ЖК «Аквилон Stories» (Кудрово, Всеволожский район, ЛО) [citation:6]
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('Аквилон Stories', 'г. Кудрово, пр. Строителей',
      (SELECT id FROM district WHERE name = 'Всеволожский' AND location_id = 2),
-     (SELECT id FROM developer WHERE name = 'Группа Аквилон'));
+     (SELECT id FROM developer WHERE name = 'Группа Аквилон'), 'complexes/116/Аквилон Stories.jpg');
 
 -- 17. ЖК «ВЕРЕН НОРТ СЕРТОЛОВО» (Сертолово, Всеволожский район, ЛО) [citation:6]
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('ВЕРЕН НОРТ СЕРТОЛОВО', 'г. Сертолово, мкр. Сертолово-1, ул. Д. Кожемякина',
      (SELECT id FROM district WHERE name = 'Сертолово' AND location_id = 2),
-     (SELECT id FROM developer WHERE name = 'Главстрой СПб'));
+     (SELECT id FROM developer WHERE name = 'Главстрой СПб'), 'complexes/117/Верен Норт Сертолово.jpg');
 
 -- 18. ЖК «Патио» (Сертолово, Всеволожский район, ЛО) [citation:8]
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('ЖК «Патио»', 'г. Сертолово, мкр. Сертолово-2, ул. Мира / ул. Тихвинская',
      (SELECT id FROM district WHERE name = 'Сертолово' AND location_id = 2),
-     (SELECT id FROM developer WHERE name = 'ГК «КВС»'));
+     (SELECT id FROM developer WHERE name = 'ГК «КВС»'), 'complexes/118/Патио.jpg');
 
 -- 19. ЖК «Новое Сертолово» (Всеволожский район, ЛО) [citation:11]
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('Микрорайон «Новое Сертолово»', 'г. Сертолово',
      (SELECT id FROM district WHERE name = 'Сертолово' AND location_id = 2),
-     (SELECT id FROM developer WHERE name = 'ГК «КВС»'));
+     (SELECT id FROM developer WHERE name = 'ГК «КВС»'), 'complexes/119/Новое Сертолово.jpg');
 
 -- 20. ЖК «Ясно.Янино» (Янино-1, Всеволожский район, ЛО) [citation:8]
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('ЖК «Ясно.Янино»', 'пос. Янино-1, ул. Ясная',
      (SELECT id FROM district WHERE name = 'Всеволожский' AND location_id = 2),
-     (SELECT id FROM developer WHERE name = 'ГК «КВС»'));
+     (SELECT id FROM developer WHERE name = 'ГК «КВС»'), 'complexes/120/Ясно Янино.jpg');
 
 -- 21. ЖК «Новые Лаврики» (Мурино, Всеволожский район, ЛО)
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('Новые Лаврики', 'г. Мурино, Ручьёвский пр.',
      (SELECT id FROM district WHERE name = 'Всеволожский' AND location_id = 2),
-     (SELECT id FROM developer WHERE name = 'Главстрой СПб'));
+     (SELECT id FROM developer WHERE name = 'Главстрой СПб'), 'complexes/121/Новые Лаврики.jpg');
 
 -- 22. ЖК «Аквилон Янино» (Янино-1, Всеволожский район, ЛО) [citation:6]
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('Аквилон Янино', 'д. Янино-1, ул. Заводская',
      (SELECT id FROM district WHERE name = 'Всеволожский' AND location_id = 2),
-     (SELECT id FROM developer WHERE name = 'Группа Аквилон'));
+     (SELECT id FROM developer WHERE name = 'Группа Аквилон'), 'complexes/122/Аквилон Янино.jpg');
 
 -- 23. ЖК «Октябрьская набережная» (Невский район, СПб) [citation:6]
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('Октябрьская набережная', 'СПб, Невский, Октябрьская наб',
      (SELECT id FROM district WHERE name = 'Невский' AND location_id = 1),
-     (SELECT id FROM developer WHERE name = 'ГК Едино'));
+     (SELECT id FROM developer WHERE name = 'ГК Едино'), 'complexes/123/Октябрьская набережная.jpg');
 
 -- 24. ЖК «Аквилон Лейк» (Всеволожский район, ЛО)
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('Аквилон Лейк', 'Всеволожский район, пос. Токсово',
      (SELECT id FROM district WHERE name = 'Всеволожский' AND location_id = 2),
-     (SELECT id FROM developer WHERE name = 'Группа Аквилон'));
+     (SELECT id FROM developer WHERE name = 'Группа Аквилон'), 'complexes/124/Аквилон Лейк.jpg');
 
 -- 25. ЖК «Чистое небо» (Приморский район, СПб)
-INSERT INTO residential_complex (name, address, district_id, developer_id) VALUES
+INSERT INTO residential_complex (name, address, district_id, developer_id, render_path) VALUES
     ('Чистое небо', 'Приморский, ул. Шаврова',
      (SELECT id FROM district WHERE name = 'Приморский' AND location_id = 1),
-     (SELECT id FROM developer WHERE name = 'Setl Group'));
+     (SELECT id FROM developer WHERE name = 'Setl Group'), 'complexes/113/Чистое Небо.jpg');
 
 -- Vertical Московская - Московская (1500 м)
 INSERT INTO complex_metro_distance (residential_complex_id, metro_station_id, distance) VALUES

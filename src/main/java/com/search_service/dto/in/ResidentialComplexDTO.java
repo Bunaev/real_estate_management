@@ -18,7 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ResidentialComplexDTO {
 
-    @NotNull
     private Long id;
 
     @NotBlank(message = "Название ЖК обязательно")
@@ -42,4 +41,8 @@ public class ResidentialComplexDTO {
 
     @Valid
     private List<BuildingDTO> buildings;
+    @NotNull(message = "Без этого параметра ЖК не будет отображаться на карте")
+    private Double latitude;
+    @NotNull(message = "Без этого параметра ЖК не будет отображаться на карте")
+    private Double longitude;
 }

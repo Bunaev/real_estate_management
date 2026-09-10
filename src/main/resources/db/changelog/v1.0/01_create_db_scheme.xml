@@ -438,5 +438,18 @@
                 columnName="max_floors"
                 newDataType="INTEGER"/>
     </changeSet>
+    <changeSet id="add-render-column-in-residential-complex" author="bunaev">
+        <addColumn tableName="residential_complex">
+            <column name="render_path" type="VARCHAR(200)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="add_complex-coordinates" author="bunaev">
+        <addColumn tableName="residential_complex">
+            <column name="latitude" type="DOUBLE"/>
+        </addColumn>
+        <addColumn tableName="residential_complex">
+            <column name="longitude" type="DOUBLE"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

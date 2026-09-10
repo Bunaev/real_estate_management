@@ -1,8 +1,6 @@
 package com.search_service.service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch._types.SortOptions;
-import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchBoolPrefixQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
@@ -10,27 +8,43 @@ import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.search_service.documents.ComplexDocument;
-import com.search_service.dto.in.*;
+import com.search_service.dto.in.BuildingDTO;
+import com.search_service.dto.in.FilterDTO;
+import com.search_service.dto.in.MetroDistanceDTO;
+import com.search_service.dto.in.ResidentialComplexDTO;
 import com.search_service.dto.out.*;
 import com.search_service.entity.*;
 import com.search_service.exception.EntityNotFoundException;
 import com.search_service.exception.GeneralFormatException;
+import com.search_service.exception.GlobalExceptionHandler;
 import com.search_service.exception.TypeError;
-import com.search_service.mapper.*;
-import com.search_service.repository.*;
+import com.search_service.mapper.BuildingMapper;
+import com.search_service.mapper.ComplexDocumentMapper;
+import com.search_service.mapper.ResidentialComplexMapper;
+import com.search_service.repository.DeveloperRepo;
+import com.search_service.repository.DistrictRepo;
+import com.search_service.repository.MetroStationRepo;
+import com.search_service.repository.ResidentialComplexRepo;
 import com.search_service.specification.SpecificationBuilder;
 import com.search_service.util.KeyboardLayoutConverter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,6 +52,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class ResidentialComplexService {
+    @Value("${storage.path}")
+    private String storage;
     private final ResidentialComplexRepo complexRepo;
     private final DistrictRepo districtRepo;
     private final DeveloperRepo developerRepo;
@@ -52,15 +68,102 @@ public class ResidentialComplexService {
 
 
     @Transactional
-    public ResidentialComplexShortDTO create(ResidentialComplexDTO dto) {
-        // 1. Создаём ЖК
+    public ResidentialComplexShortDTO create(ResidentialComplexDTO dto, MultipartFile file) {
         ResidentialComplex complex = mapper.toEntity(dto);
 
-        // 2. Устанавливаем связи
         complex.setDistrict(districtRepo.findById(dto.getDistrictId()).orElseThrow());
         complex.setDeveloper(developerRepo.findById(dto.getDeveloperId()).orElseThrow());
+        complex.setLatitude(dto.getLatitude());
+        complex.setLongitude(dto.getLongitude());
 
-        // 3. Создаём метро и добавляем в коллекцию
+        metroDistanceSetter(dto, complex);
+        buildingSetter(dto, complex);
+
+        ResidentialComplex saved = complexRepo.save(complex);
+        uploadFileToServer(saved, file);
+        indexComplex(saved);
+        return mapper.toShortDto(saved);
+    }
+
+    private void uploadFileToServer(ResidentialComplex complex, MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            return;
+        }
+        try {
+            Path complexDir = Paths.get(storage, "complexes", String.valueOf(complex.getId()));
+            if (!Files.exists(complexDir)) {
+                Files.createDirectories(complexDir);
+            }
+            String originalNameFile = file.getOriginalFilename();
+            if (originalNameFile == null || !originalNameFile.contains(".")) {
+                throw new GeneralFormatException(TypeError.SAVE_FILE, "Файл без расширения");
+            }
+            String extension = originalNameFile.substring(originalNameFile.lastIndexOf(".")).toLowerCase();
+            String safeName = complex.getName()
+                    .replaceAll("[\\\\/:*?\"<>|]", "")
+                    .replaceAll("\\s+", "_")
+                    .trim();
+            String filename = safeName + extension;
+            Path filePath = complexDir.resolve(filename);
+            Files.write(filePath, file.getBytes());
+            complex.setRenderPath("complexes/" + complex.getId() + "/" + filename);
+        } catch (Exception e) {
+            throw new GeneralFormatException(TypeError.SAVE_FILE, file.getOriginalFilename());
+        }
+    }
+
+    private void deleteComplexFiles(Long complexId) {
+        Path complexDir = Paths.get(storage, "complexes", String.valueOf(complexId));
+
+        if (!Files.exists(complexDir)) {
+            log.warn("Папка для ЖК {} не найдена, пропускаем", complexId);
+            return;
+        }
+
+        try {
+            Files.walk(complexDir)
+                    .sorted(Comparator.reverseOrder())  // сначала файлы, потом папки
+                    .forEach(path -> {
+                        try {
+                            Files.delete(path);
+                        } catch (IOException e) {
+                            log.error("Не удалось удалить: {}", path, e);
+                        }
+                    });
+            log.info("Папка ЖК {} удалена", complexId);
+        } catch (IOException e) {
+            log.error("Ошибка удаления папки ЖК {}: {}", complexId, e.getMessage());
+        }
+    }
+
+    private void buildingSetter(ResidentialComplexDTO dto, ResidentialComplex complex) {
+        if (dto.getBuildings() != null) {
+            List<Building> buildings = dto.getBuildings().stream()
+                    .map(bDto -> {
+                        Building building = buildingMapper.toEntity(bDto);
+                        building.setResidentialComplex(complex);
+                        return entranceSetter(bDto, building);
+                    })
+                    .collect(Collectors.toList());
+            complex.setBuildings(buildings);
+        }
+    }
+
+    private static Building entranceSetter(BuildingDTO bDto, Building building) {
+        if (bDto.getEntrances() != null) {
+            List<Entrance> entrances = bDto.getEntrances().stream()
+                    .map(eDto -> Entrance.builder()
+                            .name(eDto.getName())
+                            .maxFloors(eDto.getMaxFloor())
+                            .building(building)
+                            .build())
+                    .collect(Collectors.toList());
+            building.setEntrances(entrances);
+        }
+        return building;
+    }
+
+    private void metroDistanceSetter(ResidentialComplexDTO dto, ResidentialComplex complex) {
         if (dto.getMetroStations() != null) {
             List<ComplexMetroDistance> metroDistances = dto.getMetroStations().stream()
                     .map(metroDto -> {
@@ -75,34 +178,6 @@ public class ResidentialComplexService {
                     .collect(Collectors.toList());
             complex.setMetroDistances(metroDistances);
         }
-
-        // 4. Создаём корпуса и секции, добавляем в коллекцию
-        if (dto.getBuildings() != null) {
-            List<Building> buildings = dto.getBuildings().stream()
-                    .map(bDto -> {
-                        Building building = buildingMapper.toEntity(bDto);
-                        building.setResidentialComplex(complex);
-
-                        if (bDto.getEntrances() != null) {
-                            List<Entrance> entrances = bDto.getEntrances().stream()
-                                    .map(eDto -> Entrance.builder()
-                                            .name(eDto.getName())
-                                            .maxFloors(eDto.getMaxFloor())
-                                            .building(building)
-                                            .build())
-                                    .collect(Collectors.toList());
-                            building.setEntrances(entrances);
-                        }
-                        return building;
-                    })
-                    .collect(Collectors.toList());
-            complex.setBuildings(buildings);
-        }
-
-        // 5. ОДИН save — всё остальное через каскады!
-        ResidentialComplex saved = complexRepo.save(complex);
-        indexComplex(saved);
-        return mapper.toShortDto(saved);
     }
 
     @Transactional(readOnly = true)
@@ -154,6 +229,8 @@ public class ResidentialComplexService {
         } catch (Exception e) {
             log.error("Ошибка удаления из ES: {}", e.getMessage());
         }
+        complexRepo.deleteById(id);
+        deleteComplexFiles(id);
     }
 
     @Transactional(readOnly = true)
@@ -172,7 +249,7 @@ public class ResidentialComplexService {
     }
 
     @Transactional
-    public ResidentialComplexOutDTO update(@Valid ResidentialComplexDTO dto) {
+    public ResidentialComplexOutDTO update(@Valid ResidentialComplexDTO dto, MultipartFile file) {
         // 1. Загружаем ЖК
         ResidentialComplex complex = complexRepo.findById(dto.getId())
                 .orElseThrow(() -> new EntityNotFoundException("ЖК не найден", dto.getId()));
@@ -182,6 +259,7 @@ public class ResidentialComplexService {
         complex.setAddress(dto.getAddress());
         complex.setDeveloper(developerRepo.findById(dto.getDeveloperId()).orElseThrow());
         complex.setDistrict(districtRepo.findById(dto.getDistrictId()).orElseThrow());
+        uploadFileToServer(complex, file);
 
         // 3. Обновляем метро (отдельно, т.к. это ManyToMany)
         updateMetro(complex, dto.getMetroStations());
@@ -244,7 +322,7 @@ public class ResidentialComplexService {
         }
     }
 
-     private void indexComplex(ResidentialComplex complex) {
+    private void indexComplex(ResidentialComplex complex) {
         try {
             ComplexDocument document = documentMapper.toDocument(complex);
             esClient.index(i -> i
@@ -257,9 +335,9 @@ public class ResidentialComplexService {
             log.info("Ошибка сохранения/индексации ЖК: {}", complex.getName());
             throw new GeneralFormatException(TypeError.ELASTIC_ERROR);
         }
-     }
+    }
 
-     @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public void reindexAllComplex() {
         List<ResidentialComplex> complexes = complexRepo.findAll();
         int successCount = 0;
@@ -284,7 +362,7 @@ public class ResidentialComplexService {
         }
 
         log.info("Всего переиндексировано {} ЖК. Успешно: {}; С ошибкой: {}", complexes.size(), successCount, errorCount);
-     }
+    }
 
 
     public List<ComplexDocument> fuzzySearch(String query, int from, int size) {
@@ -349,7 +427,7 @@ public class ResidentialComplexService {
     }
 
     private void addIfNotNull(LinkedHashMap<String, SearchSuggestionDTO> map,
-                               Long id, String text, String type, String query) {
+                              Long id, String text, String type, String query) {
         if (id == null || text == null || text.isBlank()) return;
         String key = type + "|" + text;
         if (comparison(text, query)) {
@@ -401,7 +479,7 @@ public class ResidentialComplexService {
     }
 
     private void addIfNotNullMetroStations(LinkedHashMap<String, SearchSuggestionDTO> map,
-                              List<Long> id, List<String> text, String type, String query) {
+                                           List<Long> id, List<String> text, String type, String query) {
         if (id == null || text == null || text.isEmpty()) return;
         for (int i = 0; i < id.size(); i++) {
             if (comparison(text.get(i), query)) {
@@ -409,5 +487,16 @@ public class ResidentialComplexService {
                         .entityId(id.get(i)).text(text.get(i)).entityType(type).build());
             }
         }
+    }
+
+    public Resource getImageRender(Long id) {
+        ResidentialComplex complex = complexRepo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("ЖК не найден", id));
+        String fullPath = storage + complex.getRenderPath();
+        Path filePath = Paths.get(fullPath);
+        if (!Files.exists(filePath)) {
+            filePath = Paths.get(storage + "complexes/default.jpg");
+        }
+        return new FileSystemResource(filePath.toFile());
     }
 }

@@ -20,12 +20,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Full-stack integration test that starts PostgreSQL and Elasticsearch via Testcontainers.
- *
- * <p>This test is automatically skipped when Docker is not available on the host
- * ({@code disabledWithoutDocker = true}).</p>
- */
 @Testcontainers(disabledWithoutDocker = true)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SearchServiceIntegrationTest {

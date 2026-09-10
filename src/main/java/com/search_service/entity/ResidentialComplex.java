@@ -36,4 +36,10 @@ public class ResidentialComplex {
     @JoinColumn(name = "developer_id")
     @JsonIgnore
     private Developer developer;
+    @Column(name = "render_path")
+    private String renderPath;
+    @Column(name = "latitude")
+    private Double latitude;
+    @Column(name = "longitude")
+    private Double longitude;
 }
