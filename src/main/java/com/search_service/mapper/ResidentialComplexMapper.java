@@ -55,6 +55,9 @@ public interface ResidentialComplexMapper {
     @Mapping(target = "developerName", source = "developer.name")
     @Mapping(target = "metroDistances", source = "metroDistances")
     @Mapping(target = "buildings", source = "buildings")
+    @Mapping(target = "countBuildings", expression = "java(complex.getBuildings() != null ? complex.getBuildings().size() : 0)")
+    @Mapping(target = "countEntrance", expression = "java(calculateEntranceCount(complex))")
+    @Mapping(target = "countApartment", expression = "java(calculateApartmentCount(complex))")
     ResidentialComplexEditDTO toEditDto(ResidentialComplex complex);
 
     // === ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ===

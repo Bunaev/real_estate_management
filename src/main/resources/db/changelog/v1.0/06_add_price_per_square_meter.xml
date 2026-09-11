@@ -7,12 +7,18 @@
 
     <!-- Adds the price_per_square_meter column and recalculates price = area * ppsm.-->
     <changeSet id="06-add-price-per-square-meter" author="bunaev">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="apartment" columnName="price_per_square_meter"/>
+            </not>
+        </preConditions>
         <addColumn tableName="apartment">
             <column name="price_per_square_meter" type="NUMERIC(15, 2)">
                 <constraints nullable="true"/>
             </column>
         </addColumn>
-
+    </changeSet>
+    <changeSet id="06b-add-data-in-price-per-square" author="bunaev">
         <sql>
             UPDATE apartment
             SET price_per_square_meter = ROUND((price / area)::NUMERIC, 2)

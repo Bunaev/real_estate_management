@@ -29,6 +29,12 @@ public class ResidentialComplexEditDTO {
 
     private List<BuildingEditDTO> buildings;
 
+    private Integer countBuildings;
+    private Integer countEntrance;
+    private Integer countApartment;
+    private Double latitude;
+    private Double longitude;
+
 
     @Data
     @Builder

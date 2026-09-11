@@ -11,6 +11,7 @@ public class ComplexDocumentMapper {
         if (complex == null) {
             return null;
         }
+        var metroDistances = complex.getMetroDistances() == null ? java.util.List.<com.search_service.entity.ComplexMetroDistance>of() : complex.getMetroDistances();
         return ComplexDocument.builder()
                 .id(complex.getId())
                 .locationId(complex.getDistrict().getLocation().getId())
@@ -20,9 +21,9 @@ public class ComplexDocumentMapper {
                 .location(complex.getDistrict().getLocation().getName())
                 .district(complex.getDistrict().getName())
                 .developer(complex.getDeveloper().getName())
-                .metroStation(complex.getMetroDistances().stream()
+                .metroStation(metroDistances.stream()
                         .map(m -> m.getMetroStation().getName()).toList())
-                .metroStationId(complex.getMetroDistances().stream().map(metro -> metro.getMetroStation().getId()).toList())
+                .metroStationId(metroDistances.stream().map(metro -> metro.getMetroStation().getId()).toList())
                 .build();
     }
 }

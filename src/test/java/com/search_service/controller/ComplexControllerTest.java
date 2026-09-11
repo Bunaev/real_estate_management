@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -52,13 +54,15 @@ class ComplexControllerTest {
 
     @Test
     void createComplex_shouldReturnCreated() throws Exception {
-        ResidentialComplexDTO input = ResidentialComplexDTO.builder().id(1L).name("ЖК Новый").address("ул. Новая").districtId(1L).developerId(1L).build();
-        when(complexService.create(any(ResidentialComplexDTO.class)))
+        ResidentialComplexDTO input = ResidentialComplexDTO.builder().id(1L).name("ЖК Новый").address("ул. Новая").districtId(1L).developerId(1L).latitude(59.93).longitude(30.36).build();
+        MockMultipartFile dtoPart = new MockMultipartFile(
+                "dto", "dto.json", MediaType.APPLICATION_JSON_VALUE,
+                objectMapper.writeValueAsBytes(input)
+        );
+        when(complexService.create(any(ResidentialComplexDTO.class), any()))
                 .thenReturn(ResidentialComplexShortDTO.builder().id(1L).name("ЖК Новый").build());
 
-        mockMvc.perform(post("/api/complexes")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(input)))
+        mockMvc.perform(multipart("/api/complexes").file(dtoPart).contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1));
     }

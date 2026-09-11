@@ -27,7 +27,7 @@ public class ComplexController {
     private final ResidentialComplexService complexService;
 
     @GetMapping()
-    public Page<ResidentialComplexOutDTO> getComplexes(
+    public Page<ResidentialComplexEditDTO> getComplexes(
             FilterDTO filter,
             @PageableDefault(size = 50, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         return complexService.findAllLightweight(filter, pageable);

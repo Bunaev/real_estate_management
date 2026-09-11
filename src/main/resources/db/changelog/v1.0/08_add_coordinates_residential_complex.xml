@@ -6,31 +6,31 @@
 
     <changeSet id="add-coordinates-data" author="bunaev">
         <sql>
-            UPDATE residential_complex SET latitude = 59.748527, longitude = 30.306322 WHERE id = 154;
-            UPDATE residential_complex SET latitude = 59.754583, longitude = 30.367054 WHERE id = 155;
-            UPDATE residential_complex SET latitude = 59.977504, longitude = 30.387037 WHERE id = 156;
-            UPDATE residential_complex SET latitude = 59.844421, longitude = 30.340486 WHERE id = 151;
-            UPDATE residential_complex SET latitude = 60.019911, longitude = 30.470461 WHERE id = 152;
-            UPDATE residential_complex SET latitude = 59.901880, longitude = 30.443659 WHERE id = 153;
-            UPDATE residential_complex SET latitude = 59.848253, longitude = 30.082450 WHERE id = 157;
-            UPDATE residential_complex SET latitude = 59.753619, longitude = 30.326997 WHERE id = 158;
-            UPDATE residential_complex SET latitude = 59.966864, longitude = 30.341130 WHERE id = 159;
-            UPDATE residential_complex SET latitude = 59.824719, longitude = 30.335257 WHERE id = 160;
-            UPDATE residential_complex SET latitude = 60.040501, longitude = 30.236616 WHERE id = 161;
-            UPDATE residential_complex SET latitude = 59.862005, longitude = 30.155574 WHERE id = 162;
-            UPDATE residential_complex SET latitude = 60.066633, longitude = 30.438680 WHERE id = 163;
-            UPDATE residential_complex SET latitude = 59.948689, longitude = 30.585282 WHERE id = 164;
-            UPDATE residential_complex SET latitude = 59.910638, longitude = 30.539630 WHERE id = 165;
-            UPDATE residential_complex SET latitude = 59.920429, longitude = 30.523541 WHERE id = 166;
-            UPDATE residential_complex SET latitude = 60.139848, longitude = 30.225453 WHERE id = 167;
-            UPDATE residential_complex SET latitude = 60.163488, longitude = 30.205733 WHERE id = 168;
-            UPDATE residential_complex SET latitude = 60.164475, longitude = 30.195202 WHERE id = 169;
-            UPDATE residential_complex SET latitude = 59.958953, longitude = 30.598264 WHERE id = 170;
-            UPDATE residential_complex SET latitude = 60.073779, longitude = 30.431010 WHERE id = 171;
-            UPDATE residential_complex SET latitude = 59.944216, longitude = 30.550485 WHERE id = 172;
-            UPDATE residential_complex SET latitude = 59.872851, longitude = 30.479188 WHERE id = 173;
-            UPDATE residential_complex SET latitude = 59.826997, longitude = 30.341156 WHERE id = 174;
-            UPDATE residential_complex SET latitude = 60.038504, longitude = 30.212962 WHERE id = 175;
+            UPDATE residential_complex SET latitude = 59.748527, longitude = 30.306322 WHERE name = 'PLUS Пулковский';
+            UPDATE residential_complex SET latitude = 59.754583, longitude = 30.367054 WHERE name = 'Образцовый квартал 17';
+            UPDATE residential_complex SET latitude = 59.977504, longitude = 30.387037 WHERE name = 'Квартал «Б15»';
+            UPDATE residential_complex SET latitude = 59.844421, longitude = 30.340486 WHERE name = 'Vertical Московская';
+            UPDATE residential_complex SET latitude = 60.019911, longitude = 30.470461 WHERE name = 'Пейзажный квартал';
+            UPDATE residential_complex SET latitude = 59.901880, longitude = 30.443659 WHERE name = 'Zoom на Неве';
+            UPDATE residential_complex SET latitude = 59.848253, longitude = 30.082450 WHERE name = 'ЖК Любоград';
+            UPDATE residential_complex SET latitude = 59.753619, longitude = 30.326997 WHERE name = 'ЮгТаун. Олимпийские кварталы';
+            UPDATE residential_complex SET latitude = 59.966864, longitude = 30.341130 WHERE name = 'Сампсониевский 32';
+            UPDATE residential_complex SET latitude = 59.824719, longitude = 30.335257 WHERE name = 'Аквилон Ливз';
+            UPDATE residential_complex SET latitude = 60.040501, longitude = 30.236616 WHERE name = 'Dreamline';
+            UPDATE residential_complex SET latitude = 59.862005, longitude = 30.155574 WHERE name = 'Огни Залива';
+            UPDATE residential_complex SET latitude = 60.066633, longitude = 30.438680 WHERE name = 'Аквилон РИВА';
+            UPDATE residential_complex SET latitude = 59.948689, longitude = 30.585282 WHERE name = 'Аквилон Верба';
+            UPDATE residential_complex SET latitude = 59.910638, longitude = 30.539630 WHERE name = 'Аквилон РекаПарк';
+            UPDATE residential_complex SET latitude = 59.920429, longitude = 30.523541 WHERE name = 'Аквилон Stories';
+            UPDATE residential_complex SET latitude = 60.139848, longitude = 30.225453 WHERE name = 'ВЕРЕН НОРТ СЕРТОЛОВО';
+            UPDATE residential_complex SET latitude = 60.163488, longitude = 30.205733 WHERE name = 'ЖК «Патио»';
+            UPDATE residential_complex SET latitude = 60.164475, longitude = 30.195202 WHERE name = 'Микрорайон «Новое Сертолово»';
+            UPDATE residential_complex SET latitude = 59.958953, longitude = 30.598264 WHERE name = 'ЖК «Ясно.Янино»';
+            UPDATE residential_complex SET latitude = 60.073779, longitude = 30.431010 WHERE name = 'Новые Лаврики';
+            UPDATE residential_complex SET latitude = 59.944216, longitude = 30.550485 WHERE name = 'Аквилон Янино';
+            UPDATE residential_complex SET latitude = 59.872851, longitude = 30.479188 WHERE name = 'Октябрьская набережная';
+            UPDATE residential_complex SET latitude = 59.826997, longitude = 30.341156 WHERE name = 'Аквилон Лейк';
+            UPDATE residential_complex SET latitude = 60.038504, longitude = 30.212962 WHERE name = 'Чистое небо';
         </sql>
     </changeSet>
 </databaseChangeLog>
