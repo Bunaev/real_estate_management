@@ -3,6 +3,7 @@ package com.search_service.dto.in;
 import com.search_service.entity.ApartmentType;
 import com.search_service.entity.BathroomType;
 import com.search_service.entity.Status;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,10 +30,26 @@ public class ApartmentInDTO {
     @Max(value = 200, message = "Этаж не должен превышать 200")
     private Integer floor;
 
-    @NotNull(message = "Площадь обязательна")
+    /** Общая площадь. Может быть не заполнена — тогда рассчитывается из компонент. */
     @DecimalMin(value = "1.0", message = "Площадь должна быть не менее 1 м²")
     @DecimalMax(value = "10000.0", message = "Площадь не должна превышать 10000 м²")
     private Double area;
+
+    /** Площадь кухни. Для студии может быть null. */
+    @DecimalMin(value = "0.0", message = "Площадь кухни не может быть отрицательной")
+    private Double kitchenArea;
+
+    /** Площадь коридора. */
+    @DecimalMin(value = "0.0", message = "Площадь коридора не может быть отрицательной")
+    private Double hallwayArea;
+
+    /** Общая площадь санузла. */
+    @DecimalMin(value = "0.0", message = "Площадь санузла не может быть отрицательной")
+    private Double bathroomArea;
+
+    /** Суммарная площадь комнат. */
+    @DecimalMin(value = "0.0", message = "Площадь комнат не может быть отрицательной")
+    private Double roomsArea;
 
     @NotNull(message = "Цена обязательна")
     @DecimalMin(value = "0.0", message = "Цена не может быть отрицательной")
@@ -54,4 +71,10 @@ public class ApartmentInDTO {
 
     @NotNull(message = "Статус обязателен")
     private Status status;
+
+    private String planKey;
+
+    private String entrancePlanKey;
+
+    private String notes;
 }

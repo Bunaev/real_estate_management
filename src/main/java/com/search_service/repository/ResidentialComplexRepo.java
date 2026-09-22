@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ResidentialComplexRepo extends JpaRepository<ResidentialComplex, Long>, JpaSpecificationExecutor<ResidentialComplex> {
@@ -23,4 +24,7 @@ public interface ResidentialComplexRepo extends JpaRepository<ResidentialComplex
                 WHERE md.residentialComplex.id IN :ids
             """)
     List<Object[]> findMetroDistancesByComplexIds(@Param("ids") List<Long> ids);
+
+    @Query("SELECT rc.keyRenderPath FROM ResidentialComplex rc WHERE rc.id = :id")
+    Optional<String> findRenderKeyById(@Param("id") Long id);
 }

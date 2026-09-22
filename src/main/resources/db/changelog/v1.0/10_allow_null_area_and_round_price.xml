@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <changeSet id="10-allow-null-area-and-round-price" author="bunaev">
+        <dropNotNullConstraint tableName="apartment" columnName="area" columnDataType="DOUBLE"/>
+        <modifyDataType tableName="apartment" columnName="price" newDataType="NUMERIC(15,2)"/>
+        <modifyDataType tableName="apartment" columnName="price_per_square_meter" newDataType="NUMERIC(15,2)"/>
+    </changeSet>
+
+</databaseChangeLog>

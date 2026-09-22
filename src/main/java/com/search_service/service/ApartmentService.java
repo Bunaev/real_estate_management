@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +36,6 @@ public class ApartmentService {
         List<Apartment> apartments = ExcelUtils.readExcelFile(file, Apartment.class);
         for (Apartment apartment : apartments) {
             apartment.setEntrance(entrance);
-            // Price = area * pricePerSquareMeter (if set), otherwise keep existing price
             if (apartment.getPricePerSquareMeter() != null && apartment.getArea() != null) {
                 apartment.setPrice(apartment.getArea() * apartment.getPricePerSquareMeter());
             }
@@ -68,16 +66,25 @@ public class ApartmentService {
     public ApartmentDTO update(ApartmentInDTO dto) {
         Apartment apartment = apartmentRepo.findById(dto.getId())
                 .orElseThrow(() -> new EntityNotFoundException("Квартира", dto.getId()));
+
         apartment.setArea(dto.getArea());
+        apartment.setKitchenArea(dto.getKitchenArea());
+        apartment.setHallwayArea(dto.getHallwayArea());
+        apartment.setBathroomArea(dto.getBathroomArea());
+        apartment.setRoomsArea(dto.getRoomsArea());
+
         apartment.setFloor(dto.getFloor());
         apartment.setNumber(dto.getNumber());
         apartment.setHasBalcony(dto.getHasBalcony());
         apartment.setStatus(dto.getStatus());
         apartment.setType(dto.getType());
-        // Price = area * pricePerSquareMeter; if pricePerSquareMeter not set, keep old price
+        apartment.setPlanKey(dto.getPlanKey());
+        apartment.setEntrancePlanKey(dto.getEntrancePlanKey());
+        apartment.setNotes(dto.getNotes());
+
         if (dto.getPricePerSquareMeter() != null) {
             apartment.setPricePerSquareMeter(dto.getPricePerSquareMeter());
-            apartment.setPrice(apartment.getArea() * dto.getPricePerSquareMeter());
+            apartment.setPrice(apartment.getArea() == null ? null : apartment.getArea() * dto.getPricePerSquareMeter());
         } else {
             apartment.setPrice(dto.getPrice());
         }
@@ -90,6 +97,5 @@ public class ApartmentService {
         Specification<Apartment> specification = specificationBuilder.buildApartments(filter);
         return apartmentRepo.findAll(specification, pageable).map(mapper::toDto);
     }
+
 }
-
-

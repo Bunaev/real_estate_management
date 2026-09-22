@@ -46,5 +46,12 @@ spring:
     uris: http://localhost:9200
     connection-timeout: 5s
     socket-timeout: 30s
+minio:
+  endpoint: http://localhost:9000
+  access-key: minioadmin
+  secret-key: minioadmin
+  public-bucket: rem-public
+  private-bucket: rem-private
 storage:
-  path: C:/Users/bunae/OneDrive/Projects/rem_files/
+  path: 'C:\Users\bunae\OneDrive\Projects\rem_files\'
+

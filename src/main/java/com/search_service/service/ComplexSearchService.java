@@ -40,7 +40,6 @@ public class ComplexSearchService {
     private final ElasticsearchClient esClient;
     private final ComplexDocumentMapper documentMapper;
 
-    /** Индексирует один ЖК. */
     public void indexComplex(ResidentialComplex complex) {
         try {
             ComplexDocument document = documentMapper.toDocument(complex);
@@ -56,7 +55,6 @@ public class ComplexSearchService {
         }
     }
 
-    /** Удаляет ЖК из индекса. */
     public void deleteComplex(Long id) {
         try {
             esClient.delete(d -> d
@@ -69,7 +67,6 @@ public class ComplexSearchService {
         }
     }
 
-    /** Полная переиндексация списка ЖК + refresh индекса. */
     public void reindexAll(List<ResidentialComplex> complexes) {
         int successCount = 0;
         int errorCount = 0;
@@ -91,7 +88,6 @@ public class ComplexSearchService {
                 complexes.size(), successCount, errorCount);
     }
 
-    /** Обновляет индекс, чтобы документы сразу были доступны для поиска. */
     private void refreshIndex() {
         try {
             esClient.indices().refresh(r -> r.index(INDEX_NAME));
@@ -100,7 +96,6 @@ public class ComplexSearchService {
         }
     }
 
-    /** Нечёткий поиск с поддержкой раскладки и опечаток. */
     public List<ComplexDocument> fuzzySearch(String query, int from, int size) {
         if (query == null || query.trim().length() < 2) {
             return List.of();
@@ -148,7 +143,6 @@ public class ComplexSearchService {
         }
     }
 
-    /** Подсказки по всем сущностям, найденным через поиск. */
     public List<SearchSuggestionDTO> suggest(String query, int limit) {
         if (query == null || query.trim().length() < 2) {
             return List.of();
@@ -188,7 +182,6 @@ public class ComplexSearchService {
         }
     }
 
-    /** Мягкое сравнение строки с учётом раскладки и порядка символов. */
     private boolean matches(String text, String query) {
         if (text == null || query == null) return false;
         String normalized = text.toLowerCase();

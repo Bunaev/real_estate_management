@@ -27,16 +27,10 @@ public class ComplexController {
     private final ResidentialComplexService complexService;
 
     @GetMapping()
-    public Page<ResidentialComplexEditDTO> getComplexes(
+    public Page<ComplexCardOutDTO> getComplexes(
             FilterDTO filter,
             @PageableDefault(size = 50, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         return complexService.findAllLightweight(filter, pageable);
-    }
-
-    @GetMapping("{id}/render")
-    public ResponseEntity<Resource> getImageRender(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.parseMediaType("image/jpg")).body(complexService.getImageRender(id));
     }
 
     @GetMapping("/suggest")
@@ -69,12 +63,11 @@ public class ComplexController {
         return ResponseEntity.ok(dto);
     }
 
-    @PutMapping(path = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResidentialComplexOutDTO> update(@RequestPart("dto") @Valid ResidentialComplexDTO dto,
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResidentialComplexShortDTO> update(@RequestPart("dto") @Valid ResidentialComplexDTO dto,
                                                            @RequestPart(value = "file", required = false) MultipartFile file) {
-        ResidentialComplexOutDTO updated = complexService.update(dto, file);
+        ResidentialComplexShortDTO updated = complexService.update(dto, file);
         return ResponseEntity.status(HttpStatus.OK).body(updated);
     }
-//    curl -X DELETE "localhost:9200/complexes"
 
 }

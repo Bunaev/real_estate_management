@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SearchSuggestionDTO {
-    private Long id;
     private String text;
     private String entityType;
     private Long entityId;

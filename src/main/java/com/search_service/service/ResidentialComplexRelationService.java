@@ -17,10 +17,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Сервис сборки связей ЖК: метро, корпуса, секции.
- * Вынесен из ResidentialComplexService, чтобы там не было ручной сборки графа.
- */
 @Service
 @RequiredArgsConstructor
 public class ResidentialComplexRelationService {
@@ -28,13 +24,11 @@ public class ResidentialComplexRelationService {
     private final MetroStationRepo metroRepo;
     private final BuildingMapper buildingMapper;
 
-    /** Заполняет связи для нового ЖК. */
     public void applyRelations(ResidentialComplex complex, ResidentialComplexDTO dto) {
         setMetroDistances(complex, dto.getMetroStations());
         setBuildings(complex, dto.getBuildings());
     }
 
-    /** Обновляет связи существующего ЖК. */
     public void updateRelations(ResidentialComplex complex, ResidentialComplexDTO dto) {
         updateMetro(complex, dto.getMetroStations());
         updateBuildings(complex, dto.getBuildings());

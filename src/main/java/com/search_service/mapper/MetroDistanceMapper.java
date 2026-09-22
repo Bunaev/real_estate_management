@@ -12,7 +12,6 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface MetroDistanceMapper {
 
-    // === ДЛЯ СОЗДАНИЯ/ОБНОВЛЕНИЯ ===
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "residentialComplex", ignore = true)
     @Mapping(target = "metroStation", ignore = true)
@@ -20,13 +19,11 @@ public interface MetroDistanceMapper {
 
     List<ComplexMetroDistance> toEntityList(List<MetroDistanceDTO> dtos);
 
-    // === ДЛЯ ВЫВОДА ===
     @Mapping(target = "stationName", source = "metroStation.name")
     MetroDistanceOutDTO toOutDto(ComplexMetroDistance metroDistance);
 
     List<MetroDistanceOutDTO> toOutDtoList(List<ComplexMetroDistance> metroDistances);
 
-    // === ДЛЯ РЕДАКТИРОВАНИЯ ===
     @Mapping(target = "metroStationId", source = "metroStation.id")
     @Mapping(target = "stationName", source = "metroStation.name")
     ResidentialComplexEditDTO.MetroDistanceEditDTO toEditDto(ComplexMetroDistance metroDistance);

@@ -9,6 +9,7 @@ import com.search_service.entity.District;
 import com.search_service.entity.Location;
 import com.search_service.entity.MetroStation;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public interface ReferenceMapper {
     LocationDTO toLocationDto(Location location);
     List<LocationDTO> toLocationDtoList(List<Location> locations);
 
+    @Mapping(target = "locationId", source = "district.location.id")
     DistrictDTO toDistrictDto(District district);
     List<DistrictDTO> toDistrictDtoList(List<District> districts);
 

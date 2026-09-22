@@ -19,6 +19,9 @@ public class ResidentialComplexDetailDTO {
     private String district;
     private String location;
     private List<BuildingShortDTO> buildings;
+    private Integer countApartment;
     private Double latitude;
     private Double longitude;
+    private String keyRenderPath;
+    List<MetroDistanceOutDTO> metroDistances;
 }

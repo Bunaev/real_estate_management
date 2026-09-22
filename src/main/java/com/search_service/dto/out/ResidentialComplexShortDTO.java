@@ -14,4 +14,5 @@ public class ResidentialComplexShortDTO {
     private String name;
     private String developer;
     private String fullAddress;
+    private String keyRenderPath;
 }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <changeSet id="12-add-and-fill-plan-keys" author="bunaev">
+        <sql>
+            ALTER TABLE apartment ADD COLUMN IF NOT EXISTS plan_key VARCHAR(512);
+            ALTER TABLE apartment ADD COLUMN IF NOT EXISTS entrance_plan_key VARCHAR(512);
+
+            UPDATE apartment
+            SET plan_key = 'apartments/' || id || '/' || id || '.jpg',
+                entrance_plan_key = 'apartments/' || id || '/' || id || '-entrance.jpg';
+
+            ALTER TABLE apartment ALTER COLUMN plan_key SET NOT NULL;
+            ALTER TABLE apartment ALTER COLUMN entrance_plan_key SET NOT NULL;
+        </sql>
+
+        <rollback>
+            <sql>
+                ALTER TABLE apartment DROP COLUMN IF EXISTS entrance_plan_key;
+                ALTER TABLE apartment DROP COLUMN IF EXISTS plan_key;
+            </sql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

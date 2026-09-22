@@ -27,8 +27,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,7 +37,7 @@ class ResidentialComplexServiceTest {
     @Mock private DeveloperRepo developerRepo;
     @Mock private ResidentialComplexMapper mapper;
     @Mock private SpecificationBuilder specificationBuilder;
-    @Mock private FileStorageService fileStorageService;
+    @Mock private S3StorageService s3StorageService;
     @Mock private ComplexSearchService complexSearchService;
     @Mock private ResidentialComplexRelationService relationService;
 
@@ -88,14 +86,16 @@ class ResidentialComplexServiceTest {
     }
 
     @Test
-    void delete_shouldDeleteFromSearchRepositoryAndFiles() {
+    void delete_shouldDeleteFromSearchRepositoryAndStorage() {
         when(complexRepo.existsById(1L)).thenReturn(true);
+        when(complexRepo.findRenderKeyById(1L)).thenReturn(Optional.of("key"));
+        when(s3StorageService.getPublicBucket()).thenReturn("bucket");
 
         service.delete(1L);
 
         verify(complexSearchService).deleteComplex(1L);
         verify(complexRepo).deleteById(1L);
-        verify(fileStorageService).deleteComplexFiles(1L);
+        verify(s3StorageService).deleteObject("bucket", "key");
     }
 
     @Test

@@ -1,10 +1,7 @@
 package com.search_service.mapper;
 
 import com.search_service.dto.in.ResidentialComplexDTO;
-import com.search_service.dto.out.ResidentialComplexDetailDTO;
-import com.search_service.dto.out.ResidentialComplexEditDTO;
-import com.search_service.dto.out.ResidentialComplexOutDTO;
-import com.search_service.dto.out.ResidentialComplexShortDTO;
+import com.search_service.dto.out.*;
 import com.search_service.entity.ResidentialComplex;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,7 +11,6 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {BuildingMapper.class, MetroDistanceMapper.class})
 public interface ResidentialComplexMapper {
 
-    // === ДЛЯ СОЗДАНИЯ/ОБНОВЛЕНИЯ ===
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "district", ignore = true)
     @Mapping(target = "developer", ignore = true)
@@ -22,31 +18,18 @@ public interface ResidentialComplexMapper {
     @Mapping(target = "buildings", ignore = true)
     ResidentialComplex toEntity(ResidentialComplexDTO dto);
 
-    // === ДЛЯ ВЫВОДА В СПИСОК ===
-    @Mapping(target = "developer", source = "developer.name")
-    @Mapping(target = "location", source = "district.location.name")
-    @Mapping(target = "district", source = "district.name")
-    @Mapping(target = "metroDistances", source = "metroDistances")
-    @Mapping(target = "countBuildings", expression = "java(complex.getBuildings() != null ? complex.getBuildings().size() : 0)")
-    @Mapping(target = "countEntrance", expression = "java(calculateEntranceCount(complex))")
-    @Mapping(target = "countApartment", expression = "java(calculateApartmentCount(complex))")
-    ResidentialComplexOutDTO toOutDto(ResidentialComplex complex);
-
-    List<ResidentialComplexOutDTO> toOutDtoList(List<ResidentialComplex> complexes);
-
-    // === ДЛЯ КРАТКОГО ВЫВОДА ===
     @Mapping(target = "developer", source = "developer.name")
     @Mapping(target = "fullAddress", expression = "java(buildFullAddress(complex))")
     ResidentialComplexShortDTO toShortDto(ResidentialComplex complex);
 
-    // === ДЛЯ ДЕТАЛЬНОГО ВЫВОДА ===
     @Mapping(target = "developer", source = "developer.name")
     @Mapping(target = "district", source = "district.name")
     @Mapping(target = "location", source = "district.location.name")
     @Mapping(target = "buildings", source = "buildings")
+    @Mapping(target = "metroDistances", source = "metroDistances")
+    @Mapping(target = "countApartment", expression = "java(calculateApartmentCount(complex))")
     ResidentialComplexDetailDTO toDetailDto(ResidentialComplex complex);
 
-    // === ДЛЯ РЕДАКТИРОВАНИЯ ===
     @Mapping(target = "locationId", source = "district.location.id")
     @Mapping(target = "districtId", source = "district.id")
     @Mapping(target = "developerId", source = "developer.id")
@@ -60,7 +43,14 @@ public interface ResidentialComplexMapper {
     @Mapping(target = "countApartment", expression = "java(calculateApartmentCount(complex))")
     ResidentialComplexEditDTO toEditDto(ResidentialComplex complex);
 
-    // === ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ ===
+    @Mapping(target = "locationName", source = "district.location.name")
+    @Mapping(target = "districtName", source = "district.name")
+    @Mapping(target = "developerName", source = "developer.name")
+    @Mapping(target = "countBuildings", expression = "java(complex.getBuildings() != null ? complex.getBuildings().size() : 0)")
+    @Mapping(target = "countEntrance", expression = "java(calculateEntranceCount(complex))")
+    @Mapping(target = "countApartment", expression = "java(calculateApartmentCount(complex))")
+    @Mapping(target = "metroDistances", source = "metroDistances")
+    ComplexCardOutDTO toCardOutDto(ResidentialComplex complex);
 
     default int calculateEntranceCount(ResidentialComplex complex) {
         if (complex == null || complex.getBuildings() == null) return 0;

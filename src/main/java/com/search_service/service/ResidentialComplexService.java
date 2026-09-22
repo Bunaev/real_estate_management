@@ -16,7 +16,6 @@ import com.search_service.specification.SpecificationBuilder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -29,13 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- * Основной сервис ЖК.
- * Содержит только orchestration CRUD + чтение.
- * Работа с файлами вынесена в {@link FileStorageService},
- * поиск/индексация — в {@link ComplexSearchService},
- * сборка связей — в {@link ResidentialComplexRelationService}.
- */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -46,11 +38,9 @@ public class ResidentialComplexService {
     private final DeveloperRepo developerRepo;
     private final ResidentialComplexMapper mapper;
     private final SpecificationBuilder specificationBuilder;
-    private final FileStorageService fileStorageService;
+    private final S3StorageService s3StorageService;
     private final ComplexSearchService complexSearchService;
     private final ResidentialComplexRelationService relationService;
-
-    // ================= CREATE =================
 
     @Transactional
     public ResidentialComplexShortDTO create(ResidentialComplexDTO dto, MultipartFile file) {
@@ -65,24 +55,21 @@ public class ResidentialComplexService {
 
         ResidentialComplex saved = complexRepo.save(complex);
 
-        String renderPath = fileStorageService.saveComplexRender(saved.getId(), saved.getName(), file);
-        if (renderPath != null) {
-            saved.setRenderPath(renderPath);
+        if (file != null && !file.isEmpty()) {
+            String key = s3StorageService.uploadPublicFile(saved.getId(), file);
+            saved.setKeyRenderPath(key);
         }
-
         complexSearchService.indexComplex(saved);
         return mapper.toShortDto(saved);
     }
 
-    // ================= READ =================
-
     @Transactional(readOnly = true)
-    public Page<ResidentialComplexEditDTO> findAllLightweight(FilterDTO filter, Pageable page) {
+    public Page<ComplexCardOutDTO> findAllLightweight(FilterDTO filter, Pageable page) {
         Specification<ResidentialComplex> specification = specificationBuilder.buildComplexes(filter);
         Page<ResidentialComplex> complexPage = complexRepo.findAll(specification, page);
 
-        List<ResidentialComplexEditDTO> dtoList = complexPage.getContent().stream()
-                .map(mapper::toEditDto)
+        List<ComplexCardOutDTO> dtoList = complexPage.getContent().stream()
+                .map(mapper::toCardOutDto)
                 .collect(Collectors.toList());
 
         enrichWithMetro(dtoList);
@@ -101,16 +88,9 @@ public class ResidentialComplexService {
         return mapper.toEditDto(complex);
     }
 
-    public Resource getImageRender(Long id) {
-        ResidentialComplex complex = complexRepo.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("ЖК не найден", id));
-        return fileStorageService.getRenderResource(complex);
-    }
-
-    // ================= UPDATE =================
 
     @Transactional
-    public ResidentialComplexOutDTO update(@Valid ResidentialComplexDTO dto, MultipartFile file) {
+    public ResidentialComplexShortDTO update(@Valid ResidentialComplexDTO dto, MultipartFile file) {
         ResidentialComplex complex = requireComplex(dto.getId());
 
         complex.setName(dto.getName());
@@ -118,31 +98,30 @@ public class ResidentialComplexService {
         complex.setDistrict(requireDistrict(dto));
         complex.setDeveloper(requireDeveloper(dto));
 
-        String renderPath = fileStorageService.saveComplexRender(complex.getId(), complex.getName(), file);
-        if (renderPath != null) {
-            complex.setRenderPath(renderPath);
+        if (file != null && !file.isEmpty()) {
+            String key = s3StorageService.uploadPublicFile(complex.getId(), file);
+            complex.setKeyRenderPath(key);
         }
 
         relationService.updateRelations(complex, dto);
 
         ResidentialComplex saved = complexRepo.save(complex);
         complexSearchService.indexComplex(saved);
-        return mapper.toOutDto(saved);
+        return mapper.toShortDto(saved);
     }
 
-    // ================= DELETE =================
 
     @Transactional
     public void delete(Long id) {
         if (!complexRepo.existsById(id)) {
             throw new EntityNotFoundException("ЖК", id);
         }
+        String key = complexRepo.findRenderKeyById(id).orElseThrow(() -> new EntityNotFoundException("ЖК", id));
         complexSearchService.deleteComplex(id);
         complexRepo.deleteById(id);
-        fileStorageService.deleteComplexFiles(id);
+        s3StorageService.deleteObject(s3StorageService.getPublicBucket(), key);
     }
 
-    // ================= SEARCH =================
 
     @Transactional(readOnly = true)
     public void reindexAllComplex() {
@@ -157,7 +136,6 @@ public class ResidentialComplexService {
         return complexSearchService.suggest(query, limit);
     }
 
-    // ================= PRIVATE HELPERS =================
 
     private ResidentialComplex requireComplex(Long id) {
         return complexRepo.findById(id)
@@ -172,18 +150,18 @@ public class ResidentialComplexService {
         return developerRepo.findById(dto.getDeveloperId()).orElseThrow();
     }
 
-    private void enrichWithMetro(List<ResidentialComplexEditDTO> dtoList) {
+    private void enrichWithMetro(List<ComplexCardOutDTO> dtoList) {
         List<Long> ids = dtoList.stream()
-                .map(ResidentialComplexEditDTO::getId)
+                .map(ComplexCardOutDTO::getId)
                 .toList();
         if (ids.isEmpty()) return;
 
         List<Object[]> metroData = complexRepo.findMetroDistancesByComplexIds(ids);
-        Map<Long, List<ResidentialComplexEditDTO.MetroDistanceEditDTO>> metroMap = metroData.stream()
+        Map<Long, List<MetroDistanceOutDTO>> metroMap = metroData.stream()
                 .collect(Collectors.groupingBy(
                         row -> (Long) row[0],
                         Collectors.mapping(
-                                row -> ResidentialComplexEditDTO.MetroDistanceEditDTO.builder()
+                                row -> MetroDistanceOutDTO.builder()
                                         .stationName((String) row[1])
                                         .distance((Integer) row[2])
                                         .build(),
