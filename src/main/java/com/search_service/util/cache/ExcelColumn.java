@@ -11,4 +11,6 @@ public @interface ExcelColumn {
     String[] synonyms() default {};
 
     String columnName() default "";
+
+    boolean required() default true;
 }

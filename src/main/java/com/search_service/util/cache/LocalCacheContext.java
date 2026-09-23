@@ -21,10 +21,11 @@ public class LocalCacheContext<T> {
     private final Map<Field, String> columnNames;
     private final Map<Field, Method> setters;
     private final Map<Field, Method> getters;
+    private final Set<String> requiredFields;
 
     private LocalCacheContext(Class<T> tClass, Map<String, Class<?>> fieldTypes, Map<String, List<String>> fieldSynonyms,
                               List<String> classSynonyms, LinkedHashMap<Field, String> columnName,
-                              Map<Field, Method> setters, Map<Field, Method> getters) {
+                              Map<Field, Method> setters, Map<Field, Method> getters, Set<String> requiredFields) {
         this.targetClass = tClass;
         this.fieldTypes = Collections.unmodifiableMap(fieldTypes);
         this.fieldSynonyms = Collections.unmodifiableMap(fieldSynonyms);
@@ -32,6 +33,7 @@ public class LocalCacheContext<T> {
         this.columnNames = Collections.unmodifiableMap(columnName);
         this.setters = Collections.unmodifiableMap(setters);
         this.getters = Collections.unmodifiableMap(getters);
+        this.requiredFields = Collections.unmodifiableSet(requiredFields);
     }
 
     static <T> LocalCacheContext<T> create(Class<T> tClass) {
@@ -40,7 +42,7 @@ public class LocalCacheContext<T> {
         if (excelClass != null) {
             return new LocalCacheContext<>(tClass, readFieldTypes(annotatedFields), readSynonymFields(annotatedFields),
                     readSynonymsClass(excelClass), readColumnName(annotatedFields), getSettersFields(annotatedFields, tClass),
-                    getGettersFields(annotatedFields, tClass));
+                    getGettersFields(annotatedFields, tClass), readRequiredFields(annotatedFields));
         } else {
             log.error("Над классом {} нет аннотации @ExcelClass.", tClass.getSimpleName());
             throw new GeneralFormatException(TypeError.ABSENT_ANNOTATION, "Класс " + tClass.getName() + " не аннотирован @ExcelClass");
@@ -110,7 +112,15 @@ public class LocalCacheContext<T> {
 
     private static <T> List<Field> getAnnotationFields(Class<T> tClass) {
         return Arrays.stream(tClass.getDeclaredFields())
-                .filter(field -> field.getAnnotation(ExcelColumn.class) != null).toList();
+                .filter(field -> field.getAnnotation(ExcelColumn.class) != null)
+                .toList();
+    }
+
+    private static Set<String> readRequiredFields(List<Field> fields) {
+        return fields.stream()
+                .filter(field -> field.getAnnotation(ExcelColumn.class).required())
+                .map(Field::getName)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private static List<String> readSynonymsClass(ExcelClass excelClass) {

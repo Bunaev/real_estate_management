@@ -20,9 +20,15 @@ public class SynonymResolver {
     }
 
     public static <T> String resolveField(LocalCacheContext<T> context, String cellValue) {
+        if (cellValue == null) {
+            return null;
+        }
         String normalized = cellValue.trim().toLowerCase().replaceAll("\\s+", "");
-        Map<String, List<String>> synonyms = context.getFieldSynonyms();
-        for (Map.Entry<String, List<String>> entry : synonyms.entrySet()) {
+        if (normalized.isBlank()) {
+            return null;
+        }
+        Map<String, List<String>> fieldSynonyms = context.getFieldSynonyms();
+        for (Map.Entry<String, List<String>> entry : fieldSynonyms.entrySet()) {
             if (entry.getValue().contains(normalized)) {
                 return entry.getKey();
             }
@@ -31,6 +37,9 @@ public class SynonymResolver {
     }
 
     public static <T> Field findFieldIgnoreCase(LocalCacheContext<T> context, String fieldName) {
+        if (fieldName == null) {
+            return null;
+        }
         for (Field field : context.getTargetClass().getDeclaredFields()) {
             if (field.getName().equalsIgnoreCase(fieldName)) {
                 return field;

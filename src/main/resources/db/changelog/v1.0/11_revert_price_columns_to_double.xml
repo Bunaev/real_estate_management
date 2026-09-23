@@ -5,8 +5,6 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
 
-    <!-- Hibernate ожидает Double (float8/double precision), а changeset 10 перевёл price в NUMERIC.
-         Возвращаем тип обратно, округление до 2 знаков делаем в коде через Apartment.prePersistOrUpdate(). -->
     <changeSet id="11-revert-price-columns-to-double" author="bunaev">
         <modifyDataType tableName="apartment" columnName="price" newDataType="DOUBLE PRECISION"/>
         <modifyDataType tableName="apartment" columnName="price_per_square_meter" newDataType="DOUBLE PRECISION"/>

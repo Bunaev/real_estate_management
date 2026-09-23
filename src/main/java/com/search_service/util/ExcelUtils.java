@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -56,34 +57,51 @@ public class ExcelUtils {
     }
 
     private static <T> List<T> readSheetFromWorkbook(Sheet sheet, LocalCacheContext<T> context) {
-        List<T> result = new ArrayList<>();
         Row header = sheet.getRow(sheet.getFirstRowNum());
         if (!validateSheet(header, context)) {
             throw new GeneralFormatException(TypeError.FIELDS_NOT_MATCH,
                     "Строки в книге: " + sheet.getSheetName() + " не совпадают с необходимыми.\nПроверьте аннотации или содержание файла.");
-        } else {
-            for (int i = sheet.getFirstRowNum() + 1; i <= sheet.getLastRowNum(); ++i) {
-                Row row = sheet.getRow(i);
-                if (cellIsBlank(row.getCell(row.getFirstCellNum()))) {
-                    break;
-                }
-                result.add(readCellFromSheet(row, header, context));
-            }
-            return result;
         }
+        return readDataRows(sheet, header, context);
+    }
+
+    private static <T> List<T> readDataRows(Sheet sheet, Row header, LocalCacheContext<T> context) {
+        List<T> result = new ArrayList<>();
+        for (int rowIndex = header.getRowNum() + 1; rowIndex <= sheet.getLastRowNum(); ++rowIndex) {
+            Row row = sheet.getRow(rowIndex);
+            if (isRowEmpty(row, header.getLastCellNum())) {
+                continue;
+            }
+            result.add(readCellFromSheet(row, header, context));
+        }
+        return result;
+    }
+
+    private static boolean isRowEmpty(Row row, int lastColumnIndex) {
+        if (row == null) {
+            return true;
+        }
+        for (int columnIndex = 0; columnIndex < lastColumnIndex; ++columnIndex) {
+            if (!cellIsBlank(row.getCell(columnIndex))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static <T> T readCellFromSheet(Row row, Row header, LocalCacheContext<T> context) {
         try {
             T instance = context.getTargetClass().getDeclaredConstructor().newInstance();
-            for (int i = 0; i < row.getLastCellNum(); ++i) {
-                String headerCell = SynonymResolver.resolveField(context, header.getCell(i).getStringCellValue());
-                Class<?> typeField = context.getFieldTypes().get(headerCell);
-                Field field = SynonymResolver.findFieldIgnoreCase(context, headerCell);
-                if (field != null) {
-                    Object value = convertCellToFieldType(row.getCell(i), typeField);
-                    context.getSetters().get(field).invoke(instance, value);
+            for (int columnIndex = header.getFirstCellNum(); columnIndex < header.getLastCellNum(); ++columnIndex) {
+                String fieldName = SynonymResolver.resolveField(context, getHeaderValue(header.getCell(columnIndex)));
+                Field field = SynonymResolver.findFieldIgnoreCase(context, fieldName);
+                Class<?> fieldType = context.getFieldTypes().get(fieldName);
+                Method setter = field == null ? null : context.getSetters().get(field);
+                if (setter == null || fieldType == null) {
+                    continue;
                 }
+                Object value = convertCellToFieldType(row.getCell(columnIndex), fieldType);
+                setter.invoke(instance, value);
             }
             return instance;
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException exception) {
@@ -100,17 +118,25 @@ public class ExcelUtils {
             for (Cell cell : row) {
                 checkCell(context, cell, headerNames);
             }
-            return headerNames.containsAll(context.getFieldTypes().keySet());
+            return headerNames.containsAll(context.getRequiredFields());
         }
     }
 
     private static <T> void checkCell(LocalCacheContext<T> context, Cell cell, Set<String> headerNames) {
-        if (cell != null) {
-            String resolved = SynonymResolver.resolveField(context, cell.getStringCellValue());
-            if (resolved != null) {
-                headerNames.add(resolved);
-            }
+        String resolved = SynonymResolver.resolveField(context, getHeaderValue(cell));
+        if (resolved != null) {
+            headerNames.add(resolved);
         }
+    }
+
+    private static String getHeaderValue(Cell cell) {
+        if (cell == null) {
+            return null;
+        }
+        return switch (cell.getCellType()) {
+            case STRING -> cell.getStringCellValue();
+            default -> null;
+        };
     }
 
     private static void validateFile(MultipartFile file) {
@@ -138,31 +164,24 @@ public class ExcelUtils {
     }
 
     private static <T> T convertCellToFieldType(Cell cell, Class<T> type) {
-        if (cell == null) {
+        String resultValue = getResultValue(cell);
+        if (isBlankValue(resultValue)) {
             return null;
-        } else {
-            String resultValue = getResultValue(cell);
-            if (resultValue == null) {
-                throw new NullPointerException("Ячейка пуста.");
-            } else {
-                return getParse(type, resultValue);
-            }
         }
+        return getParse(type, resultValue.trim());
+    }
+
+    private static boolean isBlankValue(String value) {
+        return value == null || value.isBlank();
     }
 
     @SuppressWarnings("unchecked")
     private static <T> T getParse(Class<T> type, String resultValue) {
         if (type == String.class) return (T) resultValue;
-        if (type == Double.class || type == double.class) return (T) Double.valueOf(Double.parseDouble(resultValue));
-        if (type == Float.class || type == float.class) return (T) Float.valueOf(Float.parseFloat(resultValue));
-        if (type == Integer.class || type == int.class) {
-            String cleaned = resultValue.replace(".0", "");
-            return (T) Integer.valueOf(cleaned);
-        }
-        if (type == Long.class || type == long.class) {
-            String cleaned = resultValue.replace(".0", "");
-            return (T) Long.valueOf(cleaned);
-        }
+        if (type == Double.class || type == double.class) return (T) Double.valueOf(parseDecimal(resultValue).doubleValue());
+        if (type == Float.class || type == float.class) return (T) Float.valueOf(parseDecimal(resultValue).floatValue());
+        if (type == Integer.class || type == int.class) return (T) Integer.valueOf(parseDecimal(resultValue).intValueExact());
+        if (type == Long.class || type == long.class) return (T) Long.valueOf(parseDecimal(resultValue).longValueExact());
         if (type == Boolean.class || type == boolean.class) return (T) Boolean.valueOf(Boolean.parseBoolean(resultValue));
         if (type.isEnum()) {
             try {
@@ -176,18 +195,36 @@ public class ExcelUtils {
     }
 
     private static String getResultValue(Cell cell) {
-        StringBuilder value = new StringBuilder();
-        switch (cell.getCellType()) {
-            case STRING -> value.append(cell.getStringCellValue());
-            case NUMERIC -> value.append(cell.getNumericCellValue());
-            case BOOLEAN -> value.append(cell.getBooleanCellValue());
-            default -> { return null; }
+        if (cell == null) {
+            return null;
         }
-        int pointIndex = value.indexOf(",");
-        if (pointIndex != -1) {
-            value.setCharAt(pointIndex, '.');
+        return switch (cell.getCellType()) {
+            case STRING -> cell.getStringCellValue();
+            case NUMERIC -> readNumericValue(cell);
+            case BOOLEAN -> String.valueOf(cell.getBooleanCellValue());
+            default -> null;
+        };
+    }
+
+    private static String readNumericValue(Cell cell) {
+        return BigDecimal.valueOf(cell.getNumericCellValue()).stripTrailingZeros().toPlainString();
+    }
+
+    private static BigDecimal parseDecimal(String rawValue) {
+        String normalized = rawValue.trim()
+                .replace(" ", "")
+                .replace("\u00A0", "")
+                .replace("_", "");
+        int lastDot = normalized.lastIndexOf('.');
+        int lastComma = normalized.lastIndexOf(',');
+        if (lastDot >= 0 && lastComma >= 0) {
+            normalized = lastComma > lastDot
+                    ? normalized.replace(".", "").replace(",", ".")
+                    : normalized.replace(",", "");
+        } else if (lastComma >= 0) {
+            normalized = normalized.replace(",", ".");
         }
-        return value.toString();
+        return new BigDecimal(normalized);
     }
 
     public static <T> byte[] exportEntityToExcel(List<T> entityList, Class<T> tClass) {
@@ -237,7 +274,7 @@ public class ExcelUtils {
     private static void addDataInCell(Row row, int index, Object value) {
         Cell cell = row.createCell(index);
         if (value == null) {
-            cell.setCellValue("");
+            cell.setBlank();
         } else if (value instanceof Number) {
             cell.setCellValue(((Number) value).doubleValue());
         } else if (value instanceof Boolean) {

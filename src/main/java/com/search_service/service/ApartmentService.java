@@ -36,8 +36,11 @@ public class ApartmentService {
         List<Apartment> apartments = ExcelUtils.readExcelFile(file, Apartment.class);
         for (Apartment apartment : apartments) {
             apartment.setEntrance(entrance);
-            if (apartment.getPricePerSquareMeter() != null && apartment.getArea() != null) {
-                apartment.setPrice(apartment.getArea() * apartment.getPricePerSquareMeter());
+            if (apartment.getArea() == null){
+                apartment.setArea(Math.round((apartment.getKitchenArea() == null ? 0.0 : apartment.getKitchenArea() +
+                        apartment.getBathroomArea() + apartment.getHallwayArea() + apartment.getRoomsArea()) * 100) / 100.0);
+            } else if (apartment.getPricePerSquareMeter() == null) {
+                apartment.setPricePerSquareMeter(Math.round(apartment.getArea() / apartment.getPrice()) * 100 / 100.0);
             }
         }
         return apartmentRepo.saveAll(apartments);
