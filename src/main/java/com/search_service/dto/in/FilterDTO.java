@@ -8,10 +8,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class FilterDTO {
@@ -29,8 +30,8 @@ public class FilterDTO {
     private Integer floorTo;
     private Double areaFrom;
     private Double areaTo;
-    private Double priceFrom;
-    private Double priceTo;
+    private BigDecimal priceFrom;
+    private BigDecimal priceTo;
     private Boolean hasBalcony;
     private Status status;
 }

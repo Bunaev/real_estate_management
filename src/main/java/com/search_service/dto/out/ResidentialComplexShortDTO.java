@@ -15,4 +15,6 @@ public class ResidentialComplexShortDTO {
     private String developer;
     private String fullAddress;
     private String keyRenderPath;
+    private String keyDocumentPath;
+    private String keyPresentationPath;
 }

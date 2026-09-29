@@ -2,6 +2,7 @@ package com.search_service.controller;
 
 import com.search_service.dto.in.EntranceDTO;
 import com.search_service.dto.out.EntranceShortDTO;
+import com.search_service.dto.out.NonPlanKeyDTO;
 import com.search_service.entity.Entrance;
 import com.search_service.mapper.EntranceMapper;
 import com.search_service.service.EntranceService;

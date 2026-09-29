@@ -18,8 +18,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -68,7 +70,7 @@ class ApartmentControllerTest {
     @Test
     void getFilteredApartments_shouldReturnPage() throws Exception {
         ApartmentDTO dto = ApartmentDTO.builder()
-                .id(1L).number(10).floor(3).area(45.0).price(5_000_000.0)
+                .id(1L).number(10).floor(3).area(45.0).price(BigDecimal.valueOf(5_000_000L))
                 .type("ONE_ROOM").bathroomType("COMBINED").hasBalcony(true).status("AVAILABLE")
                 .entrance(EntranceInfoDTO.builder()
                         .id(1L).name("Секция 1")
@@ -92,7 +94,10 @@ class ApartmentControllerTest {
     @Test
     void updateApartment_shouldReturnUpdatedDto() throws Exception {
         ApartmentInDTO input = ApartmentInDTO.builder()
-                .id(1L).number(20).floor(5).area(60.0).price(7_000_000.0)
+                .id(1L).number(20).floor(5).area(60.0).price(BigDecimal.valueOf(7_000_000L))
+                .hallwayArea(10.0)
+                .bathroomArea(5.0)
+                .roomsArea(30.0)
                 .type(com.search_service.entity.ApartmentType.ONE_ROOM)
                 .bathroomType(com.search_service.entity.BathroomType.COMBINED)
                 .hasBalcony(false)
@@ -100,15 +105,24 @@ class ApartmentControllerTest {
                 .build();
 
         ApartmentDTO output = ApartmentDTO.builder()
-                .id(1L).number(20).floor(5).area(60.0).price(7_000_000.0)
+                .id(1L).number(20).floor(5).area(60.0).price(BigDecimal.valueOf(7_000_000L))
                 .type("ONE_ROOM").bathroomType("COMBINED").hasBalcony(false).status("AVAILABLE")
                 .build();
 
-        when(apartmentService.update(any(ApartmentInDTO.class))).thenReturn(output);
+        when(apartmentService.update(any(ApartmentInDTO.class), any(), any())).thenReturn(output);
 
-        mockMvc.perform(put("/api/apartments/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(input)))
+        MockMultipartFile dtoPart = new MockMultipartFile(
+                "dto", "dto", MediaType.APPLICATION_JSON_VALUE, objectMapper.writeValueAsBytes(input));
+        MockMultipartFile planFile = new MockMultipartFile(
+                "planFile", "plan.jpg", MediaType.IMAGE_JPEG_VALUE, new byte[]{1});
+
+        mockMvc.perform(multipart("/api/apartments/1")
+                        .file(dtoPart)
+                        .file(planFile)
+                        .with(request -> {
+                            request.setMethod("PUT");
+                            return request;
+                        }))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.number").value(20))
                 .andExpect(jsonPath("$.floor").value(5));

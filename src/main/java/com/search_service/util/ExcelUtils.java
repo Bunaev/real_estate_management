@@ -178,6 +178,7 @@ public class ExcelUtils {
     @SuppressWarnings("unchecked")
     private static <T> T getParse(Class<T> type, String resultValue) {
         if (type == String.class) return (T) resultValue;
+        if (type == BigDecimal.class) return (T) parseDecimal(resultValue);
         if (type == Double.class || type == double.class) return (T) Double.valueOf(parseDecimal(resultValue).doubleValue());
         if (type == Float.class || type == float.class) return (T) Float.valueOf(parseDecimal(resultValue).floatValue());
         if (type == Integer.class || type == int.class) return (T) Integer.valueOf(parseDecimal(resultValue).intValueExact());

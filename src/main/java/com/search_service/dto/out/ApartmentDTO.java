@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -20,7 +21,7 @@ public class ApartmentDTO {
     private Double hallwayArea;
     private Double bathroomArea;
     private Double roomsArea;
-    private Double price;
+    private BigDecimal price;
     private String type;
     private String bathroomType;
     private Boolean hasBalcony;
@@ -30,4 +31,5 @@ public class ApartmentDTO {
     private EntranceInfoDTO entrance;
     private LocalDate completionDate;
     private LocalDate keyHandoverDate;
+    private String notes;
 }

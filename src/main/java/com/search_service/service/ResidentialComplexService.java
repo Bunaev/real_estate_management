@@ -8,6 +8,8 @@ import com.search_service.entity.Developer;
 import com.search_service.entity.District;
 import com.search_service.entity.ResidentialComplex;
 import com.search_service.exception.EntityNotFoundException;
+import com.search_service.exception.GeneralFormatException;
+import com.search_service.exception.TypeError;
 import com.search_service.mapper.ResidentialComplexMapper;
 import com.search_service.repository.DeveloperRepo;
 import com.search_service.repository.DistrictRepo;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -56,8 +59,12 @@ public class ResidentialComplexService {
         ResidentialComplex saved = complexRepo.save(complex);
 
         if (file != null && !file.isEmpty()) {
-            String key = s3StorageService.uploadPublicFile(saved.getId(), file);
-            saved.setKeyRenderPath(key);
+            try {
+                String key = s3StorageService.uploadComplexPublicFile(saved.getId(), file.getBytes(), file.getOriginalFilename());
+                saved.setKeyRenderPath(key);
+            } catch (IOException exception) {
+                throw new GeneralFormatException(TypeError.SAVE_FILE, "Ошибка получения массива байт: " + file.getOriginalFilename());
+            }
         }
         complexSearchService.indexComplex(saved);
         return mapper.toShortDto(saved);
@@ -99,8 +106,12 @@ public class ResidentialComplexService {
         complex.setDeveloper(requireDeveloper(dto));
 
         if (file != null && !file.isEmpty()) {
-            String key = s3StorageService.uploadPublicFile(complex.getId(), file);
-            complex.setKeyRenderPath(key);
+            try {
+                String key = s3StorageService.uploadComplexPublicFile(complex.getId(), file.getBytes(), file.getOriginalFilename());
+                complex.setKeyRenderPath(key);
+            } catch (IOException exception) {
+                throw new GeneralFormatException(TypeError.SAVE_FILE, "Ошибка получения массива байт: " + file.getOriginalFilename());
+            }
         }
 
         relationService.updateRelations(complex, dto);
@@ -170,5 +181,116 @@ public class ResidentialComplexService {
                 ));
 
         dtoList.forEach(dto -> dto.setMetroDistances(metroMap.getOrDefault(dto.getId(), List.of())));
+    }
+
+    @Transactional
+    public String getDocumentPath(Long id) {
+        ResidentialComplex complex = requireComplex(id);
+        String path = complex.getKeyDocumentPath();
+        if (path == null) {
+            path = s3StorageService.generatePublicDocumentPath(id);
+            complex.setKeyDocumentPath(path);
+            complexRepo.save(complex);
+        }
+        return path;
+    }
+
+    @Transactional(readOnly = true)
+    public String getPresentationPath(Long id) {
+        ResidentialComplex complex = requireComplex(id);
+        String key = complex.getKeyPresentationPath();
+        if (key == null || key.endsWith("/") || !s3StorageService.doesPublicObjectExist(key)) {
+            return null;
+        }
+        return s3StorageService.generatePublicDownloadUrl(key);
+    }
+
+    @Transactional
+    public String getPresentationFolderPath(Long id) {
+        requireComplex(id);
+        return s3StorageService.generatePublicPresentationPath(id);
+    }
+
+    @Transactional
+    public String putDocuments(String path, MultipartFile... files) {
+        requireFolderPath(path, "documents");
+        int count = 0;
+        for (MultipartFile file : files) {
+            uploadFile(path, file);
+            count++;
+        }
+        return "По пути: " + path + " сохранено " + count + " файлов.";
+    }
+
+    @Transactional
+    public String putPresentation(String path, MultipartFile file) {
+        Long complexId = requireFolderPath(path, "presentation");
+        ResidentialComplex complex = requireComplex(complexId);
+
+        String oldKey = complex.getKeyPresentationPath();
+        String newKey = uploadFile(path, file);
+        complex.setKeyPresentationPath(newKey);
+        complexRepo.save(complex);
+
+        if (oldKey != null && !oldKey.endsWith("/") && !oldKey.equals(newKey)) {
+            s3StorageService.deletePublicFile(oldKey);
+        }
+        return newKey;
+    }
+
+    @Transactional
+    public void deleteDocument(String key) {
+        requireFileKey(key, "documents");
+        s3StorageService.deletePublicFile(key);
+    }
+
+    @Transactional
+    public void deletePresentation(String key) {
+        Long complexId = requireFileKey(key, "presentation");
+        ResidentialComplex complex = requireComplex(complexId);
+
+        s3StorageService.deletePublicFile(key);
+        if (key.equals(complex.getKeyPresentationPath())) {
+            complex.setKeyPresentationPath(null);
+            complexRepo.save(complex);
+        }
+    }
+
+    private String uploadFile(String path, MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new GeneralFormatException(TypeError.FILE_IS_EMPTY, "Файл пустой: " + (file == null ? "null" : file.getOriginalFilename()));
+        }
+        try {
+            return s3StorageService.uploadPublicFile(path, file.getBytes(), file.getContentType(), file.getOriginalFilename());
+        } catch (IOException exception) {
+            throw new GeneralFormatException(TypeError.SAVE_FILE, "Ошибка чтения файла: " + file.getOriginalFilename());
+        }
+    }
+
+    private Long requireFolderPath(String path, String folder) {
+        Long complexId = extractComplexId(path);
+        if (complexId == null || !path.contains("/" + folder + "/") || !path.endsWith("/")) {
+            throw new GeneralFormatException(TypeError.SAVE_FILE, "Некорректный путь к папке: " + path);
+        }
+        return complexId;
+    }
+
+    private Long requireFileKey(String key, String folder) {
+        Long complexId = extractComplexId(key);
+        if (complexId == null || !key.contains("/" + folder + "/") || key.endsWith("/")) {
+            throw new GeneralFormatException(TypeError.SAVE_FILE, "Некорректный ключ файла: " + key);
+        }
+        return complexId;
+    }
+
+    private Long extractComplexId(String key) {
+        if (key == null) return null;
+        String[] parts = key.split("/");
+        if (parts.length < 3 || !"complexes".equals(parts[0])) return null;
+        try {
+            return Long.valueOf(parts[1]);
+        } catch (NumberFormatException exception) {
+            return null;
+        }
     }
 }

@@ -22,5 +22,7 @@ public interface ApartmentMapper {
     List<ApartmentDTO> toDtoList(List<Apartment> apartments);
 
     @Mapping(target = "entrance", ignore = true)
+    @Mapping(target = "price", expression = "java(dto.getPrice() == null ? null : dto.getPrice().setScale(2, java.math.BigDecimal.ROUND_HALF_UP))")
+    @Mapping(target = "pricePerSquareMeter", expression = "java(dto.getPricePerSquareMeter() == null ? null : dto.getPricePerSquareMeter().setScale(2, java.math.BigDecimal.ROUND_HALF_UP))")
     Apartment toEntity(ApartmentInDTO dto);
 }

@@ -27,4 +27,5 @@ public interface ResidentialComplexRepo extends JpaRepository<ResidentialComplex
 
     @Query("SELECT rc.keyRenderPath FROM ResidentialComplex rc WHERE rc.id = :id")
     Optional<String> findRenderKeyById(@Param("id") Long id);
+
 }

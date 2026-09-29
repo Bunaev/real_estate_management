@@ -23,5 +23,7 @@ public class ResidentialComplexDetailDTO {
     private Double latitude;
     private Double longitude;
     private String keyRenderPath;
+private String keyDocumentPath;
+    private String keyPresentationPath;
     List<MetroDistanceOutDTO> metroDistances;
 }

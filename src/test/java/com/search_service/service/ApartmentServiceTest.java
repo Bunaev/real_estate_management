@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +40,8 @@ class ApartmentServiceTest {
     private ApartmentMapper mapper;
     @Mock
     private SpecificationBuilder specificationBuilder;
+    @Mock
+    private ApartmentRenderService renderService;
 
     @InjectMocks
     private ApartmentService apartmentService;
@@ -57,7 +60,7 @@ class ApartmentServiceTest {
                 .number(10)
                 .floor(3)
                 .area(45.0)
-                .price(5_000_000.0)
+                .price(BigDecimal.valueOf(5_000_000L))
                 .type(ApartmentType.ONE_ROOM)
                 .bathroomType(BathroomType.COMBINED)
                 .hasBalcony(true)
@@ -70,7 +73,7 @@ class ApartmentServiceTest {
                 .number(10)
                 .floor(3)
                 .area(45.0)
-                .price(5_000_000.0)
+                .price(BigDecimal.valueOf(5_000_000L))
                 .type("ONE_ROOM")
                 .bathroomType("COMBINED")
                 .hasBalcony(true)
@@ -112,7 +115,7 @@ class ApartmentServiceTest {
                 .number(20)
                 .floor(5)
                 .area(60.0)
-                .price(7_000_000.0)
+                .price(BigDecimal.valueOf(7_000_000L))
                 .type(ApartmentType.TWO_ROOM)
                 .bathroomType(BathroomType.SEPARATE)
                 .hasBalcony(false)
@@ -123,10 +126,12 @@ class ApartmentServiceTest {
         when(apartmentRepo.save(any(Apartment.class))).thenReturn(apartment);
         when(mapper.toDto(any(Apartment.class))).thenReturn(apartmentDto);
 
-        ApartmentDTO result = apartmentService.update(dto);
+        ApartmentDTO result = apartmentService.update(dto, null, null);
 
         assertThat(result).isNotNull();
         verify(apartmentRepo).save(apartment);
+verify(renderService).updateRenders(any(Apartment.class), isNull(), isNull(), isNull(), isNull());
+        verify(renderService).deleteReplacedRenders(isNull(), isNull(), isNull(), isNull());
     }
 
     @Test
@@ -134,7 +139,7 @@ class ApartmentServiceTest {
         ApartmentInDTO dto = ApartmentInDTO.builder().id(999L).build();
         when(apartmentRepo.findById(999L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> apartmentService.update(dto))
+        assertThatThrownBy(() -> apartmentService.update(dto, null, null))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("Квартира");
     }

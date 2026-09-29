@@ -25,5 +25,18 @@
             </sql>
         </rollback>
     </changeSet>
+    <changeSet id="12.1-drop-not-null-plan-keys" author="bunaev">
+        <sql>
+            ALTER TABLE apartment ALTER COLUMN plan_key DROP NOT NULL;
+            ALTER TABLE apartment ALTER COLUMN entrance_plan_key DROP NOT NULL;
+        </sql>
+
+        <rollback>
+            <sql>
+                ALTER TABLE apartment ALTER COLUMN plan_key SET NOT NULL;
+                ALTER TABLE apartment ALTER COLUMN entrance_plan_key SET NOT NULL;
+            </sql>
+        </rollback>
+    </changeSet>
 
 </databaseChangeLog>

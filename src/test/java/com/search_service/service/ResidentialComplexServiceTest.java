@@ -15,6 +15,7 @@ import com.search_service.repository.DeveloperRepo;
 import com.search_service.repository.DistrictRepo;
 import com.search_service.repository.ResidentialComplexRepo;
 import com.search_service.specification.SpecificationBuilder;
+import org.springframework.mock.web.MockMultipartFile;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -141,5 +142,78 @@ class ResidentialComplexServiceTest {
         when(complexSearchService.suggest("моск", 4)).thenReturn(suggestions);
 
         assertThat(service.suggest("моск", 4)).isEqualTo(suggestions);
+    }
+
+    @Test
+    void getDocumentPath_shouldGeneratePublicPathWhenAbsent() {
+        ResidentialComplex complex = complex(1L);
+        when(complexRepo.findById(1L)).thenReturn(Optional.of(complex));
+        when(complexRepo.save(complex)).thenReturn(complex);
+        when(s3StorageService.generatePublicDocumentPath(1L)).thenReturn("complexes/1/documents/");
+
+        String result = service.getDocumentPath(1L);
+
+        assertThat(result).isEqualTo("complexes/1/documents/");
+        assertThat(complex.getKeyDocumentPath()).isEqualTo("complexes/1/documents/");
+        verify(complexRepo).save(complex);
+    }
+
+    @Test
+    void getPresentationPath_shouldReturnNull_whenPresentationAbsent() {
+        when(complexRepo.findById(1L)).thenReturn(Optional.of(complex(1L)));
+
+        assertThat(service.getPresentationPath(1L)).isNull();
+    }
+
+    @Test
+    void getPresentationPath_shouldReturnPublicUrl_whenPresentationExists() {
+        ResidentialComplex complex = complex(1L);
+        complex.setKeyPresentationPath("complexes/1/presentation/presentation.pdf");
+        when(complexRepo.findById(1L)).thenReturn(Optional.of(complex));
+        when(s3StorageService.doesPublicObjectExist("complexes/1/presentation/presentation.pdf")).thenReturn(true);
+        when(s3StorageService.generatePublicDownloadUrl("complexes/1/presentation/presentation.pdf"))
+                .thenReturn("http://minio/download");
+
+        assertThat(service.getPresentationPath(1L)).isEqualTo("http://minio/download");
+    }
+
+    @Test
+    void putPresentation_shouldUploadAndSaveKey() throws Exception {
+        ResidentialComplex complex = complex(1L);
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "presentation.pdf", "application/pdf", new byte[]{1, 2, 3});
+
+        when(complexRepo.findById(1L)).thenReturn(Optional.of(complex));
+        when(complexRepo.save(complex)).thenReturn(complex);
+        when(s3StorageService.uploadPublicFile(
+                "complexes/1/presentation/", file.getBytes(), "application/pdf", "presentation.pdf"))
+                .thenReturn("complexes/1/presentation/presentation.pdf");
+
+        String result = service.putPresentation("complexes/1/presentation/", file);
+
+        assertThat(result).isEqualTo("complexes/1/presentation/presentation.pdf");
+        assertThat(complex.getKeyPresentationPath()).isEqualTo("complexes/1/presentation/presentation.pdf");
+        verify(complexRepo).save(complex);
+    }
+
+    @Test
+    void deleteDocument_shouldDeletePublicFile() {
+        service.deleteDocument("complexes/1/documents/doc.pdf");
+
+        verify(s3StorageService).deletePublicFile("complexes/1/documents/doc.pdf");
+    }
+
+    @Test
+    void deletePresentation_shouldDeleteAndClearKey() {
+        ResidentialComplex complex = complex(1L);
+        complex.setKeyPresentationPath("complexes/1/presentation/presentation.pdf");
+        when(complexRepo.findById(1L)).thenReturn(Optional.of(complex));
+        when(complexRepo.save(complex)).thenReturn(complex);
+
+        service.deletePresentation("complexes/1/presentation/presentation.pdf");
+
+        verify(s3StorageService).deletePublicFile("complexes/1/presentation/presentation.pdf");
+        assertThat(complex.getKeyPresentationPath()).isNull();
+        verify(complexRepo).save(complex);
     }
 }

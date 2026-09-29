@@ -7,7 +7,6 @@ import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 import java.net.URI;
 
@@ -36,20 +35,6 @@ public class S3Config {
                 // ВАЖНО для MinIO: использовать path-style URL
                 // (http://localhost:9000/bucket/key вместо http://bucket.localhost:9000/key)
                 .forcePathStyle(true)
-                .build();
-    }
-
-    /**
-     * S3Presigner — клиент для генерации временных ссылок.
-     * Нужен для приватных файлов (документы, презентации).
-     */
-    @Bean
-    public S3Presigner s3Presigner() {
-        return S3Presigner.builder()
-                .endpointOverride(URI.create(endpoint))
-                .credentialsProvider(StaticCredentialsProvider.create(
-                        AwsBasicCredentials.create(accessKey, secretKey)))
-                .region(Region.US_EAST_1)
                 .build();
     }
 }

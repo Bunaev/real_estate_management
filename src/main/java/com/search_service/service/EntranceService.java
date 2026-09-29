@@ -2,6 +2,8 @@ package com.search_service.service;
 
 import com.search_service.dto.in.EntranceDTO;
 import com.search_service.dto.out.EntranceShortDTO;
+import com.search_service.dto.out.NonPlanKeyDTO;
+import com.search_service.entity.Apartment;
 import com.search_service.entity.Building;
 import com.search_service.entity.Entrance;
 import com.search_service.exception.EntityNotFoundException;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service

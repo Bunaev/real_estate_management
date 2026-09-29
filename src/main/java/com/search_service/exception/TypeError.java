@@ -15,7 +15,8 @@ public enum TypeError {
     FILE_IS_EMPTY("Файл пустой. "),
     CELL_CREATE("Ошибка создания ячейки. "),
     ELASTIC_ERROR("Ошибка индексации ES"),
-    SAVE_FILE("Ошибка сохранения файла");
+    SAVE_FILE("Ошибка сохранения файла"),
+    ZIP_ERROR("Ошибка чтения zip-архива. ");
 
 
     private final String message;

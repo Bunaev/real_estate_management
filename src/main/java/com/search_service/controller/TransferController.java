@@ -1,6 +1,9 @@
 package com.search_service.controller;
 
+import com.search_service.dto.in.ApartmentImportDTO;
+import com.search_service.dto.out.response.GeneralImportResponse;
 import com.search_service.entity.Apartment;
+import com.search_service.service.ApartmentRenderService;
 import com.search_service.service.ApartmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +20,7 @@ import java.util.List;
 public class TransferController {
 
     private final ApartmentService apartmentService;
+    private final ApartmentRenderService apartmentRenderService;
 
     @PostMapping(value = "/import-apartments", consumes = "multipart/form-data")
     public ResponseEntity<String> importApartments(@RequestParam("entranceId") Long entranceId, @RequestPart("file") MultipartFile file) {
@@ -30,5 +34,12 @@ public class TransferController {
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", "apartments.xlsx");
         return ResponseEntity.ok().headers(headers).body(apartmentService.exportApartmentByEntranceId(entranceId));
+    }
+
+    @PostMapping(value = "/import-apartments-renders", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<GeneralImportResponse> importApartmentRenders(
+            @RequestPart("file") MultipartFile archive,
+            @RequestPart("apartments") List<ApartmentImportDTO> apartments) {
+        return ResponseEntity.ok(apartmentRenderService.importRenders(archive, apartments));
     }
 }

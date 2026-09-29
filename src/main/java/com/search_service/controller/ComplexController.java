@@ -6,7 +6,6 @@ import com.search_service.dto.out.*;
 import com.search_service.service.ResidentialComplexService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -65,9 +64,47 @@ public class ComplexController {
 
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResidentialComplexShortDTO> update(@RequestPart("dto") @Valid ResidentialComplexDTO dto,
-                                                           @RequestPart(value = "file", required = false) MultipartFile file) {
+                                                             @RequestPart(value = "file", required = false) MultipartFile file) {
         ResidentialComplexShortDTO updated = complexService.update(dto, file);
         return ResponseEntity.status(HttpStatus.OK).body(updated);
     }
 
+    @GetMapping("/documents/{id}")
+    public ResponseEntity<String> getDocumentPath(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(complexService.getDocumentPath(id));
+    }
+
+    @GetMapping("/presentation/{id}")
+    public ResponseEntity<String> getPresentationPath(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(complexService.getPresentationPath(id));
+    }
+
+    @GetMapping("/presentation-folder/{id}")
+    public ResponseEntity<String> getPresentationFolderPath(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(complexService.getPresentationFolderPath(id));
+    }
+
+    @PutMapping(path = "/documents", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> putDocuments(@RequestParam("path") String path,
+                                               @RequestPart(value = "files") MultipartFile[] files) {
+        return ResponseEntity.status(HttpStatus.OK).body(complexService.putDocuments(path, files));
+    }
+
+    @PutMapping(path = "/presentation", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> putPresentation(@RequestParam("path") String path,
+                                                  @RequestPart(value = "file") MultipartFile file) {
+        return ResponseEntity.status(HttpStatus.OK).body(complexService.putPresentation(path, file));
+    }
+
+    @DeleteMapping("/documents")
+    public ResponseEntity<Void> deleteDocument(@RequestParam("key") String key) {
+        complexService.deleteDocument(key);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/presentation")
+    public ResponseEntity<Void> deletePresentation(@RequestParam("key") String key) {
+        complexService.deletePresentation(key);
+        return ResponseEntity.noContent().build();
+    }
 }

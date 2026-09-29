@@ -42,4 +42,8 @@ public class ResidentialComplex {
     private Double latitude;
     @Column(name = "longitude")
     private Double longitude;
+    @Column(name = "key_document_path")
+    private String keyDocumentPath;
+    @Column(name = "key_presentation_path")
+    private String keyPresentationPath;
 }

@@ -3,12 +3,13 @@ package com.search_service.dto.in;
 import com.search_service.entity.ApartmentType;
 import com.search_service.entity.BathroomType;
 import com.search_service.entity.Status;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Data
 @Builder
@@ -30,35 +31,48 @@ public class ApartmentInDTO {
     @Max(value = 200, message = "Этаж не должен превышать 200")
     private Integer floor;
 
-    /** Общая площадь. Может быть не заполнена — тогда рассчитывается из компонент. */
+    /**
+     * Общая площадь. Может быть не заполнена — тогда рассчитывается из компонент.
+     */
     @DecimalMin(value = "1.0", message = "Площадь должна быть не менее 1 м²")
     @DecimalMax(value = "10000.0", message = "Площадь не должна превышать 10000 м²")
     private Double area;
 
-    /** Площадь кухни. Для студии может быть null. */
+    /**
+     * Площадь кухни. Для студии может быть null.
+     */
     @DecimalMin(value = "0.0", message = "Площадь кухни не может быть отрицательной")
     private Double kitchenArea;
 
-    /** Площадь коридора. */
+    /**
+     * Площадь коридора.
+     */
     @DecimalMin(value = "0.0", message = "Площадь коридора не может быть отрицательной")
+    @NotNull(message = "Обязательное поле")
     private Double hallwayArea;
 
-    /** Общая площадь санузла. */
+    /**
+     * Общая площадь санузла.
+     */
     @DecimalMin(value = "0.0", message = "Площадь санузла не может быть отрицательной")
+    @NotNull(message = "Обязательное поле")
     private Double bathroomArea;
 
-    /** Суммарная площадь комнат. */
+    /**
+     * Суммарная площадь комнат.
+     */
     @DecimalMin(value = "0.0", message = "Площадь комнат не может быть отрицательной")
+    @NotNull(message = "Обязательное поле")
     private Double roomsArea;
 
     @NotNull(message = "Цена обязательна")
     @DecimalMin(value = "0.0", message = "Цена не может быть отрицательной")
     @DecimalMax(value = "9999999999.0", message = "Цена не должна превышать 10 миллиардов")
-    private Double price;
+    private BigDecimal price;
 
     @DecimalMin(value = "0.0", message = "Цена за м² не может быть отрицательной")
     @DecimalMax(value = "9999999999.0", message = "Цена за м² не должна превышать 10 миллиардов")
-    private Double pricePerSquareMeter;
+    private BigDecimal pricePerSquareMeter;
 
     @NotNull(message = "Тип квартиры обязателен")
     private ApartmentType type;

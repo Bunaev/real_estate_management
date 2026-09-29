@@ -5,6 +5,7 @@ import com.search_service.entity.*;
 import jakarta.persistence.criteria.*;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,8 +73,8 @@ class SpecificationBuilderTest {
         FilterDTO filter = FilterDTO.builder()
                 .status(Status.AVAILABLE)
                 .bathroomType(BathroomType.COMBINED)
-                .priceFrom(1000000.0)
-                .priceTo(10000000.0)
+                .priceFrom(BigDecimal.valueOf(1_000_000L))
+                .priceTo(BigDecimal.valueOf(10_000_000L))
                 .build();
 
         var spec = specificationBuilder.buildApartments(filter);

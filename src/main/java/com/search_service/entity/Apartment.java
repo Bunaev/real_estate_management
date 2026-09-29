@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -34,13 +36,13 @@ public class Apartment {
     @JoinColumn(name = "entrance_id")
     private Entrance entrance;
 
-    @Column(name = "price")
+    @Column(name = "price", precision = 15, scale = 2)
     @ExcelColumn(synonyms = {"цена", "price", "стоимость"}, columnName = "Цена")
-    private Double price;
+    private BigDecimal price;
 
-    @Column(name = "price_per_square_meter")
+    @Column(name = "price_per_square_meter", precision = 15, scale = 2)
     @ExcelColumn(synonyms = {"цена за м²", "цена квм", "price per m²", "PPSM"}, columnName = "Цена за м²", required = false)
-    private Double pricePerSquareMeter;
+    private BigDecimal pricePerSquareMeter;
 
     @Column(name = "floor")
     @ExcelColumn(synonyms = {"этаж", "floor"}, columnName = "Этаж")

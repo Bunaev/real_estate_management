@@ -35,6 +35,8 @@ public class ResidentialComplexEditDTO {
     private Double latitude;
     private Double longitude;
     private String keyRenderPath;
+private String keyDocumentPath;
+    private String keyPresentationPath;
 
 
     @Data

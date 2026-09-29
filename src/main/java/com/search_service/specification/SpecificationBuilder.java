@@ -18,6 +18,7 @@ import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,7 +98,7 @@ public class SpecificationBuilder {
             }
         }
         if (filter.getPriceFrom() != null || filter.getPriceTo() != null) {
-            Path<Double> price = root.get("price");
+            Path<BigDecimal> price = root.get("price");
             if (filter.getPriceFrom() != null) {
                 predicates.add(cb.greaterThanOrEqualTo(price, filter.getPriceFrom()));
             }
