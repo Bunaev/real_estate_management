@@ -67,9 +67,10 @@ public class ApartmentController {
     }
 
     @PutMapping("/price-matrix")
-    public ResponseEntity<PriceMatrixResponse> priceMatrixChanged(@RequestPart("filter") FilterDTO filterDTO,
+    public ResponseEntity<List<PriceMatrixResponse>> priceMatrixChanged(@RequestPart("filter") FilterDTO filterDTO,
                                                                   @RequestPart("type") TypePriceChange typeChange,
-                                                                  @RequestPart("value") BigDecimal value) {;
-        return ResponseEntity.status(HttpStatus.OK).body(apartmentService.priceMatrix(filterDTO, typeChange, value));
+                                                                  @RequestPart("value") BigDecimal value,
+                                                                        @RequestPart("operation") boolean arithmeticalOperation) {
+        return ResponseEntity.status(HttpStatus.OK).body(apartmentService.priceMatrix(filterDTO, typeChange, value, arithmeticalOperation));
     }
 }

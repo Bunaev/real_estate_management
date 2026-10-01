@@ -15,6 +15,7 @@ import com.search_service.repository.ApartmentRepo;
 import com.search_service.repository.EntranceRepo;
 import com.search_service.specification.SpecificationBuilder;
 import com.search_service.util.ExcelUtils;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -159,45 +161,52 @@ public class ApartmentService {
     }
 
     @Transactional
-    public PriceMatrixResponse priceMatrix(FilterDTO filter, TypePriceChange typeChange, BigDecimal value) {
+    public List<PriceMatrixResponse> priceMatrix(FilterDTO filter,
+                                                 TypePriceChange typeChange,
+                                                 BigDecimal value,
+                                                 Boolean arithmeticalOperation) {
         FilterDTO copyFilter = filter.toBuilder().status(Status.AVAILABLE).build();
         Specification<Apartment> specification = specificationBuilder.buildApartments(copyFilter);
         List<Apartment> apartments = apartmentRepo.findAll(specification);
-        int count = 0;
+        List<PriceMatrixResponse> result = new ArrayList<>();
         for (Apartment apartment : apartments) {
-            changePriceForMatrix(typeChange, value, apartment);
-            count++;
+            Integer numberApartment = apartment.getNumber();
+            BigDecimal oldPrice = apartment.getPrice();
+            changePriceForMatrix(typeChange, value, arithmeticalOperation, apartment);
+            BigDecimal newPrice = apartment.getPrice();
+            result.add(PriceMatrixResponse.builder().numberApartment(numberApartment).oldPrice(oldPrice).newPrice(newPrice).build());
         }
         apartmentRepo.saveAll(apartments);
-        return PriceMatrixResponse.builder().countChanges(count).build();
+        return result;
     }
 
-    private static void changePriceForMatrix(TypePriceChange typeChange, BigDecimal value, Apartment apartment) {
+    private static void changePriceForMatrix(TypePriceChange typeChange,
+                                             BigDecimal value,
+                                             boolean increase,
+                                             Apartment apartment) {
+        BigDecimal signedValue = increase ? value : value.negate();
+        BigDecimal area = BigDecimal.valueOf(apartment.getArea());
+
         switch (typeChange) {
             case ABSOLUTE_PRICE -> {
                 BigDecimal newPricePerSqm = value.setScale(2, RoundingMode.HALF_UP);
                 apartment.setPricePerSquareMeter(newPricePerSqm);
-                apartment.setPrice(
-                        newPricePerSqm
-                                .multiply(BigDecimal.valueOf(apartment.getArea()))
-                                .setScale(2, RoundingMode.HALF_UP)
-                );
+                apartment.setPrice(newPricePerSqm.multiply(area).setScale(2, RoundingMode.HALF_UP));
             }
             case PERCENT -> {
-                BigDecimal percentValue = value.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
-                BigDecimal newPrice = apartment.getPrice()
-                        .add(apartment.getPrice().multiply(percentValue))
+                BigDecimal percentValue = signedValue.divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
+                BigDecimal newPricePerSqm = apartment.getPricePerSquareMeter()
+                        .multiply(BigDecimal.ONE.add(percentValue))
                         .setScale(2, RoundingMode.HALF_UP);
-                apartment.setPrice(newPrice);
-                apartment.setPricePerSquareMeter(
-                        newPrice.divide(BigDecimal.valueOf(apartment.getArea()), 2, RoundingMode.HALF_UP));
+                apartment.setPricePerSquareMeter(newPricePerSqm);
+                apartment.setPrice(newPricePerSqm.multiply(area).setScale(2, RoundingMode.HALF_UP));
             }
             case FIXED_PER_SQM -> {
-                apartment.setPricePerSquareMeter(
-                        apartment.getPricePerSquareMeter().add(value).setScale(2, RoundingMode.HALF_UP));
-                apartment.setPrice(apartment.getPricePerSquareMeter()
-                        .multiply(BigDecimal.valueOf(apartment.getArea()))
-                        .setScale(2, RoundingMode.HALF_UP));
+                BigDecimal newPricePerSqm = apartment.getPricePerSquareMeter()
+                        .add(signedValue)
+                        .setScale(2, RoundingMode.HALF_UP);
+                apartment.setPricePerSquareMeter(newPricePerSqm);
+                apartment.setPrice(newPricePerSqm.multiply(area).setScale(2, RoundingMode.HALF_UP));
             }
         }
     }
