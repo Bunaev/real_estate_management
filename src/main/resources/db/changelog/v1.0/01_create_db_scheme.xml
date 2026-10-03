@@ -462,4 +462,85 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="create-scheduled-task" author="bunaev">
+        <createTable tableName="scheduled_task">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pk_scheduled_task" nullable="false"/>
+            </column>
+
+            <column name="created" type="TIMESTAMP" defaultValueComputed="now()">
+            </column>
+
+            <column name="created_by" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="deadline" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="type" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="publish_news" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="payload" type="JSONB">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+        <sql>
+            CREATE INDEX idx_scheduled_task_pending_deadline
+                ON scheduled_task (deadline)
+                WHERE status = 'PENDING';
+        </sql>
+
+        <rollback>
+            <dropTable tableName="scheduled_task"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create-published-event" author="bunaev">
+        <createTable tableName="published_event">
+            <column name="id" type="BIGSERIAL" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pk_published_event" nullable="false"/>
+            </column>
+
+            <column name="type_event" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="event_content" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="start_event_date" type="DATE">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="end_event_date" type="DATE">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="event_picture_key" type="VARCHAR(512)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <sql>
+            CREATE INDEX idx_published_event_dates
+                ON published_event (start_event_date, end_event_date);
+        </sql>
+
+        <rollback>
+            <dropTable tableName="published_event"/>
+        </rollback>
+    </changeSet>
+
 </databaseChangeLog>

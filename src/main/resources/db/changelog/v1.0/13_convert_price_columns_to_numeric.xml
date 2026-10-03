@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.23.xsd">
+
+    <changeSet id="13-convert-price-columns-to-numeric" author="bunaev">
+        <sql>
+            UPDATE apartment SET price = ROUND(price::NUMERIC, 2) WHERE price IS NOT NULL;
+            UPDATE apartment SET price_per_square_meter = ROUND(price_per_square_meter::NUMERIC, 2) WHERE price_per_square_meter IS NOT NULL;
+        </sql>
+        <modifyDataType tableName="apartment" columnName="price" newDataType="NUMERIC(15,2)"/>
+        <modifyDataType tableName="apartment" columnName="price_per_square_meter" newDataType="NUMERIC(15,2)"/>
+        <rollback>
+            <modifyDataType tableName="apartment" columnName="price" newDataType="DOUBLE PRECISION"/>
+            <modifyDataType tableName="apartment" columnName="price_per_square_meter" newDataType="DOUBLE PRECISION"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

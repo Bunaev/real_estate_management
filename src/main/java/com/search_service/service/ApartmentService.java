@@ -15,7 +15,6 @@ import com.search_service.repository.ApartmentRepo;
 import com.search_service.repository.EntranceRepo;
 import com.search_service.specification.SpecificationBuilder;
 import com.search_service.util.ExcelUtils;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,7 +50,7 @@ public class ApartmentService {
             if (apartment.getPricePerSquareMeter() != null) {
                 apartment.setPricePerSquareMeter(apartment.getPricePerSquareMeter().setScale(2, RoundingMode.HALF_UP));
             }
-            if (apartment.getArea() == null){
+            if (apartment.getArea() == null) {
                 apartment.setArea(Math.round((apartment.getKitchenArea() == null ? 0.0 : apartment.getKitchenArea() +
                         apartment.getBathroomArea() + apartment.getHallwayArea() + apartment.getRoomsArea()) * 100) / 100.0);
             } else if (apartment.getPricePerSquareMeter() == null) {
